@@ -1,0 +1,50 @@
+<figure class="intro-video print-hide">
+  <div class="sub-wrap">
+    <video id="@PREFIX@-video" src="intro/@MP4@" poster="intro/@POSTER@" playsinline controls preload="auto" aria-label="@ALT@"></video>
+    <div class="sub" id="@PREFIX@-sub" aria-live="off"></div>
+  </div>
+  <figcaption><button type="button" id="@PREFIX@-cc" aria-pressed="true">Subtitles: on</button> @CAPTION@ <em>(AI-generated video with original characters. If you hear nothing, click the &lsquo;Click for sound&rsquo; button on the video.)</em></figcaption>
+</figure>
+<style>
+  .intro-video { margin: 0.5rem 0 1rem; }
+  .intro-video video { display: block; width: 100%; max-width: 760px; border-radius: 10px; background: #000; }
+  .intro-video .snd-over { position: absolute; top: 0.75rem; left: 0.75rem; z-index: 2; display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 1rem; border: 2px solid #fff; border-radius: 999px; background: rgba(30,58,138,.92); color: #fff; font: 700 0.95rem/1.2 system-ui, sans-serif; text-align: left; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,.5); animation: sndpulse 1.6s ease-in-out infinite; }
+  .intro-video .snd-over small { font-weight: 500; opacity: .85; }
+  .intro-video .snd-over .snd-ico { font-size: 1.6rem; }
+  .intro-video .snd-over[hidden] { display: none; }
+  @keyframes sndpulse { 50% { transform: scale(1.05); } }
+  @media (prefers-reduced-motion: reduce) { .intro-video .snd-over { animation: none; } }
+  .intro-video .sub-wrap { position: relative; max-width: 760px; }
+  .intro-video video { display: block; width: 100%; border-radius: 10px; background: #000; }
+  .intro-video .sub { position: absolute; left: 50%; bottom: 3.2rem; transform: translateX(-50%); max-width: 88%; padding: 0.25rem 0.7rem; border-radius: 4px; background: rgba(0,0,0,.72); color: #fff; font: 600 1.05rem/1.35 system-ui, sans-serif; text-align: center; pointer-events: none; }
+  .intro-video .sub:empty { display: none; }
+  .intro-video figcaption { font-size: 0.85rem; color: #475569; margin-top: 0.4rem; }
+  .intro-video #@PREFIX@-cc { min-height: 2.5rem; padding: 0 0.9rem; margin-right: 0.4rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #1e3a8a; font-weight: 700; cursor: pointer; }
+  .intro-video #@PREFIX@-cc[aria-pressed="false"] { background: #1e3a8a; color: #fff; }
+</style>
+<script>
+(function () {
+  function startWithSound(v) {
+    v.muted = false; v.removeAttribute('muted');
+    var box = v.parentNode; if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+    var ov = document.createElement('button'); ov.type = 'button'; ov.className = 'snd-over'; ov.hidden = true;
+    ov.innerHTML = '<span class="snd-ico" aria-hidden="true">\uD83D\uDD0A</span><span>Click for sound<br><small>(restarts the video)</small></span>'; box.appendChild(ov);
+    function withSound() { ov.hidden = true; v.muted = false; v.currentTime = 0; var q = v.play(); if (q && q.catch) q.catch(function () {}); }
+    function unmute() { v.muted = false; ov.hidden = true; ['pointerdown', 'keydown'].forEach(function (e) { document.removeEventListener(e, unmute); }); }
+    ov.addEventListener('click', function (e) { e.stopPropagation(); withSound(); });
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {
+      v.muted = true; var q = v.play(); if (q && q.catch) q.catch(function () {});
+      ov.hidden = false;
+      v.addEventListener('volumechange', function () { if (!v.muted) ov.hidden = true; });
+      ['pointerdown', 'keydown'].forEach(function (e) { document.addEventListener(e, unmute); });
+    });
+  }
+  var v = document.getElementById('@PREFIX@-video'), sub = document.getElementById('@PREFIX@-sub'), cc = document.getElementById('@PREFIX@-cc'), on = true;
+  if (!v) return;
+  function show() { sub.textContent = on && v.currentTime >= @SUBSTART@ ? '@SUBTITLE_JS@' : ''; }
+  ['timeupdate', 'seeked', 'ended', 'play'].forEach(function (e) { v.addEventListener(e, show); });
+  cc.addEventListener('click', function () { on = !on; cc.setAttribute('aria-pressed', on); cc.textContent = 'Subtitles: ' + (on ? 'on' : 'off'); show(); });
+  startWithSound(v);
+})();
+</script>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revision Questions: Cell Structure and Organisation</title>
+<script>try { if (localStorage.getItem("bio-level") === "g2") document.documentElement.className += " g2"; } catch (e) {}</script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.6; color: #1a1a1a; }
+  h1 { border-bottom: 3px solid #0f766e; padding-bottom: 0.5rem; }
+  h2 { color: #134e4a; margin-top: 2rem; }
+  .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+  .site-nav { font-size: 0.85rem; margin-bottom: 1rem; }
+  .site-nav a { color: #0f766e; text-decoration: none; }
+  .pdf-btn { display: inline-block; background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  .pdf-btn:hover { background: #e2e8f0; }
+  .formula { background: #f0fdfa; border-left: 4px solid #0f766e; padding: 0.75rem 1rem; margin: 1rem 0; font-weight: 600; font-family: "Cambria Math", serif; }
+  blockquote { border-left: 4px solid #94a3b8; margin-left: 0; padding-left: 1rem; color: #475569; }
+  svg { display: block; margin: 1.5rem auto; max-width: 100%; height: auto; }
+  .fig-caption { text-align: center; font-size: 0.9rem; color: #555; }
+  .checkpoint { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .checkpoint p.q { font-weight: 600; margin-top: 0; }
+  .checkpoint label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; }
+  .checkpoint label:hover { background: #f1f5f9; }
+  .checkpoint input[type=text] { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; width: 150px; }
+  .checkpoint button { display: block; margin-top: 0.75rem; background: #0f766e; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  .feedback { margin-top: 0.75rem; padding: 0.6rem 0.9rem; border-radius: 6px; display: none; }
+  .feedback.correct { background: #dcfce7; color: #166534; display: block; }
+  .feedback.incorrect { background: #fee2e2; color: #991b1b; display: block; }
+  .feedback.hint { background: #fef9c3; color: #854d0e; display: block; }
+</style>
+<style>
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.95rem; }
+  th, td { border: 1px solid #cbd5e1; padding: 0.45rem 0.7rem; text-align: left; }
+  th { background: #f0fdfa; color: #134e4a; }
+  .tool { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1.25rem 0; }
+  .tool h3 { margin-top: 0; color: #134e4a; font-size: 1.05rem; }
+  .tool label { font-weight: 600; margin-right: 0.4rem; }
+  .tool input[type=number], .tool select { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+  .tool input[type=number] { width: 7rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-bottom: 0.75rem; }
+  .result { font-size: 1.2rem; font-weight: 700; color: #134e4a; font-family: "Cambria Math", serif; margin: 0.3rem 0; }
+  .working { color: #475569; font-size: 0.9rem; }
+  input[type=range] { width: 100%; }
+  .common { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 0.6rem 1rem; margin: 1rem 0; }
+  .sort-item { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; padding: 0.5rem 0.75rem; margin: 0.4rem 0; background: white; border: 1px solid #cbd5e1; border-radius: 6px; }
+  .sort-item .name { flex: 1 1 10rem; font-weight: 600; }
+  .sort-item button { background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.3rem 0.8rem; cursor: pointer; font-weight: 600; }
+  .sort-item button:hover { background: #e2e8f0; }
+  .sort-item .fb { flex: 1 1 100%; font-size: 0.9rem; display: none; }
+  .sort-item.right { border-color: #86efac; background: #f0fdf4; }
+  .sort-item.wrong { border-color: #fca5a5; background: #fef2f2; }
+  .sort-item .fb.show { display: block; }
+  .score { font-weight: 700; color: #134e4a; margin-top: 0.5rem; }
+  .bar-wrap { background: #e2e8f0; border-radius: 6px; height: 1.1rem; margin: 0.3rem 0; overflow: hidden; }
+  .bar { background: #0f766e; height: 100%; width: 0; transition: width 0.15s; }
+  .print-only { display: none; }
+</style>
+<style>
+  @media print {
+    body { max-width: none; padding: 0; font-size: 11pt; }
+    .site-nav, .pdf-btn, .tool, .video-block, button, .feedback, .print-hide { display: none !important; }
+    .print-only { display: block; }
+    .checkpoint { background: none; border: 1px solid #888; break-inside: avoid; }
+    .checkpoint label { border: none; padding: 0.15rem 0; }
+    .checkpoint input[type=text] { border: none; border-bottom: 1px solid #000; border-radius: 0; width: 220px; }
+    h2 { break-after: avoid; }
+    svg, table, blockquote { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+<style>
+  .video-block { margin: 1.5rem 0; }
+  .video-block p { font-weight: 600; margin-bottom: 0.5rem; }
+  .video-block iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 8px; }
+  .sim-block iframe { aspect-ratio: 16/10; border: 1px solid #cbd5e1; }
+  .vid-credit { font-weight: 400; color: #475569; font-size: 0.85rem; }
+  .vid-note { color: #475569; font-size: 0.9rem; margin: -0.25rem 0 0.5rem; }
+  .more-links { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.95rem; }
+  .more-links a { color: #0f766e; }
+</style>
+<style>
+  .illus { margin: 1.25rem 0; }
+  .illus svg { margin: 0.5rem auto; }
+  .q-fig { margin: 0.5rem 0 0.75rem; overflow-x: auto; }
+  .q-fig svg { margin: 0 auto; }
+  .checkpoint label.fig-opt { display: flex; align-items: center; gap: 0.75rem; }
+  .checkpoint label.fig-opt svg { margin: 0; flex: 0 0 auto; max-width: 150px; height: auto; display: inline-block; }
+  .checkpoint label svg { display: inline-block; margin: 0; }
+  .opt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.4rem 0.6rem; }
+  .opt-grid label { margin: 0; }
+  @media print { .q-fig { overflow: visible; } }
+</style>
+<style>
+  @media (max-width: 640px) { table { display: block; overflow-x: auto; } .tool select, select { max-width: 100%; } }
+</style>
+<style>
+  .photo { position: relative; margin: 1.25rem 0; border-radius: 10px; overflow: hidden; background: #111; }
+  .photo img { display: block; width: 100%; height: auto; }
+  .photo .chip { position: absolute; top: 3%; background: rgba(0,0,0,0.78); color: #fde047; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 8px; font-size: clamp(0.8rem, 2.4vw, 1.2rem); }
+  .photo .chip.l { left: 2%; } .photo .chip.r { left: 52%; color: #fff; }
+  .photo .capbar { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; background: #111; padding: 0.7rem 3% 0.8rem; color: #fff; font-size: clamp(0.75rem, 2vw, 1rem); line-height: 1.4; }
+  .photo .capbar strong { color: #fde047; } .photo .capbar .r strong { color: #7dd3fc; }
+  .photo-note { font-size: 0.85rem; color: #555; text-align: center; margin-top: 0.3rem; }
+</style>
+<style>
+  figure.pic { margin: 1.25rem 0; }
+  figure.pic img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  figure.pic figcaption { font-size: 0.9rem; color: #555; text-align: center; margin-top: 0.4rem; }
+  figure.pic figcaption em { color: #666; }
+</style>
+<style>
+  .back-bottom { margin: 2.5rem 0 1rem; text-align: center; }
+  .back-btn { display: inline-block; background: #0f766e; color: #fff; text-decoration: none; font-weight: 700; padding: 0.75rem 1.6rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(15,118,110,0.35); }
+  .back-btn:hover { background: #115e59; }
+  @media print { .back-bottom { display: none !important; } }
+</style>
+<style>
+  /* polish: touch targets, focus, contrast */
+  @media screen {
+    input[type=range] { height: 2rem; cursor: pointer; accent-color: #0f766e; }
+    .checkpoint input[type=text] { min-height: 2.75rem; }
+    .checkpoint label { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+  }
+  :focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Chakra+Petch:wght@500;600;700&display=swap">
+<style>
+  /* nav: contents, previous/next, heading touch */
+  h1, h2 { font-family: "Rajdhani", system-ui, sans-serif; }
+  h1 { font-size: 2.3rem; line-height: 1.25; letter-spacing: 0.01em; border-bottom: 3px solid; border-image: linear-gradient(90deg, #db2777 0, #db2777 72px, #0f766e 72px) 1; }
+  h2 { font-size: 1.65rem; letter-spacing: 0.01em; scroll-margin-top: 1rem; }
+  h2 .droid { width: 22px; height: 27px; margin: 0 0.5rem -3px 0; display: inline-block; vertical-align: baseline; }
+  .toc { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; margin: 1rem 0 1.5rem; font-size: 0.88rem; }
+  .toc strong { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-size: 1.05rem; color: #475569; margin-right: 0.3rem; }
+  .toc a { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; display: inline-block; padding: 0.6rem 0.9rem; border: 1px solid #cbd5e1; border-radius: 999px; background: #f8fafc; color: #134e4a; text-decoration: none; line-height: 1.3; }
+  .toc a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav { display: flex; flex-wrap: wrap; gap: 1rem; margin: 2.5rem 0 1rem; }
+  .lesson-nav a { flex: 1 1 15rem; display: block; padding: 0.8rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; background: #f8fafc; color: #134e4a; text-decoration: none; }
+  .lesson-nav a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav .dir { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; }
+  .lesson-nav .t { display: block; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+  .lesson-nav .next { text-align: right; }
+  .lesson-nav .g3t { display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.5rem; border-radius: 999px; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-size: 0.75rem; font-weight: 800; vertical-align: middle; }
+  @media print { .toc, .lesson-nav { display: none !important; } }
+</style>
+<style>
+  /* alert: sound controls */
+  .alert-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.75rem 0 1rem; font-size: 0.85rem; }
+  .alert-ctl button { min-height: 2.75rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+  .alert-ctl button:hover { background: #f0fdfa; border-color: #0f766e; }
+  .alert-ctl button[aria-pressed="true"] { background: #134e4a; border-color: #134e4a; color: #fff; }
+  .alert-ctl .note { color: #475569; }
+  @media print { .alert-ctl { display: none !important; } }
+</style>
+<style>
+  .g3-badge { display: inline-block; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 0.22rem 0.8rem; border-radius: 999px; letter-spacing: 0.02em; vertical-align: middle; margin-left: 0.5rem; }
+  h1 .g3-badge { font-size: 0.8rem; }
+  .photo .capbar.one { grid-template-columns: 1fr; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+  /* biology site: body font, G2/G3 switch (set on the home page), shared boxes */
+  body { font-family: "Source Sans 3", system-ui, sans-serif; font-size: 1.08rem; }
+  .g2 .g3-only { display: none !important; }
+  .keyidea { border-left: 4px solid #94a3b8; padding: 0.2rem 0 0.2rem 1rem; margin: 1rem 0; color: #334155; }
+  .practical { border: 1px solid #a7f3d0; background: #f0fdf4; border-radius: 10px; padding: 0.9rem 1.2rem; margin: 1.2rem 0; }
+  .practical h3 { margin: 0.2rem 0 0.4rem; color: #166534; font-size: 1.1rem; }
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 1rem 0; }
+  .flow span { padding: 0.45rem 0.9rem; border-radius: 999px; background: #f0fdfa; border: 1px solid #99f6e4; font-weight: 600; color: #134e4a; }
+  .flow b { color: #db2777; }
+  .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem 1.2rem; align-items: start; }
+  .eg-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem 1.1rem; margin: 0.5rem 0; } .eg-box .q { font-weight: 700; margin-top: 0; }
+  .three-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem 1rem; align-items: start; }
+  .three-col svg { width: 100%; max-width: 240px; }
+  .tag-p { color: #15803d; font-weight: 700; } .tag-a { color: #be185d; font-weight: 700; } .tag-b { color: #1d4ed8; font-weight: 700; }
+  /* clickable diagram (explorer) */
+  .explorer { margin: 1.25rem 0; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem 0.6rem; background: #fff; }
+  .explorer svg { margin: 0.3rem auto; }
+  .explorer .part, .explorer .lbl { cursor: pointer; }
+  .explorer .part:hover, .explorer .lbl:hover { filter: brightness(1.06) saturate(1.2); }
+  .explorer .part.on { filter: drop-shadow(0 0 3px #f59e0b) drop-shadow(0 0 2px #f59e0b); }
+  .explorer .lbl.on text { fill: #b45309; }
+  .explorer .part:focus, .explorer .lbl:focus { outline: none; }
+  .explorer .part:focus-visible, .explorer .lbl:focus-visible { filter: drop-shadow(0 0 3px #0f766e) drop-shadow(0 0 2px #0f766e); }
+  .explorer.nolabels .lbl text { visibility: hidden; }
+  .ex-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .ex-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .ex-ctl button[aria-pressed="true"] { background: #134e4a; color: #fff; border-color: #134e4a; }
+  .ex-q { font-weight: 700; color: #134e4a; }
+  .ex-info { min-height: 3.2rem; padding: 0.6rem 0.9rem; border-radius: 8px; background: #f0fdfa; border: 1px solid #99f6e4; }
+  .ex-info.ok { background: #dcfce7; border-color: #86efac; } .ex-info.no { background: #fee2e2; border-color: #fca5a5; }
+  @media print { .explorer { border: none; padding: 0; } .ex-ctl, .ex-info { display: none !important; } .explorer.nolabels .lbl text { visibility: visible; } }
+</style>
+</head>
+<body>
+<p class="site-nav"><a href="index.html">&larr; Back to Biology lessons</a></p>
+<main>
+<h1>Revision Questions: Cell Structure and Organisation</h1>
+<p class="meta">Biology &middot; Cell Structure and Organisation &middot; Section A: multiple choice &middot; Section B: short answer and free response</p>
+<p class="print-only">Name: ______________________ &nbsp; Class: ________ &nbsp; Date: ____________</p>
+<p class="print-hide"><a class="pdf-btn" href="revision-01-cells.pdf" target="_blank" rel="noopener">&#128196; Download printable version (PDF)</a></p>
+<script src="ai-marking-config.js"></script>
+<p>Test yourself on Topic 1 (lessons 1.1 and 1.2). Section A has 10 multiple-choice questions. Section B has short and longer written answers.</p>
+<style>
+  .sb { border: 1px solid #cbd5e1; border-radius: 10px; padding: 1rem 1.1rem; margin: 1.2rem 0; background: #f8fafc; }
+  .sb .q { font-weight: 600; margin-top: 0; }
+  .sb .marks { color: #475569; font-weight: 500; white-space: nowrap; }
+  .sb textarea { width: 100%; box-sizing: border-box; min-height: 7rem; padding: 0.6rem; border: 1px solid #94a3b8; border-radius: 8px; font: inherit; resize: vertical; background: #fff; }
+  .sb .row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+  .sb button { min-height: 2.75rem; padding: 0 1rem; border: 0; border-radius: 8px; background: #0f766e; color: #fff; font-weight: 700; cursor: pointer; }
+  .sb button.sb-ai { background: #7c3aed; }
+  .sb button:disabled { opacity: .6; cursor: wait; }
+  .sb-out { margin-top: 0.8rem; padding: 0.8rem 1rem; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; }
+  .sb-out ul { list-style: none; padding: 0; margin: 0.4rem 0; }
+  .sb-out li { margin: 0.35rem 0; }
+  .sb-out label { cursor: pointer; }
+  .sb-score { font-weight: 800; color: #134e4a; }
+  .sb-note { color: #475569; font-size: 0.9rem; }
+  .sb-ai-out { margin-top: 0.6rem; padding: 0.6rem 0.8rem; border-left: 4px solid #7c3aed; background: #f5f3ff; border-radius: 4px; }
+  .sb details { margin-top: 0.5rem; }
+  .sa-score { position: sticky; top: 0; z-index: 3; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 8px; padding: 0.4rem 0.8rem; font-weight: 700; color: #134e4a; margin: 0.6rem 0; }
+  .g3-badge.small { font-size: 0.65rem; padding: 0.1rem 0.55rem; margin-left: 0.4rem; }
+  @media print { .sb { background: #fff; page-break-inside: avoid; } .sb textarea { min-height: 9rem; border: 1px solid #000; } .sa-score { display: none; } }
+</style>
+<h2 id="section-a">Section A: Multiple choice (10 questions)</h2>
+<p>Choose the best answer. You can check each answer and try again.</p>
+<div class="sa-score print-hide" id="sa-score" aria-live="polite"></div>
+<div class="checkpoint" data-type="mcq" data-answer="0">
+  <p class="q">1. Which structure is partially permeable?</p>
+  <label><input type="radio" name="q1" value="0"> Cell membrane</label>
+  <label><input type="radio" name="q1" value="1"> Chloroplast</label>
+  <label><input type="radio" name="q1" value="2"> Cell wall</label>
+  <label><input type="radio" name="q1" value="3"> Cell sap</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="The cell membrane is partially permeable. The cell wall is fully permeable."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">2. Which structure carries hereditary information?</p>
+  <label><input type="radio" name="q2" value="0"> Mitochondrion</label>
+  <label><input type="radio" name="q2" value="1"> DNA in the nucleus</label>
+  <label><input type="radio" name="q2" value="2"> Cytoplasm</label>
+  <label><input type="radio" name="q2" value="3"> Ribosome</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Chromosomes in the nucleus are made of DNA, which carries hereditary information."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="2">
+  <p class="q">3. Which pair of organelles can only be seen clearly with an electron microscope?</p>
+  <label><input type="radio" name="q3" value="0"> Cell membrane and cytoplasm</label>
+  <label><input type="radio" name="q3" value="1"> Nucleus and vacuole</label>
+  <label><input type="radio" name="q3" value="2"> Mitochondria and ribosomes</label>
+  <label><input type="radio" name="q3" value="3"> Chloroplasts and cell wall</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Mitochondria and ribosomes are too small for a light microscope."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="3">
+  <p class="q">4. What does cell sap contain?</p>
+  <label><input type="radio" name="q4" value="0"> DNA</label>
+  <label><input type="radio" name="q4" value="1"> Chlorophyll</label>
+  <label><input type="radio" name="q4" value="2"> Cellulose</label>
+  <label><input type="radio" name="q4" value="3"> Water with dissolved sugar, mineral salts and amino acids</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Cell sap in the plant cell vacuole contains dissolved sugar, mineral salts and amino acids."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="0">
+  <p class="q">5. Which stain is used to see the nucleus in human cheek cells?</p>
+  <label><input type="radio" name="q5" value="0"> Methylene blue</label>
+  <label><input type="radio" name="q5" value="1"> Cell sap</label>
+  <label><input type="radio" name="q5" value="2"> Chlorophyll</label>
+  <label><input type="radio" name="q5" value="3"> Iodine solution</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Methylene blue stains animal cells such as cheek cells. Iodine solution is used for onion cells."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">6. A cell has a nucleus, a cell membrane, many small vacuoles and no cell wall. What type of cell is it?</p>
+  <label><input type="radio" name="q6" value="0"> An onion cell</label>
+  <label><input type="radio" name="q6" value="1"> An animal cell</label>
+  <label><input type="radio" name="q6" value="2"> A root hair cell</label>
+  <label><input type="radio" name="q6" value="3"> A leaf cell</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="No cell wall and small vacuoles: it is an animal cell."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="2">
+  <p class="q">7. Which structure is the site of photosynthesis?</p>
+  <label><input type="radio" name="q7" value="0"> Mitochondrion</label>
+  <label><input type="radio" name="q7" value="1"> Ribosome</label>
+  <label><input type="radio" name="q7" value="2"> Chloroplast</label>
+  <label><input type="radio" name="q7" value="3"> Nucleus</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Chloroplasts contain chlorophyll, which absorbs light for photosynthesis."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="3">
+  <p class="q">8. Which feature of a muscle cell supplies more energy for contraction?</p>
+  <label><input type="radio" name="q8" value="0"> A cell wall</label>
+  <label><input type="radio" name="q8" value="1"> A long extension</label>
+  <label><input type="radio" name="q8" value="2"> No nucleus</label>
+  <label><input type="radio" name="q8" value="3"> Many mitochondria</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Many mitochondria carry out more aerobic respiration, releasing more energy."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="0">
+  <p class="q">9. Which feature of a root hair cell increases the rate of absorption of water and mineral salts?</p>
+  <label><input type="radio" name="q9" value="0"> A long, narrow extension giving a large surface area</label>
+  <label><input type="radio" name="q9" value="1"> Many chloroplasts</label>
+  <label><input type="radio" name="q9" value="2"> A thick cell wall</label>
+  <label><input type="radio" name="q9" value="3"> No nucleus</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="The root hair gives a large surface area of cell membrane for absorption."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">10. Why can a red blood cell transport more oxygen than if it had a nucleus?</p>
+  <label><input type="radio" name="q10" value="0"> It has more mitochondria.</label>
+  <label><input type="radio" name="q10" value="1"> It has more space for haemoglobin.</label>
+  <label><input type="radio" name="q10" value="2"> It has chloroplasts.</label>
+  <label><input type="radio" name="q10" value="3"> It has a cell wall.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Without a nucleus there is more room for haemoglobin, which binds to oxygen."></div>
+</div>
+<h2 id="section-b">Section B: Short answer and free response (5 questions)</h2>
+<p>Write your answer in the box and check it against the mark scheme. Use full sentences and show your working in calculations, with units. The mark scheme shows which points earn marks.</p>
+<div class="sb" data-id="c1" data-marks="2">
+  <p class="q">1. State the function of (a) the nucleus and (b) the ribosomes. <span class="marks">[2 marks]</span></p>
+  <textarea rows="5" aria-label="Your answer to question 1" placeholder="Write your answer here. Do not type your name or any personal details."></textarea>
+  <div class="row print-hide"><button type="button" class="sb-check">Check against the mark scheme</button><button type="button" class="sb-ai" hidden>Ask the AI tutor for feedback</button></div>
+  <div class="sb-out print-hide" hidden></div>
+</div>
+<div class="sb" data-id="c2" data-marks="3">
+  <p class="q">2. Compare the structure of a typical plant cell with a typical animal cell. Give one similarity and two differences. <span class="marks">[3 marks]</span></p>
+  <textarea rows="6" aria-label="Your answer to question 2" placeholder="Write your answer here. Do not type your name or any personal details."></textarea>
+  <div class="row print-hide"><button type="button" class="sb-check">Check against the mark scheme</button><button type="button" class="sb-ai" hidden>Ask the AI tutor for feedback</button></div>
+  <div class="sb-out print-hide" hidden></div>
+</div>
+<div class="sb" data-id="c3" data-marks="2">
+  <p class="q">3. A student says, &ldquo;The cell wall controls what enters and leaves a plant cell.&rdquo; Explain why the student is wrong. <span class="marks">[2 marks]</span></p>
+  <textarea rows="5" aria-label="Your answer to question 3" placeholder="Write your answer here. Do not type your name or any personal details."></textarea>
+  <div class="row print-hide"><button type="button" class="sb-check">Check against the mark scheme</button><button type="button" class="sb-ai" hidden>Ask the AI tutor for feedback</button></div>
+  <div class="sb-out print-hide" hidden></div>
+</div>
+<div class="sb" data-id="c4" data-marks="3">
+  <p class="q">4. A red blood cell transports oxygen. Explain how <strong>two</strong> features of its structure adapt it to this function. <span class="marks">[3 marks]</span></p>
+  <textarea rows="6" aria-label="Your answer to question 4" placeholder="Write your answer here. Do not type your name or any personal details."></textarea>
+  <div class="row print-hide"><button type="button" class="sb-check">Check against the mark scheme</button><button type="button" class="sb-ai" hidden>Ask the AI tutor for feedback</button></div>
+  <div class="sb-out print-hide" hidden></div>
+</div>
+<div class="sb" data-id="c5" data-marks="3">
+  <p class="q">5. Explain how a root hair cell and a muscle cell are each adapted to their functions. <span class="marks">[3 marks]</span></p>
+  <textarea rows="6" aria-label="Your answer to question 5" placeholder="Write your answer here. Do not type your name or any personal details."></textarea>
+  <div class="row print-hide"><button type="button" class="sb-check">Check against the mark scheme</button><button type="button" class="sb-ai" hidden>Ask the AI tutor for feedback</button></div>
+  <div class="sb-out print-hide" hidden></div>
+</div>
+</main>
+<nav class="lesson-nav print-hide" aria-label="Lesson navigation"><a class="prev" href="cells-1-2-cell-adaptations.html"><span class="dir">← Previous</span><span class="t">How Are Cells Adapted to Their Functions?</span></a></nav>
+<p class="back-bottom print-hide"><a class="back-btn" href="index.html">&larr; Back to Biology lessons</a></p>
+<script>
+function checkAnswer(btn) {
+  const block = btn.closest('.checkpoint');
+  const feedback = block.querySelector('.feedback');
+  const correctAns = block.dataset.answer;
+  const tol = parseFloat(block.dataset.tol || '0.05');
+  let isCorrect;
+
+  if (block.dataset.type === 'mcq') {
+    const checked = block.querySelector('input[type=radio]:checked');
+    if (!checked) { showHint(feedback, 'Pick an answer first.'); return; }
+    isCorrect = checked.value === correctAns;
+  } else {
+    const val = parseFloat(block.querySelector('input[type=text]').value);
+    if (isNaN(val)) { showHint(feedback, 'Enter a number first.'); return; }
+    isCorrect = Math.abs(val - parseFloat(correctAns)) <= tol;
+  }
+
+  feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  feedback.textContent = (isCorrect ? '\u2713 Correct. ' : '\u2717 Not quite. ') + feedback.dataset.explanation;
+}
+
+function showHint(feedback, text) {
+  feedback.className = 'feedback hint';
+  feedback.textContent = text;
+}
+const SB = {"c1": {"pts": [{"t": "Nucleus: controls cell activities (e.g. division, growth, repair) / contains DNA or chromosomes.", "re": ["control|divi|growth|repair|dna|chromosome|heredit"]}, {"t": "Ribosomes: site of protein synthesis / make proteins.", "re": ["protein"]}], "model": "(a) The nucleus controls cell activities such as cell division, growth and repair (it contains DNA). (b) Ribosomes are the site of protein synthesis."}, "c2": {"pts": [{"t": "Similarity: both have a nucleus / cell membrane / cytoplasm / mitochondria / ribosomes.", "re": ["both|similar|same|common"]}, {"t": "Plant cells have a cell wall; animal cells do not.", "re": ["wall"]}, {"t": "Plant cells have chloroplasts; animal cells do not.", "re": ["chloroplast"]}, {"t": "Plant cells have one large central vacuole; animal cells have small, temporary vacuoles.", "re": ["vacuole"]}], "model": "Similarity: both have a cell membrane, cytoplasm, nucleus, mitochondria and ribosomes. Differences: a plant cell has a cellulose cell wall but an animal cell does not; a plant cell has chloroplasts but an animal cell does not; a plant cell has one large central vacuole whereas an animal cell has many small, temporary vacuoles."}, "c3": {"pts": [{"t": "The cell wall is fully permeable / lets (almost) everything through.", "re": ["fully permeable|freely permeable|lets? (almost )?(all|every)|completely permeable"]}, {"t": "The (partially permeable) cell membrane controls movement in and out.", "re": ["membrane"]}], "model": "The cell wall is fully permeable, so it lets almost all substances through. It is the partially permeable cell membrane that controls the movement of substances into and out of the cell."}, "c4": {"pts": [{"t": "No nucleus, so more space for haemoglobin.", "re": ["no nucleus|lack\\w* (a |of )?nucleus|without (a )?nucleus|absence of (a )?nucleus|nucleus is absent|does not have a nucleus|doesn.t have a nucleus"]}, {"t": "Contains haemoglobin, which binds to / carries oxygen.", "re": ["haemoglobin|hemoglobin"]}, {"t": "Biconcave shape increases the surface area to volume ratio.", "re": ["biconcave|surface area"]}, {"t": "Link to function: carries more oxygen / takes up oxygen faster.", "re": ["more oxygen|oxygen[^.]*(faster|quick|rate)|(faster|quick|rate)[^.]*oxygen"]}], "model": "It has no nucleus, so there is more space for haemoglobin and it can transport more oxygen. It has a biconcave shape, which increases its surface area to volume ratio, so oxygen is taken in and released faster. (Also: it contains haemoglobin, which binds to oxygen; it is flexible, so it squeezes through capillaries.)"}, "c5": {"pts": [{"t": "Root hair cell: long, narrow extension / root hair.", "re": ["long|extension|narrow|hair"]}, {"t": "This gives a large surface area for faster absorption of water and mineral salts.", "re": ["surface area"]}, {"t": "Muscle cell: many mitochondria release more energy (by aerobic respiration) for contraction.", "re": ["mitochondri"]}], "model": "The root hair cell has a long, narrow extension, which gives a large surface area of cell membrane, so it absorbs water and mineral salts faster. The muscle cell has many mitochondria, which carry out aerobic respiration to release more energy for contraction."}};
+
+(function () {
+  // ---- Section A running score
+  const mcqs = document.querySelectorAll('.checkpoint[data-type=mcq]'), sc = document.getElementById('sa-score');
+  function tally() { let ok = 0, tried = 0; mcqs.forEach(b => { const f = b.querySelector('.feedback'); if (f.classList.contains('correct')) { ok++; tried++; } else if (f.classList.contains('incorrect')) tried++; }); if (sc) sc.textContent = 'Section A: ' + ok + ' correct out of ' + mcqs.length + ' (' + tried + ' attempted)'; }
+  mcqs.forEach(b => new MutationObserver(tally).observe(b.querySelector('.feedback'), { attributes: true, attributeFilter: ['class'] })); tally();
+  // ---- Section B
+  const norm = s => s.toLowerCase().replace(/[²]/g, '2').replace(/[×✕]/g, 'x').replace(/(\d),(\d{3})/g, '$1$2').replace(/\s+/g, ' ');
+  const cfg = window.AI_MARKING || {}, page = location.pathname.split('/').pop().replace('.html', '');
+  document.querySelectorAll('.sb').forEach(box => {
+    const id = box.dataset.id, marks = +box.dataset.marks, Q = SB[id], ta = box.querySelector('textarea'), out = box.querySelector('.sb-out'), btn = box.querySelector('.sb-check'), ai = box.querySelector('.sb-ai');
+    if (cfg.url) { ai.hidden = false; const pn = document.createElement('p'); pn.className = 'sb-note print-hide'; pn.textContent = 'The AI tutor sends the text of your answer to an outside AI service (BytePlus) to be marked. Do not type your name or any personal details.'; ai.parentNode.insertAdjacentElement('afterend', pn); }
+    function score() { const n = out.querySelectorAll('input.pt:checked').length; out.querySelector('.sb-score').textContent = 'Your mark: ' + Math.min(n, marks) + ' out of ' + marks; }
+    btn.addEventListener('click', () => {
+      const a = norm(ta.value);
+      if (a.trim().length < 3) { out.hidden = false; out.innerHTML = '<p>Write your answer in the box first, then check it.</p>'; return; }
+      let h = '<p class="sb-note">The checker looks for key words. It can miss a correct answer that is worded differently, so tick or untick each point yourself.</p><ul>';
+      Q.pts.forEach((p, i) => { const hit = p.re.every(r => new RegExp(r, 'i').test(a)); h += '<li><label><input type="checkbox" class="pt"' + (hit ? ' checked' : '') + '> ' + p.t + '</label></li>'; });
+      h += '</ul><p class="sb-score"></p><details><summary>Show the model answer</summary><div>' + Q.model + '</div></details><div class="sb-ai-out" hidden></div>';
+      out.hidden = false; out.innerHTML = h; out.querySelectorAll('input.pt').forEach(c => c.addEventListener('change', score)); score();
+    });
+    ai.addEventListener('click', async () => {
+      const a = ta.value.trim(); if (a.length < 3) { out.hidden = false; out.innerHTML = '<p>Write your answer first.</p>'; return; }
+      if (out.hidden) btn.click();
+      const box2 = box.querySelector('.sb-ai-out'); box2.hidden = false; box2.textContent = 'The AI tutor is reading your answer...'; ai.disabled = true;
+      try {
+        const r = await fetch(cfg.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ page: page, qid: id, answer: a.slice(0, 1200) }) });
+        const d = await r.json(); if (!r.ok) throw new Error(d.error || 'The marking service is busy. Try again in a minute.');
+        box2.innerHTML = '<strong>AI tutor: ' + (typeof d.score === 'number' ? d.score + ' out of ' + (d.max || marks) + '. ' : '') + '</strong>' + (d.feedback ? String(d.feedback).replace(/</g, '&lt;') : '') + '<div class="sb-note">AI feedback can be wrong. Compare it with the model answer.</div>';
+      } catch (e) { box2.textContent = 'Sorry, the AI tutor could not mark this answer (' + e.message + '). Use the mark scheme above.'; }
+      ai.disabled = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

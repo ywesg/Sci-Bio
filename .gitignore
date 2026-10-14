@@ -1,0 +1,8 @@
+.DS_Store
+__pycache__/
+*.pyc
+seedance video/output/*.mp4
+*.key
+*-key.txt
+.netlify_token
+__pycache__/

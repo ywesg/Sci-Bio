@@ -1,0 +1,242 @@
+#!/usr/bin/env python3
+"""Topic 1: Cell Structure and Organisation (G2 and G3, syllabus refs 1a-1d). First drafts of the two lessons (numbered as in the textbook: 1.1 and 1.2).
+Run: python3 build_topic01.py && python3 add_navigation.py
+Once a lesson has been edited by hand, do not run this script over it again (comment out its build call below)."""
+import lesson_kit as L
+import topic01_figs as F
+
+TOPIC = "Cell Structure and Organisation"
+REFS = "Syllabus refs (G2 &amp; G3): "
+JS = L.EXPLORER_JS + L.SORT_JS
+
+
+LO11 = '''<div class="practical"><h3>Learning outcomes</h3><ul>
+<li>Identify and state the functions of the cell structures (including organelles) of typical plant and animal cells from diagrams, light micrographs and as seen under the light microscope using prepared slides and fresh material treated with an appropriate temporary staining technique: cell wall, cell membrane, cytoplasm, nucleus, cell vacuoles (large, sap-filled in plant cells; small, temporary in animal cells), chloroplasts.</li>
+<li>Identify and state the functions of the following organelles from diagrams and electron micrographs: mitochondria, ribosomes.</li>
+<li>Compare the structure of typical animal and plant cells.</li></ul></div>
+'''
+LO12 = '''<div class="practical"><h3>Learning outcome</h3><ul>
+<li>Explain how the structures of specialised cells are adapted to their functions (e.g. muscle cell: many mitochondria to supply more energy; root hair cell: large surface area of cell membrane for greater absorption; red blood cell: lack of nucleus allowing it to transport more oxygen).</li></ul></div>
+'''
+
+
+# ================================================================== Lesson 1.1 What Are Cells? (1a, 1b, 1c)
+def lesson1():
+    b = LO11
+    b += '<h2>What is a cell?</h2>\n'
+    b += ('<p>Every living thing is made of <strong>cells</strong>, just as a building is made of bricks. Cells are the <strong>building blocks of life</strong>: the simplest structural and functional units of life. '
+          'Some organisms, such as bacteria, are a single cell. You are made of about 30 trillion cells.</p>\n'
+          '<p>Inside a cell there are smaller structures with special jobs, called <strong>organelles</strong> (&ldquo;little organs&rdquo;). The nucleus, mitochondria and chloroplasts are organelles.</p>\n')
+    b += '<p class="keyidea"><strong>Key idea:</strong> structure is linked to function. Each part of a cell has a shape and make-up that suits its job.</p>\n'
+    b += ('<p>In a large organism, cells are organised in levels. Similar cells work together as a <strong>tissue</strong>, tissues form an <strong>organ</strong>, '
+          'organs work together in an <strong>organ system</strong>, and the systems make up the whole <strong>organism</strong>.</p>\n'
+          '<div class="flow" aria-label="Levels of organisation"><span>cell</span><b>&rarr;</b><span>tissue</span><b>&rarr;</b><span>organ</span><b>&rarr;</b><span>organ system</span><b>&rarr;</b><span>organism</span></div>\n'
+          '<p>For example: a muscle cell &rarr; muscle tissue &rarr; the heart &rarr; the circulatory system &rarr; you.</p>\n')
+
+    b += '<h2>Seeing cells: light and electron microscopes</h2>\n'
+    b += ('<p>Cells are too small to see with the naked eye, so we use microscopes. A photo taken through a microscope is called a <strong>micrograph</strong>.</p>\n'
+          '<table><tr><th></th><th>Light microscope</th><th>Electron microscope</th></tr>'
+          '<tr><td>Uses</td><td>light</td><td>a beam of electrons</td></tr>'
+          '<tr><td>Picture</td><td>light micrograph</td><td>electron micrograph</td></tr>'
+          '<tr><td>Where you meet it</td><td>the school lab</td><td>research labs (you will see its pictures)</td></tr>'
+          '<tr><td>Structures you can see</td><td>cell wall, cell membrane, cytoplasm, nucleus, vacuole, chloroplasts</td><td>all of these <strong>plus</strong> the small organelles: <strong>mitochondria</strong> and <strong>ribosomes</strong></td></tr></table>\n')
+    b += '<p class="common"><strong>Remember:</strong> mitochondria and ribosomes are too small to see clearly with a school light microscope. You identify them from diagrams and electron micrographs.</p>\n'
+    b += ('<div class="practical"><h3>Practical: making a temporary slide of onion cells</h3><ol>'
+          '<li>Peel a thin, see-through layer (the epidermis) from the inside of a piece of onion.</li>'
+          '<li>Lay it flat in a drop of water on a clean glass slide. Use a mounting needle so it does not fold.</li>'
+          '<li>Add a drop of <strong>iodine solution</strong>. The stain makes the nucleus and cell wall easier to see.</li>'
+          '<li>Lower a cover slip <strong>slowly, at an angle</strong>, using the mounting needle. This stops air bubbles being trapped.</li>'
+          '<li>Soak up extra liquid at the edge with filter paper. Look at the slide under <strong>low power</strong> first, then high power.</li></ol>'
+          '<p>Animal cells (for example cheek cells) are stained with <strong>methylene blue</strong>. Follow your school&rsquo;s safety rules for this practical.</p></div>\n')
+
+    b += '<h2>Explore the cells</h2>\n<h3>A typical animal cell</h3>\n'
+    b += L.explorer("ex-animal", F.animal_cell(), F.INFO_ANIMAL, "A typical animal cell (not to scale). Click a part or a label.")
+    b += '<h3>A typical plant cell</h3>\n'
+    b += L.explorer("ex-plant", F.plant_cell(), F.INFO_PLANT, "A typical plant cell, e.g. a leaf cell (not to scale). Click a part or a label.")
+    b += '<p class="print-hide">Try <strong>Quiz me</strong> on each diagram: the labels disappear and you find the part that is named.</p>\n'
+
+    b += '<h2>Cell structures and their functions</h2>\n'
+    b += ('<table><tr><th>Structure</th><th>Function</th><th>Found in</th></tr>'
+          '<tr><td><strong>Cell membrane</strong></td><td>Controls the movement of substances into and out of the cell. It is <strong>partially permeable</strong>: only small, soluble substances can pass through.</td><td>plant and animal cells</td></tr>'
+          '<tr><td><strong>Cell wall</strong></td><td>Protects the cell from injury and gives it a <strong>fixed shape</strong>. Made of <strong>cellulose</strong>. It is <strong>fully permeable</strong>.</td><td>plant cells only</td></tr>'
+          '<tr><td><strong>Cytoplasm</strong></td><td>The site of cellular activities. Contains the organelles.</td><td>plant and animal cells</td></tr>'
+          '<tr><td><strong>Nucleus</strong></td><td>Controls cell activities such as cell division, growth and repair. Contains <strong>chromosomes</strong> made of <strong>DNA</strong> (deoxyribonucleic acid), which carries hereditary information.</td><td>plant and animal cells</td></tr>'
+          '<tr><td><strong>Vacuole</strong></td><td>Stores substances. Plant cell: one large central vacuole of <strong>cell sap</strong> (sugar, mineral salts, amino acids). Animal cell: small, temporary vacuoles of water and food.</td><td>plant and animal cells</td></tr>'
+          '<tr><td><strong>Mitochondria</strong></td><td>The site of <strong>aerobic respiration</strong>, which releases energy for the cell.</td><td>plant and animal cells</td></tr>'
+          '<tr><td><strong>Ribosomes</strong></td><td>The site of <strong>protein synthesis</strong>.</td><td>plant and animal cells</td></tr>'
+          '<tr><td><strong>Chloroplasts</strong></td><td>Contain the green pigment <strong>chlorophyll</strong>, which absorbs light for <strong>photosynthesis</strong> (how plants make food).</td><td>some plant cells</td></tr></table>\n')
+    b += ('<p class="common"><strong>Common mistakes:</strong> the cell <em>wall</em> is fully permeable; the cell <em>membrane</em> is partially permeable. '
+          'Mitochondria <em>release</em> energy by respiration; they do not &ldquo;make&rdquo; energy. Animal cells never have a cell wall.</p>\n')
+
+
+    # ---- comparing plant and animal cells (1c)
+    b += '<h2>Comparing plant and animal cells</h2>\n'
+    b += ('<div class="two-col"><div class="illus">%s<p class="fig-caption"><strong>Animal cell</strong></p></div>'
+          '<div class="illus">%s<p class="fig-caption"><strong>Plant cell</strong></p></div></div>\n' % (F.animal_cell(w=360), F.plant_cell(w=360)))
+    b += '<h3>What they have in common</h3>\n'
+    b += ('<p>Both plant and animal cells have a <strong>cell membrane</strong>, <strong>cytoplasm</strong>, a <strong>nucleus</strong>, '
+          '<strong>mitochondria</strong>, <strong>ribosomes</strong> and <strong>vacuoles</strong>. These structures do the same jobs in both kinds of cell.</p>\n')
+    b += '<h3>How they are different</h3>\n'
+    b += ('<table><tr><th>Plant cell</th><th>Animal cell</th></tr>'
+          '<tr><td>Cell wall <strong>present</strong> (made of cellulose)</td><td>Cell wall <strong>absent</strong></td></tr>'
+          '<tr><td>Chloroplasts <strong>present</strong> (in many plant cells)</td><td>Chloroplasts <strong>absent</strong></td></tr>'
+          '<tr><td>One <strong>large, central</strong> vacuole containing cell sap</td><td><strong>Numerous small</strong>, temporary vacuoles</td></tr>'
+          '<tr><td>Fixed, regular shape (because of the cell wall)</td><td>No fixed shape</td></tr></table>\n')
+    b += ('<p class="common"><strong>Careful:</strong> not every plant cell has chloroplasts. Root cells and onion bulb cells grow in the dark, so they have none. '
+          'A cell with a cell wall but no chloroplasts can still be a plant cell. The cell wall is the surest sign.</p>\n')
+
+    b += ''
+    b += L.sorter("sort-pa", "Try it: plant only, animal only, or both?", "Choose a button for each structure.", ["Plant only", "Animal only", "Both"], [
+        ("Cell wall", 0, "Only plant cells have a cellulose cell wall."),
+        ("Nucleus", 2, "Both have a nucleus."),
+        ("Chloroplast", 0, "Only (some) plant cells have chloroplasts."),
+        ("Cell membrane", 2, "Every cell has a cell membrane, inside the wall in plant cells."),
+        ("Large central vacuole with cell sap", 0, "Plant cells have one large, permanent vacuole."),
+        ("Many small, temporary vacuoles", 1, "Animal cells have small, temporary vacuoles."),
+        ("Mitochondria", 2, "Both kinds of cell respire, so both have mitochondria."),
+        ("Ribosomes", 2, "Both kinds of cell make proteins, so both have ribosomes."),
+        ("Cytoplasm", 2, "Both have cytoplasm."),
+    ])
+
+    b += '<h2>What you see under a light microscope</h2>\n'
+    b += ('<div class="three-col">'
+          '<div class="illus">%s<p class="fig-caption"><strong>Onion epidermis</strong> (iodine stain): cell walls and one nucleus per cell. No chloroplasts.</p></div>'
+          '<div class="illus">%s<p class="fig-caption"><strong>Cheek cells</strong> (methylene blue stain): thin, irregular cells, each with a nucleus. No cell wall.</p></div>'
+          '<div class="illus">%s<p class="fig-caption"><strong>Pondweed leaf</strong> (no stain needed): box-shaped cells full of green chloroplasts.</p></div></div>\n'
+          % (F.field("onion"), F.field("cheek"), F.field("leaf")))
+    b += '<p class="photo-note">Drawings of what you see, not to scale.</p>\n'
+
+    b += '<h3>How to answer a &ldquo;compare&rdquo; question</h3>\n'
+    b += ('<p>In an exam, <strong>compare</strong> means give <strong>similarities and differences</strong>. Write each difference as a matched pair, so both cells are mentioned.</p>\n'
+          '<div class="two-col"><div class="eg-box"><p class="q" style="color:#991b1b">Weak answer</p><p>&ldquo;A plant cell has a cell wall and chloroplasts.&rdquo;</p>'
+          '<p class="vid-note">Only one cell is described, and there is no similarity.</p></div>'
+          '<div class="eg-box"><p class="q" style="color:#166534">Strong answer</p><p>&ldquo;Both cells have a nucleus, cytoplasm and a cell membrane. '
+          'A plant cell has a cellulose cell wall, <em>but</em> an animal cell does not. A plant cell has one large central vacuole, <em>whereas</em> an animal cell has many small vacuoles.&rdquo;</p></div></div>\n')
+
+    b += '<h2>Check your understanding</h2>\n'
+    b += L.mcq(1, "Which structure controls the movement of substances into and out of a cell?", ["Cell wall", "Cell membrane", "Cytoplasm", "Nucleus"], 1,
+               "The cell membrane is partially permeable and controls what enters and leaves. The cell wall is fully permeable, so it does not control this.")
+    b += L.mcq(2, "Which structure contains chromosomes made of DNA?", ["Nucleus", "Ribosome", "Vacuole", "Chloroplast"], 0,
+               "The nucleus contains the chromosomes. The DNA carries hereditary information.")
+    b += L.mcq(3, "Where is protein made in a cell?", ["Mitochondria", "Cell sap", "Ribosomes", "Nucleus"], 2, "Ribosomes are the site of protein synthesis.")
+    b += L.mcq(4, "A student looks at a cheek cell under a school light microscope. Which structure will the student NOT be able to see clearly?", ["Nucleus", "Cell membrane", "Cytoplasm", "Mitochondria"], 3,
+               "Mitochondria (and ribosomes) are too small for a light microscope. They are seen in electron micrographs.")
+    b += L.mcq(5, "Why is the cover slip lowered slowly, at an angle, when making a slide?", ["To stain the cells", "To stop air bubbles being trapped", "To make the cells bigger", "To kill the cells"], 1,
+               "Lowering it at an angle pushes the air out, so no air bubbles hide the cells.")
+    b += L.mcq(6, "Which three structures are found in plant cells but NOT in animal cells?", [
+        "Cell wall, chloroplasts, large central vacuole", "Cell membrane, nucleus, cytoplasm", "Mitochondria, ribosomes, cell wall", "Chloroplasts, nucleus, ribosomes"], 0,
+        "Only plant cells have a cell wall, chloroplasts and one large central vacuole.")
+    b += L.mcq(7, "A cell has a cell wall and a large vacuole but no chloroplasts. Where could it come from?", [
+        "A human cheek", "A plant root", "A human muscle", "A red blood cell"], 1, "The cell wall shows it is a plant cell. Root cells are in the dark, so they have no chloroplasts.")
+    b += L.mcq(8, "Which statement about animal cells is correct?", [
+        "They have one large central vacuole.", "They have small, temporary vacuoles.", "They have a cell wall made of cellulose.", "They have chloroplasts."], 1,
+        "Animal cells have small, temporary vacuoles and no cell wall or chloroplasts.")
+    b += L.mcq(9, "Why do both plant and animal cells have mitochondria?", [
+        "Both need to photosynthesise.", "Both need to release energy by aerobic respiration.", "Both need a fixed shape.", "Both store cell sap."], 1,
+        "All living cells need energy, which is released by aerobic respiration in mitochondria.")
+    L.page("cells-1-1-what-are-cells", "1.1 What Are Cells?", REFS + "1a, 1b, 1c", b, JS, topic=TOPIC)
+
+
+# ================================================================== Lesson 1.2 How Are Cells Adapted to Their Functions? (1d)
+SAV_TOOL = """<div class="tool" id="sav">
+  <h3>Try it: shape and surface area to volume ratio</h3>
+  <p>Each shape is built from the same 64 small cubes (volume = 64 units&sup3;). Choose a shape to see its surface area.</p>
+  <div class="row" role="group" aria-label="Choose a shape">
+    <button type="button" class="pdf-btn" data-d="4,4,4">Cube 4 &times; 4 &times; 4</button>
+    <button type="button" class="pdf-btn" data-d="8,8,1">Flat sheet 8 &times; 8 &times; 1</button>
+    <button type="button" class="pdf-btn" data-d="16,2,2">Rod 16 &times; 2 &times; 2</button>
+    <button type="button" class="pdf-btn" data-d="64,1,1">Long thin strand 64 &times; 1 &times; 1</button>
+  </div>
+  <p class="result" id="sav-res" aria-live="polite"></p>
+  <p class="working" id="sav-work"></p>
+  <div class="bar-wrap" aria-hidden="true"><div class="bar" id="sav-bar"></div></div>
+  <p class="working">Same volume, but the flatter or longer and thinner the shape, the larger the surface area. That is why a red blood cell is a flattened disc and a root hair cell has a long, narrow extension.</p>
+</div>
+"""
+SAV_JS = """
+(function () {
+  var res = document.getElementById('sav-res'), work = document.getElementById('sav-work'), bar = document.getElementById('sav-bar');
+  document.querySelectorAll('#sav button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var d = b.dataset.d.split(',').map(Number), l = d[0], w = d[1], h = d[2], A = 2 * (l * w + l * h + w * h), V = l * w * h;
+      document.querySelectorAll('#sav button').forEach(function (x) { x.style.background = x === b ? '#ccfbf1' : ''; });
+      res.textContent = 'Surface area = ' + A + ' units\\u00b2;  SA : V = ' + A + ' : ' + V + ' = ' + (A / V).toFixed(2) + ' : 1';
+      work.textContent = 'Surface area = 2 \\u00d7 (' + l + '\\u00d7' + w + ' + ' + l + '\\u00d7' + h + ' + ' + w + '\\u00d7' + h + ') = ' + A + '.  Volume = ' + l + ' \\u00d7 ' + w + ' \\u00d7 ' + h + ' = ' + V + '.';
+      bar.style.width = Math.min(100, (A / V) / 4.1 * 100) + '%';
+    });
+  });
+  document.querySelector('#sav button').click();
+})();
+"""
+
+
+def lesson3():
+    b = LO12
+    b += '<h2>Why are cells specialised?</h2>\n'
+    b += ('<p>In a large organism, different cells do different jobs. A <strong>specialised cell</strong> has a structure that is <strong>adapted</strong> (suited) to its function. '
+          'Each one still has the usual cell parts, but some parts are changed, added or lost.</p>\n'
+          '<p class="keyidea"><strong>Key idea:</strong> for every adaptation, say <strong>what the feature is</strong> and <strong>how it helps the cell do its job</strong>.</p>\n')
+
+    b += '<h2>Surface area to volume ratio</h2>\n'
+    b += ('<p>Substances such as oxygen, water and mineral salts enter a cell through its <strong>surface</strong> (the cell membrane). '
+          'The more surface a cell has for its size, the faster it can take substances in. We compare cells using the <strong>surface area to volume ratio</strong> (SA&nbsp;:&nbsp;V).</p>\n')
+    b += SAV_TOOL
+
+    b += '<h2>Red blood cell</h2>\n'
+    b += L.fig(F.red_blood_cell(), "A red blood cell. Function: <strong>transports oxygen</strong> around the body.")
+    b += ('<table><tr><th>Adaptation</th><th>How it helps</th></tr>'
+          '<tr><td>Contains <strong>haemoglobin</strong></td><td>Haemoglobin binds to oxygen, so the cell can carry oxygen around the body.</td></tr>'
+          '<tr><td><strong>Circular, biconcave</strong> shape</td><td>Increases the surface area to volume ratio, so oxygen is taken in and released faster.</td></tr>'
+          '<tr><td><strong>No nucleus</strong></td><td>More space to pack in haemoglobin, so it can transport more oxygen.</td></tr>'
+          '<tr><td><strong>Flexible</strong></td><td>It can squeeze through narrow blood capillaries.</td></tr></table>\n')
+
+    b += '<h2>Muscle cell</h2>\n'
+    b += L.fig(F.muscle_cell(), "A muscle cell. Function: <strong>contracts and relaxes</strong> to bring about movement.")
+    b += ('<table><tr><th>Adaptation</th><th>How it helps</th></tr>'
+          '<tr><td>Contains <strong>many mitochondria</strong></td><td>More aerobic respiration, so more energy is released for contraction.</td></tr>'
+          '<tr><td>Has <strong>contractile protein fibres</strong></td><td>The fibres contract and relax to bring about movement.</td></tr>'
+          '<tr><td>Has <strong>many nuclei</strong></td><td>Allows for cell division, growth and repair of the long cell.</td></tr></table>\n')
+
+    b += '<h2>Root hair cell</h2>\n'
+    b += L.fig(F.root_hair_cell(), "A root hair cell. Function: <strong>absorbs water and mineral salts</strong> from the soil.")
+    b += ('<table><tr><th>Adaptation</th><th>How it helps</th></tr>'
+          '<tr><td><strong>Long and narrow extension</strong> (the root hair)</td><td>Increases the surface area to volume ratio, so water and mineral salts are absorbed faster.</td></tr>'
+          '<tr><td>Cell sap in the vacuole has a <strong>lower water potential</strong> than the soil water</td><td>Water enters the root hair cell by <strong>osmosis</strong>. (You will learn about osmosis in Topic 2.)</td></tr>'
+          '<tr><td><strong>No chloroplasts</strong></td><td>It grows underground with no light, so chloroplasts would have no use.</td></tr></table>\n')
+
+    b += '<h2>Writing about adaptations</h2>\n'
+    b += ('<p>Link the <strong>feature</strong> to its <strong>effect</strong> and the <strong>function</strong>:</p>\n'
+          '<div class="flow"><span>feature</span><b>&rarr;</b><span>so that&hellip;</span><b>&rarr;</b><span>which helps the cell to&hellip;</span></div>\n'
+          '<p><em>Example:</em> &ldquo;A red blood cell has <strong>no nucleus</strong>, <strong>so</strong> there is more space for haemoglobin, '
+          '<strong>so</strong> it can transport more oxygen.&rdquo;</p>\n')
+    b += L.sorter("sort-sc", "Try it: which cell has this adaptation?", "Choose the cell for each feature.", ["Red blood cell", "Muscle cell", "Root hair cell"], [
+        ("No nucleus", 0, "Red blood cells lose their nucleus to make room for more haemoglobin."),
+        ("Many mitochondria", 1, "Muscle cells need a lot of energy to contract."),
+        ("Long, narrow extension into the soil", 2, "The root hair increases the surface area for absorbing water and mineral salts."),
+        ("Contains haemoglobin", 0, "Haemoglobin binds to oxygen."),
+        ("Contractile protein fibres", 1, "The fibres contract and relax to cause movement."),
+        ("Cell sap with a lower water potential than soil water", 2, "So water enters by osmosis."),
+        ("Biconcave disc shape", 0, "This increases the surface area to volume ratio."),
+        ("Many nuclei", 1, "Long muscle cells have many nuclei."),
+    ])
+
+    b += '<h2>Check your understanding</h2>\n'
+    b += L.mcq(1, "Why does a red blood cell have no nucleus?", ["So it can divide faster", "To make room for more haemoglobin", "So it can absorb water", "To release more energy"], 1,
+               "With no nucleus there is more space for haemoglobin, so the cell can carry more oxygen.")
+    b += L.mcq(2, "Muscle cells contain many mitochondria. What is the reason?", [
+        "To make more proteins", "To store cell sap", "To release more energy by aerobic respiration for contraction", "To absorb more light"], 2,
+        "Contraction needs energy. More mitochondria means more aerobic respiration.")
+    b += L.mcq(3, "How does the long extension of a root hair cell help the plant?", [
+        "It gives the cell a fixed shape.", "It increases the surface area to volume ratio for absorbing water and mineral salts.", "It carries oxygen to the leaves.", "It makes food by photosynthesis."], 1,
+        "A long, narrow extension gives a much larger surface for absorption.")
+    b += L.calc(4, "A cube-shaped cell has sides of 2 &micro;m. Its surface area is 24 &micro;m&sup2; and its volume is 8 &micro;m&sup3;. Work out the surface area to volume ratio (as a number : 1).", 3, 0.01, ": 1",
+                "SA : V = 24 : 8 = 3 : 1.")
+    b += L.mcq(5, "The biconcave shape of a red blood cell&hellip;", [
+        "lets it squeeze through capillaries.", "increases its surface area to volume ratio for faster uptake of oxygen.", "gives it room for a nucleus.", "makes it contract."], 1,
+        "The biconcave shape gives a larger surface area to volume ratio. (Being flexible is what lets it squeeze through capillaries.)")
+    L.page("cells-1-2-cell-adaptations", "1.2 How Are Cells Adapted to Their Functions?", REFS + "1d", b, JS + SAV_JS, topic=TOPIC)
+
+
+if __name__ == "__main__":
+    lesson1()
+    lesson3()

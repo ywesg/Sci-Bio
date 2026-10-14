@@ -1,0 +1,4 @@
+# Netlify settings for "Import from Git": publish the lessons/ folder as it is (no build step).
+[build]
+  publish = "lessons"
+  command = ""

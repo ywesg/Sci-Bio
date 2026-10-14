@@ -1,0 +1,7 @@
+{
+  "limit": 5000000,
+  "baseline_used": 0,
+  "baseline_epoch": 0,
+  "baseline_note": "Set baseline_used to the used-token figure shown in your ModelArk console and baseline_epoch to the Unix time you read it (run: date +%s). Runs made through this folder after that time are added on top. It cannot see usage from other computers, so re-check the console now and then.",
+  "warn_at": [0.8, 0.9]
+}

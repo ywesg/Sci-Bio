@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LESSON TITLE</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.6; color: #1a1a1a; }
+  h1 { border-bottom: 3px solid #0f766e; padding-bottom: 0.5rem; }
+  h2 { color: #134e4a; margin-top: 2rem; }
+  .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+  .site-nav { font-size: 0.85rem; margin-bottom: 1rem; }
+  .site-nav a { color: #0f766e; text-decoration: none; }
+  .pdf-btn { display: inline-block; background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  .pdf-btn:hover { background: #e2e8f0; }
+  .formula { background: #f0fdfa; border-left: 4px solid #0f766e; padding: 0.75rem 1rem; margin: 1rem 0; font-weight: 600; font-family: "Cambria Math", serif; }
+  blockquote { border-left: 4px solid #94a3b8; margin-left: 0; padding-left: 1rem; color: #475569; }
+  svg { display: block; margin: 1.5rem auto; max-width: 100%; height: auto; }
+  .fig-caption { text-align: center; font-size: 0.9rem; color: #555; }
+  .video-block { margin: 1.5rem 0; }
+  .video-block p { font-weight: 600; margin-bottom: 0.5rem; }
+  .video-block iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 8px; }
+  .video-pending { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; color: #64748b; font-size: 0.9rem; }
+  .checkpoint { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .checkpoint p.q { font-weight: 600; margin-top: 0; }
+  .checkpoint label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; }
+  .checkpoint label:hover { background: #f1f5f9; }
+  .checkpoint input[type=text] { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; width: 150px; }
+  .checkpoint button { display: block; margin-top: 0.75rem; background: #0f766e; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  .feedback { margin-top: 0.75rem; padding: 0.6rem 0.9rem; border-radius: 6px; display: none; }
+  .feedback.correct { background: #dcfce7; color: #166534; display: block; }
+  .feedback.incorrect { background: #fee2e2; color: #991b1b; display: block; }
+  .feedback.hint { background: #fef9c3; color: #854d0e; display: block; }
+</style>
+<style>
+  .back-bottom { margin: 2.5rem 0 1rem; text-align: center; }
+  .back-btn { display: inline-block; background: #0f766e; color: #fff; text-decoration: none; font-weight: 700; padding: 0.75rem 1.6rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(15,118,110,0.35); }
+  .back-btn:hover { background: #115e59; }
+  @media print { .back-bottom { display: none !important; } }
+</style>
+<style>
+  /* polish: touch targets, focus, contrast */
+  @media screen {
+    input[type=range] { height: 2rem; cursor: pointer; accent-color: #0f766e; }
+    .checkpoint input[type=text] { min-height: 2.75rem; }
+    .checkpoint label { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+  }
+  :focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<!-- Starter template for a new lesson. Copy this file, rename it (e.g. topic-03-short-name.html),
+     replace everything in CAPITALS, delete the blocks you don't need, and add a link to it in index.html. -->
+<p class="site-nav"><a href="index.html">&larr; Back to SUBJECT lessons</a></p>
+<main>
+<h1>LESSON TITLE</h1>
+<p class="meta">SUBJECT &middot; TOPIC &middot; Syllabus refs: XX, XX</p>
+<!-- Optional printable version. Only keep this if the PDF is in the same folder. -->
+<p><a class="pdf-btn" href="LESSON-FILE-NAME.pdf" target="_blank" rel="noopener">&#128196; Download printable version (PDF)</a></p>
+
+<h2>SECTION HEADING</h2>
+<p>Explanation text. Use <strong>bold</strong> for key terms and <em>italics</em> for emphasis.</p>
+<blockquote>
+  <p><strong>Key idea:</strong> ONE-SENTENCE TAKEAWAY.</p>
+</blockquote>
+
+<h2>FORMULA SECTION</h2>
+<div class="formula">quantity = something &divide; something else</div>
+<p><strong>Worked example:</strong> QUESTION.</p>
+<p>WORKING = <strong>ANSWER WITH UNIT</strong></p>
+
+<h2>FIGURE SECTION</h2>
+<!-- Simple graph axes to copy and adapt. Draw the line with <polyline points="x,y x,y ..."> (y goes DOWN the page). -->
+<svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" width="420" height="240">
+  <line x1="50" y1="20" x2="50" y2="200" stroke="#555" stroke-width="2"/>
+  <line x1="50" y1="200" x2="400" y2="200" stroke="#555" stroke-width="2"/>
+  <text x="10" y="70" font-size="13" fill="#333">Y-AXIS</text>
+  <text x="200" y="225" font-size="13" fill="#333">X-AXIS</text>
+  <polyline points="50,200 200,120 360,60" fill="none" stroke="#0f766e" stroke-width="3"/>
+</svg>
+<p class="fig-caption"><strong>Fig. 1</strong> — CAPTION</p>
+
+<h2>Videos</h2>
+<div class="video-block">
+  <p>VIDEO TITLE</p>
+  <!-- Paste the YouTube embed link (youtube.com/embed/VIDEO_ID) and keep the title in sync. -->
+  <iframe src="https://www.youtube.com/embed/VIDEO_ID" title="VIDEO TITLE" allowfullscreen></iframe>
+</div>
+<div class="video-block">
+  <p>VIDEO TITLE (not chosen yet)</p>
+  <div class="video-pending">Video coming soon</div>
+</div>
+<!-- A Seedance video saved next to this file can be shown like this instead:
+<div class="video-block">
+  <p>VIDEO TITLE</p>
+  <video src="seedance-video-file.mp4" controls playsinline style="width:100%; border-radius:8px;"></video>
+</div> -->
+
+<h2>Check your understanding</h2>
+<p>Work through the questions below.</p>
+
+<!-- Multiple choice: give every question its own name (q1, q2, q3...) on all of its radio buttons.
+     data-answer is the value of the correct option, counting from 0. -->
+<div class="checkpoint" data-type="mcq" data-answer="0">
+  <p class="q">1. QUESTION?</p>
+  <label><input type="radio" name="q1" value="0"> CORRECT OPTION</label>
+  <label><input type="radio" name="q1" value="1"> OPTION</label>
+  <label><input type="radio" name="q1" value="2"> OPTION</label>
+  <label><input type="radio" name="q1" value="3"> OPTION</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="WHY THE ANSWER IS RIGHT."></div>
+</div>
+
+<!-- Calculation: data-answer is the number. Answers within 0.05 of it count as correct. -->
+<div class="checkpoint" data-type="calculation" data-answer="0">
+  <p class="q">2. QUESTION?</p>
+  <input type="text" inputmode="decimal" placeholder="Your answer (UNIT)" aria-label="Your answer">
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="WORKING AND ANSWER."></div>
+</div>
+
+</main>
+<p class="back-bottom print-hide"><a class="back-btn" href="index.html">&larr; Back to SUBJECT lessons</a></p>
+<script>
+function checkAnswer(btn) {
+  const block = btn.closest('.checkpoint');
+  const feedback = block.querySelector('.feedback');
+  const correctAns = block.dataset.answer;
+  let isCorrect;
+
+  if (block.dataset.type === 'mcq') {
+    const checked = block.querySelector('input[type=radio]:checked');
+    if (!checked) { showHint(feedback, 'Pick an answer first.'); return; }
+    isCorrect = checked.value === correctAns;
+  } else {
+    const val = parseFloat(block.querySelector('input[type=text]').value);
+    if (isNaN(val)) { showHint(feedback, 'Enter a number first.'); return; }
+    isCorrect = Math.abs(val - parseFloat(correctAns)) < 0.05;
+  }
+
+  feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  feedback.textContent = (isCorrect ? '✓ Correct. ' : '✗ Not quite. ') + feedback.dataset.explanation;
+}
+
+function showHint(feedback, text) {
+  feedback.className = 'feedback hint';
+  feedback.textContent = text;
+}
+</script>
+</body>
+</html>

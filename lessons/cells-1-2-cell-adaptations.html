@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.2 How Are Cells Adapted to Their Functions?</title>
+<script>try { if (localStorage.getItem("bio-level") === "g2") document.documentElement.className += " g2"; } catch (e) {}</script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.6; color: #1a1a1a; }
+  h1 { border-bottom: 3px solid #0f766e; padding-bottom: 0.5rem; }
+  h2 { color: #134e4a; margin-top: 2rem; }
+  .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+  .site-nav { font-size: 0.85rem; margin-bottom: 1rem; }
+  .site-nav a { color: #0f766e; text-decoration: none; }
+  .pdf-btn { display: inline-block; background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  .pdf-btn:hover { background: #e2e8f0; }
+  .formula { background: #f0fdfa; border-left: 4px solid #0f766e; padding: 0.75rem 1rem; margin: 1rem 0; font-weight: 600; font-family: "Cambria Math", serif; }
+  blockquote { border-left: 4px solid #94a3b8; margin-left: 0; padding-left: 1rem; color: #475569; }
+  svg { display: block; margin: 1.5rem auto; max-width: 100%; height: auto; }
+  .fig-caption { text-align: center; font-size: 0.9rem; color: #555; }
+  .checkpoint { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .checkpoint p.q { font-weight: 600; margin-top: 0; }
+  .checkpoint label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; }
+  .checkpoint label:hover { background: #f1f5f9; }
+  .checkpoint input[type=text] { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; width: 150px; }
+  .checkpoint button { display: block; margin-top: 0.75rem; background: #0f766e; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  .feedback { margin-top: 0.75rem; padding: 0.6rem 0.9rem; border-radius: 6px; display: none; }
+  .feedback.correct { background: #dcfce7; color: #166534; display: block; }
+  .feedback.incorrect { background: #fee2e2; color: #991b1b; display: block; }
+  .feedback.hint { background: #fef9c3; color: #854d0e; display: block; }
+</style>
+<style>
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.95rem; }
+  th, td { border: 1px solid #cbd5e1; padding: 0.45rem 0.7rem; text-align: left; }
+  th { background: #f0fdfa; color: #134e4a; }
+  .tool { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1.25rem 0; }
+  .tool h3 { margin-top: 0; color: #134e4a; font-size: 1.05rem; }
+  .tool label { font-weight: 600; margin-right: 0.4rem; }
+  .tool input[type=number], .tool select { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+  .tool input[type=number] { width: 7rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-bottom: 0.75rem; }
+  .result { font-size: 1.2rem; font-weight: 700; color: #134e4a; font-family: "Cambria Math", serif; margin: 0.3rem 0; }
+  .working { color: #475569; font-size: 0.9rem; }
+  input[type=range] { width: 100%; }
+  .common { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 0.6rem 1rem; margin: 1rem 0; }
+  .sort-item { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; padding: 0.5rem 0.75rem; margin: 0.4rem 0; background: white; border: 1px solid #cbd5e1; border-radius: 6px; }
+  .sort-item .name { flex: 1 1 10rem; font-weight: 600; }
+  .sort-item button { background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.3rem 0.8rem; cursor: pointer; font-weight: 600; }
+  .sort-item button:hover { background: #e2e8f0; }
+  .sort-item .fb { flex: 1 1 100%; font-size: 0.9rem; display: none; }
+  .sort-item.right { border-color: #86efac; background: #f0fdf4; }
+  .sort-item.wrong { border-color: #fca5a5; background: #fef2f2; }
+  .sort-item .fb.show { display: block; }
+  .score { font-weight: 700; color: #134e4a; margin-top: 0.5rem; }
+  .bar-wrap { background: #e2e8f0; border-radius: 6px; height: 1.1rem; margin: 0.3rem 0; overflow: hidden; }
+  .bar { background: #0f766e; height: 100%; width: 0; transition: width 0.15s; }
+  .print-only { display: none; }
+</style>
+<style>
+  @media print {
+    body { max-width: none; padding: 0; font-size: 11pt; }
+    .site-nav, .pdf-btn, .tool, .video-block, button, .feedback, .print-hide { display: none !important; }
+    .print-only { display: block; }
+    .checkpoint { background: none; border: 1px solid #888; break-inside: avoid; }
+    .checkpoint label { border: none; padding: 0.15rem 0; }
+    .checkpoint input[type=text] { border: none; border-bottom: 1px solid #000; border-radius: 0; width: 220px; }
+    h2 { break-after: avoid; }
+    svg, table, blockquote { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+<style>
+  .video-block { margin: 1.5rem 0; }
+  .video-block p { font-weight: 600; margin-bottom: 0.5rem; }
+  .video-block iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 8px; }
+  .sim-block iframe { aspect-ratio: 16/10; border: 1px solid #cbd5e1; }
+  .vid-credit { font-weight: 400; color: #475569; font-size: 0.85rem; }
+  .vid-note { color: #475569; font-size: 0.9rem; margin: -0.25rem 0 0.5rem; }
+  .more-links { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.95rem; }
+  .more-links a { color: #0f766e; }
+</style>
+<style>
+  .illus { margin: 1.25rem 0; }
+  .illus svg { margin: 0.5rem auto; }
+  .q-fig { margin: 0.5rem 0 0.75rem; overflow-x: auto; }
+  .q-fig svg { margin: 0 auto; }
+  .checkpoint label.fig-opt { display: flex; align-items: center; gap: 0.75rem; }
+  .checkpoint label.fig-opt svg { margin: 0; flex: 0 0 auto; max-width: 150px; height: auto; display: inline-block; }
+  .checkpoint label svg { display: inline-block; margin: 0; }
+  .opt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.4rem 0.6rem; }
+  .opt-grid label { margin: 0; }
+  @media print { .q-fig { overflow: visible; } }
+</style>
+<style>
+  @media (max-width: 640px) { table { display: block; overflow-x: auto; } .tool select, select { max-width: 100%; } }
+</style>
+<style>
+  .photo { position: relative; margin: 1.25rem 0; border-radius: 10px; overflow: hidden; background: #111; }
+  .photo img { display: block; width: 100%; height: auto; }
+  .photo .chip { position: absolute; top: 3%; background: rgba(0,0,0,0.78); color: #fde047; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 8px; font-size: clamp(0.8rem, 2.4vw, 1.2rem); }
+  .photo .chip.l { left: 2%; } .photo .chip.r { left: 52%; color: #fff; }
+  .photo .capbar { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; background: #111; padding: 0.7rem 3% 0.8rem; color: #fff; font-size: clamp(0.75rem, 2vw, 1rem); line-height: 1.4; }
+  .photo .capbar strong { color: #fde047; } .photo .capbar .r strong { color: #7dd3fc; }
+  .photo-note { font-size: 0.85rem; color: #555; text-align: center; margin-top: 0.3rem; }
+</style>
+<style>
+  figure.pic { margin: 1.25rem 0; }
+  figure.pic img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  figure.pic figcaption { font-size: 0.9rem; color: #555; text-align: center; margin-top: 0.4rem; }
+  figure.pic figcaption em { color: #666; }
+</style>
+<style>
+  .back-bottom { margin: 2.5rem 0 1rem; text-align: center; }
+  .back-btn { display: inline-block; background: #0f766e; color: #fff; text-decoration: none; font-weight: 700; padding: 0.75rem 1.6rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(15,118,110,0.35); }
+  .back-btn:hover { background: #115e59; }
+  @media print { .back-bottom { display: none !important; } }
+</style>
+<style>
+  /* polish: touch targets, focus, contrast */
+  @media screen {
+    input[type=range] { height: 2rem; cursor: pointer; accent-color: #0f766e; }
+    .checkpoint input[type=text] { min-height: 2.75rem; }
+    .checkpoint label { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+  }
+  :focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Chakra+Petch:wght@500;600;700&display=swap">
+<style>
+  /* nav: contents, previous/next, heading touch */
+  h1, h2 { font-family: "Rajdhani", system-ui, sans-serif; }
+  h1 { font-size: 2.3rem; line-height: 1.25; letter-spacing: 0.01em; border-bottom: 3px solid; border-image: linear-gradient(90deg, #db2777 0, #db2777 72px, #0f766e 72px) 1; }
+  h2 { font-size: 1.65rem; letter-spacing: 0.01em; scroll-margin-top: 1rem; }
+  h2 .droid { width: 22px; height: 27px; margin: 0 0.5rem -3px 0; display: inline-block; vertical-align: baseline; }
+  .toc { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; margin: 1rem 0 1.5rem; font-size: 0.88rem; }
+  .toc strong { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-size: 1.05rem; color: #475569; margin-right: 0.3rem; }
+  .toc a { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; display: inline-block; padding: 0.6rem 0.9rem; border: 1px solid #cbd5e1; border-radius: 999px; background: #f8fafc; color: #134e4a; text-decoration: none; line-height: 1.3; }
+  .toc a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav { display: flex; flex-wrap: wrap; gap: 1rem; margin: 2.5rem 0 1rem; }
+  .lesson-nav a { flex: 1 1 15rem; display: block; padding: 0.8rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; background: #f8fafc; color: #134e4a; text-decoration: none; }
+  .lesson-nav a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav .dir { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; }
+  .lesson-nav .t { display: block; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+  .lesson-nav .next { text-align: right; }
+  .lesson-nav .g3t { display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.5rem; border-radius: 999px; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-size: 0.75rem; font-weight: 800; vertical-align: middle; }
+  @media print { .toc, .lesson-nav { display: none !important; } }
+</style>
+<style>
+  /* alert: sound controls */
+  .alert-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.75rem 0 1rem; font-size: 0.85rem; }
+  .alert-ctl button { min-height: 2.75rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+  .alert-ctl button:hover { background: #f0fdfa; border-color: #0f766e; }
+  .alert-ctl button[aria-pressed="true"] { background: #134e4a; border-color: #134e4a; color: #fff; }
+  .alert-ctl .note { color: #475569; }
+  @media print { .alert-ctl { display: none !important; } }
+</style>
+<style>
+  .g3-badge { display: inline-block; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 0.22rem 0.8rem; border-radius: 999px; letter-spacing: 0.02em; vertical-align: middle; margin-left: 0.5rem; }
+  h1 .g3-badge { font-size: 0.8rem; }
+  .photo .capbar.one { grid-template-columns: 1fr; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+  /* biology site: body font, G2/G3 switch (set on the home page), shared boxes */
+  body { font-family: "Source Sans 3", system-ui, sans-serif; font-size: 1.08rem; }
+  .g2 .g3-only { display: none !important; }
+  .keyidea { border-left: 4px solid #94a3b8; padding: 0.2rem 0 0.2rem 1rem; margin: 1rem 0; color: #334155; }
+  .practical { border: 1px solid #a7f3d0; background: #f0fdf4; border-radius: 10px; padding: 0.9rem 1.2rem; margin: 1.2rem 0; }
+  .practical h3 { margin: 0.2rem 0 0.4rem; color: #166534; font-size: 1.1rem; }
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 1rem 0; }
+  .flow span { padding: 0.45rem 0.9rem; border-radius: 999px; background: #f0fdfa; border: 1px solid #99f6e4; font-weight: 600; color: #134e4a; }
+  .flow b { color: #db2777; }
+  .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem 1.2rem; align-items: start; }
+  .eg-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem 1.1rem; margin: 0.5rem 0; } .eg-box .q { font-weight: 700; margin-top: 0; }
+  .three-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem 1rem; align-items: start; }
+  .three-col svg { width: 100%; max-width: 240px; }
+  .tag-p { color: #15803d; font-weight: 700; } .tag-a { color: #be185d; font-weight: 700; } .tag-b { color: #1d4ed8; font-weight: 700; }
+  /* clickable diagram (explorer) */
+  .explorer { margin: 1.25rem 0; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem 0.6rem; background: #fff; }
+  .explorer svg { margin: 0.3rem auto; }
+  .explorer .part, .explorer .lbl { cursor: pointer; }
+  .explorer .part:hover, .explorer .lbl:hover { filter: brightness(1.06) saturate(1.2); }
+  .explorer .part.on { filter: drop-shadow(0 0 3px #f59e0b) drop-shadow(0 0 2px #f59e0b); }
+  .explorer .lbl.on text { fill: #b45309; }
+  .explorer .part:focus, .explorer .lbl:focus { outline: none; }
+  .explorer .part:focus-visible, .explorer .lbl:focus-visible { filter: drop-shadow(0 0 3px #0f766e) drop-shadow(0 0 2px #0f766e); }
+  .explorer.nolabels .lbl text { visibility: hidden; }
+  .ex-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .ex-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .ex-ctl button[aria-pressed="true"] { background: #134e4a; color: #fff; border-color: #134e4a; }
+  .ex-q { font-weight: 700; color: #134e4a; }
+  .ex-info { min-height: 3.2rem; padding: 0.6rem 0.9rem; border-radius: 8px; background: #f0fdfa; border: 1px solid #99f6e4; }
+  .ex-info.ok { background: #dcfce7; border-color: #86efac; } .ex-info.no { background: #fee2e2; border-color: #fca5a5; }
+  @media print { .explorer { border: none; padding: 0; } .ex-ctl, .ex-info { display: none !important; } .explorer.nolabels .lbl text { visibility: visible; } }
+</style>
+</head>
+<body>
+<p class="site-nav"><a href="index.html">&larr; Back to Biology lessons</a></p>
+<main>
+<h1>1.2 How Are Cells Adapted to Their Functions?</h1>
+<p class="meta">Biology &middot; Cell Structure and Organisation &middot; Syllabus refs (G2 &amp; G3): 1d</p>
+<p class="print-only">Name: ______________________ &nbsp; Class: ________ &nbsp; Date: ____________</p>
+<p class="print-hide"><a class="pdf-btn" href="cells-1-2-cell-adaptations.pdf" target="_blank" rel="noopener">&#128196; Download printable version (PDF)</a></p>
+<nav class="toc print-hide" aria-label="On this page"><strong>On this page</strong><a href="#why-are-cells-specialised">Why are cells specialised?</a><a href="#surface-area-to-volume-ratio">Surface area to volume ratio</a><a href="#red-blood-cell">Red blood cell</a><a href="#muscle-cell">Muscle cell</a><a href="#root-hair-cell">Root hair cell</a><a href="#writing-about-adaptations">Writing about adaptations</a><a href="#check-your-understanding">Check your understanding</a></nav>
+<div class="practical"><h3>Learning outcome</h3><ul>
+<li>Explain how the structures of specialised cells are adapted to their functions (e.g. muscle cell: many mitochondria to supply more energy; root hair cell: large surface area of cell membrane for greater absorption; red blood cell: lack of nucleus allowing it to transport more oxygen).</li></ul></div>
+<h2 id="why-are-cells-specialised">Why are cells specialised?</h2>
+<p>In a large organism, different cells do different jobs. A <strong>specialised cell</strong> has a structure that is <strong>adapted</strong> (suited) to its function. Each one still has the usual cell parts, but some parts are changed, added or lost.</p>
+<p class="keyidea"><strong>Key idea:</strong> for every adaptation, say <strong>what the feature is</strong> and <strong>how it helps the cell do its job</strong>.</p>
+<h2 id="surface-area-to-volume-ratio">Surface area to volume ratio</h2>
+<p>Substances such as oxygen, water and mineral salts enter a cell through its <strong>surface</strong> (the cell membrane). The more surface a cell has for its size, the faster it can take substances in. We compare cells using the <strong>surface area to volume ratio</strong> (SA&nbsp;:&nbsp;V).</p>
+<div class="tool" id="sav">
+  <h3>Try it: shape and surface area to volume ratio</h3>
+  <p>Each shape is built from the same 64 small cubes (volume = 64 units&sup3;). Choose a shape to see its surface area.</p>
+  <div class="row" role="group" aria-label="Choose a shape">
+    <button type="button" class="pdf-btn" data-d="4,4,4">Cube 4 &times; 4 &times; 4</button>
+    <button type="button" class="pdf-btn" data-d="8,8,1">Flat sheet 8 &times; 8 &times; 1</button>
+    <button type="button" class="pdf-btn" data-d="16,2,2">Rod 16 &times; 2 &times; 2</button>
+    <button type="button" class="pdf-btn" data-d="64,1,1">Long thin strand 64 &times; 1 &times; 1</button>
+  </div>
+  <p class="result" id="sav-res" aria-live="polite"></p>
+  <p class="working" id="sav-work"></p>
+  <div class="bar-wrap" aria-hidden="true"><div class="bar" id="sav-bar"></div></div>
+  <p class="working">Same volume, but the flatter or longer and thinner the shape, the larger the surface area. That is why a red blood cell is a flattened disc and a root hair cell has a long, narrow extension.</p>
+</div>
+<h2 id="red-blood-cell">Red blood cell</h2>
+<div class="illus"><svg viewBox="0 0 560 250" width="560" role="img" aria-label="Red blood cell: surface view showing a disc with a paler centre, and side view showing a biconcave shape that is thinner in the middle"><defs><radialGradient id="rbc" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fca5a5"/><stop offset="0.45" stop-color="#f87171"/><stop offset="1" stop-color="#b91c1c"/></radialGradient></defs><circle cx="130" cy="125" r="72" fill="url(#rbc)" stroke="#991b1b" stroke-width="2.5"/><line x1="130" y1="38" x2="130" y2="105" stroke="#334155" stroke-width="1.4"/><text x="130" y="30" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">no nucleus; full of haemoglobin</text><text x="130" y="232" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">surface view</text><g transform="translate(400 125)"><path d="M-95 0 C-95 -38 -58 -34 -32 -16 C-14 -5 14 -5 32 -16 C58 -34 95 -38 95 0 C95 38 58 34 32 16 C14 5 -14 5 -32 16 C-58 34 -95 38 -95 0 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.5"/></g><line x1="400" y1="62" x2="400" y2="118" stroke="#334155" stroke-width="1.4"/><text x="400" y="54" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">thin centre</text><line x1="318" y1="178" x2="330" y2="150" stroke="#334155" stroke-width="1.4"/><text x="318" y="194" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">thicker edge</text><text x="400" y="232" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">side view (cut through): biconcave disc</text></svg><p class="fig-caption">A red blood cell. Function: <strong>transports oxygen</strong> around the body.</p></div>
+<table><tr><th>Adaptation</th><th>How it helps</th></tr><tr><td>Contains <strong>haemoglobin</strong></td><td>Haemoglobin binds to oxygen, so the cell can carry oxygen around the body.</td></tr><tr><td><strong>Circular, biconcave</strong> shape</td><td>Increases the surface area to volume ratio, so oxygen is taken in and released faster.</td></tr><tr><td><strong>No nucleus</strong></td><td>More space to pack in haemoglobin, so it can transport more oxygen.</td></tr><tr><td><strong>Flexible</strong></td><td>It can squeeze through narrow blood capillaries.</td></tr></table>
+<h2 id="muscle-cell">Muscle cell</h2>
+<div class="illus"><svg viewBox="0 0 580 210" width="580" role="img" aria-label="Muscle cell: a long cell with many nuclei, many mitochondria and long protein fibres"><rect x="30" y="60" width="520" height="90" rx="40" fill="#fecdd3" stroke="#be123c" stroke-width="2.5"/><line x1="62" y1="72" x2="518" y2="72" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="81" x2="518" y2="81" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="90" x2="518" y2="90" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="99" x2="518" y2="99" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="108" x2="518" y2="108" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="117" x2="518" y2="117" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="126" x2="518" y2="126" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="135" x2="518" y2="135" stroke="#fb7185" stroke-width="2"/><ellipse cx="110" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><ellipse cx="250" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><ellipse cx="390" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><ellipse cx="500" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><g transform="translate(80 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(122 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(164 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(206 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(248 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(290 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(332 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(374 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(416 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(458 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(500 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><line x1="250" y1="30" x2="250" y2="63" stroke="#334155" stroke-width="1.4"/><text x="250" y="24" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">many nuclei</text><line x1="420" y1="185" x2="416" y2="132" stroke="#334155" stroke-width="1.4"/><text x="420" y="202" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">many mitochondria</text><line x1="150" y1="185" x2="160" y2="117" stroke="#334155" stroke-width="1.4"/><text x="150" y="202" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">protein fibres (contract)</text></svg><p class="fig-caption">A muscle cell. Function: <strong>contracts and relaxes</strong> to bring about movement.</p></div>
+<table><tr><th>Adaptation</th><th>How it helps</th></tr><tr><td>Contains <strong>many mitochondria</strong></td><td>More aerobic respiration, so more energy is released for contraction.</td></tr><tr><td>Has <strong>contractile protein fibres</strong></td><td>The fibres contract and relax to bring about movement.</td></tr><tr><td>Has <strong>many nuclei</strong></td><td>Allows for cell division, growth and repair of the long cell.</td></tr></table>
+<h2 id="root-hair-cell">Root hair cell</h2>
+<div class="illus"><svg viewBox="0 -6 580 286" width="580" role="img" aria-label="Root hair cell: a cell with a long, narrow extension growing out between soil particles; water and mineral salts enter the root hair"><defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0284c7"/></marker></defs><rect x="0" y="-6" width="242" height="286" fill="#f1f5f9"/><rect x="242" y="-6" width="338" height="286" fill="#fefce8"/><circle cx="300" cy="34" r="16" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="380" cy="34" r="18" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="470" cy="32" r="18" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="560" cy="74" r="17" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="330" cy="125" r="22" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="430" cy="130" r="24" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="520" cy="130" r="20" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="270" cy="235" r="18" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="380" cy="200" r="22" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="560" cy="205" r="16" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><path d="M50 105 H195 Q205 62 262 58 H520 a16 16 0 0 1 0 32 H268 Q236 92 236 125 V178 a12 12 0 0 1 -12 12 H50 a12 12 0 0 1 -12 -12 V117 a12 12 0 0 1 12 -12 Z" fill="#fef3c7" stroke="#a16207" stroke-width="2.5"/><rect x="58" y="120" width="160" height="56" rx="16" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><ellipse cx="300" cy="74" rx="15" ry="8" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/><path d="M340 22 V48" stroke="#0284c7" stroke-width="3" marker-end="url(#ar)"/><path d="M425 22 V48" stroke="#0284c7" stroke-width="3" marker-end="url(#ar)"/><path d="M515 22 V48" stroke="#0284c7" stroke-width="3" marker-end="url(#ar)"/><text x="425" y="8" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0369a1">water and mineral salts</text><line x1="138" y1="160" x2="138" y2="226" stroke="#334155" stroke-width="1.4"/><text x="138" y="242" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">vacuole (cell sap)</text><line x1="300" y1="82" x2="300" y2="168" stroke="#334155" stroke-width="1.4"/><text x="300" y="184" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">nucleus</text><line x1="470" y1="90" x2="470" y2="236" stroke="#334155" stroke-width="1.4"/><text x="575" y="252" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">long, narrow extension (root hair)</text><text x="16" y="30" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">inside the root</text><text x="252" y="272" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">soil</text></svg><p class="fig-caption">A root hair cell. Function: <strong>absorbs water and mineral salts</strong> from the soil.</p></div>
+<table><tr><th>Adaptation</th><th>How it helps</th></tr><tr><td><strong>Long and narrow extension</strong> (the root hair)</td><td>Increases the surface area to volume ratio, so water and mineral salts are absorbed faster.</td></tr><tr><td>Cell sap in the vacuole has a <strong>lower water potential</strong> than the soil water</td><td>Water enters the root hair cell by <strong>osmosis</strong>. (You will learn about osmosis in Topic 2.)</td></tr><tr><td><strong>No chloroplasts</strong></td><td>It grows underground with no light, so chloroplasts would have no use.</td></tr></table>
+<h2 id="writing-about-adaptations">Writing about adaptations</h2>
+<p>Link the <strong>feature</strong> to its <strong>effect</strong> and the <strong>function</strong>:</p>
+<div class="flow"><span>feature</span><b>&rarr;</b><span>so that&hellip;</span><b>&rarr;</b><span>which helps the cell to&hellip;</span></div>
+<p><em>Example:</em> &ldquo;A red blood cell has <strong>no nucleus</strong>, <strong>so</strong> there is more space for haemoglobin, <strong>so</strong> it can transport more oxygen.&rdquo;</p>
+<div class="tool sorter" id="sort-sc">
+  <h3>Try it: which cell has this adaptation?</h3>
+  <p>Choose the cell for each feature.</p>
+  <div class="sort-item" data-ans="0"><span class="name">No nucleus</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="Red blood cells lose their nucleus to make room for more haemoglobin."></span></div>
+  <div class="sort-item" data-ans="1"><span class="name">Many mitochondria</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="Muscle cells need a lot of energy to contract."></span></div>
+  <div class="sort-item" data-ans="2"><span class="name">Long, narrow extension into the soil</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="The root hair increases the surface area for absorbing water and mineral salts."></span></div>
+  <div class="sort-item" data-ans="0"><span class="name">Contains haemoglobin</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="Haemoglobin binds to oxygen."></span></div>
+  <div class="sort-item" data-ans="1"><span class="name">Contractile protein fibres</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="The fibres contract and relax to cause movement."></span></div>
+  <div class="sort-item" data-ans="2"><span class="name">Cell sap with a lower water potential than soil water</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="So water enters by osmosis."></span></div>
+  <div class="sort-item" data-ans="0"><span class="name">Biconcave disc shape</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="This increases the surface area to volume ratio."></span></div>
+  <div class="sort-item" data-ans="1"><span class="name">Many nuclei</span><button type="button" data-c="0">Red blood cell</button><button type="button" data-c="1">Muscle cell</button><button type="button" data-c="2">Root hair cell</button><span class="fb" data-expl="Long muscle cells have many nuclei."></span></div>
+  <p class="score" aria-live="polite"></p>
+</div>
+<h2 id="check-your-understanding">Check your understanding</h2>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">1. Why does a red blood cell have no nucleus?</p>
+  <label><input type="radio" name="q1" value="0"> So it can divide faster</label>
+  <label><input type="radio" name="q1" value="1"> To make room for more haemoglobin</label>
+  <label><input type="radio" name="q1" value="2"> So it can absorb water</label>
+  <label><input type="radio" name="q1" value="3"> To release more energy</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="With no nucleus there is more space for haemoglobin, so the cell can carry more oxygen."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="2">
+  <p class="q">2. Muscle cells contain many mitochondria. What is the reason?</p>
+  <label><input type="radio" name="q2" value="0"> To make more proteins</label>
+  <label><input type="radio" name="q2" value="1"> To store cell sap</label>
+  <label><input type="radio" name="q2" value="2"> To release more energy by aerobic respiration for contraction</label>
+  <label><input type="radio" name="q2" value="3"> To absorb more light</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Contraction needs energy. More mitochondria means more aerobic respiration."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">3. How does the long extension of a root hair cell help the plant?</p>
+  <label><input type="radio" name="q3" value="0"> It gives the cell a fixed shape.</label>
+  <label><input type="radio" name="q3" value="1"> It increases the surface area to volume ratio for absorbing water and mineral salts.</label>
+  <label><input type="radio" name="q3" value="2"> It carries oxygen to the leaves.</label>
+  <label><input type="radio" name="q3" value="3"> It makes food by photosynthesis.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="A long, narrow extension gives a much larger surface for absorption."></div>
+</div>
+<div class="checkpoint" data-type="calculation" data-answer="3" data-tol="0.01">
+  <p class="q">4. A cube-shaped cell has sides of 2 &micro;m. Its surface area is 24 &micro;m&sup2; and its volume is 8 &micro;m&sup3;. Work out the surface area to volume ratio (as a number : 1).</p>
+  <input type="text" inputmode="decimal" placeholder="Your answer (: 1)" aria-label="Your answer in : 1">
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="SA : V = 24 : 8 = 3 : 1."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">5. The biconcave shape of a red blood cell&hellip;</p>
+  <label><input type="radio" name="q5" value="0"> lets it squeeze through capillaries.</label>
+  <label><input type="radio" name="q5" value="1"> increases its surface area to volume ratio for faster uptake of oxygen.</label>
+  <label><input type="radio" name="q5" value="2"> gives it room for a nucleus.</label>
+  <label><input type="radio" name="q5" value="3"> makes it contract.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="The biconcave shape gives a larger surface area to volume ratio. (Being flexible is what lets it squeeze through capillaries.)"></div>
+</div>
+</main>
+<nav class="lesson-nav print-hide" aria-label="Lesson navigation"><a class="prev" href="cells-1-1-what-are-cells.html"><span class="dir">← Previous</span><span class="t">What Are Cells?</span></a><a class="next" href="revision-01-cells.html"><span class="dir">Next →</span><span class="t">Revision Questions</span></a></nav>
+<p class="back-bottom print-hide"><a class="back-btn" href="index.html">&larr; Back to Biology lessons</a></p>
+<script>
+function checkAnswer(btn) {
+  const block = btn.closest('.checkpoint');
+  const feedback = block.querySelector('.feedback');
+  const correctAns = block.dataset.answer;
+  const tol = parseFloat(block.dataset.tol || '0.05');
+  let isCorrect;
+
+  if (block.dataset.type === 'mcq') {
+    const checked = block.querySelector('input[type=radio]:checked');
+    if (!checked) { showHint(feedback, 'Pick an answer first.'); return; }
+    isCorrect = checked.value === correctAns;
+  } else {
+    const val = parseFloat(block.querySelector('input[type=text]').value);
+    if (isNaN(val)) { showHint(feedback, 'Enter a number first.'); return; }
+    isCorrect = Math.abs(val - parseFloat(correctAns)) <= tol;
+  }
+
+  feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  feedback.textContent = (isCorrect ? '\u2713 Correct. ' : '\u2717 Not quite. ') + feedback.dataset.explanation;
+}
+
+function showHint(feedback, text) {
+  feedback.className = 'feedback hint';
+  feedback.textContent = text;
+}
+
+document.querySelectorAll('.explorer').forEach(function (ex) {
+  var info = JSON.parse(ex.dataset.info), box = ex.querySelector('.ex-info'), qline = ex.querySelector('.ex-q');
+  var bL = ex.querySelector('[data-act=labels]'), bQ = ex.querySelector('[data-act=quiz]');
+  var quiz = null, score = 0, tries = 0, keys = Object.keys(info);
+  ex.querySelectorAll('.part, .lbl').forEach(function (g) {
+    g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+    if (!g.getAttribute('aria-label')) g.setAttribute('aria-label', info[g.dataset.part][0]);
+    g.addEventListener('click', function () { pick(g.dataset.part); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(g.dataset.part); } });
+  });
+  function light(k) { ex.querySelectorAll('.part, .lbl').forEach(function (g) { g.classList.toggle('on', g.dataset.part === k); }); }
+  function show(k) { box.className = 'ex-info'; box.innerHTML = '<strong>' + info[k][0] + ':</strong> ' + info[k][1]; light(k); }
+  function ask() { var k; do { k = keys[Math.floor(Math.random() * keys.length)]; } while (keys.length > 1 && k === quiz); quiz = k; qline.textContent = 'Find: ' + info[k][0] + '  (score ' + score + '/' + tries + ')'; light(null); }
+  function pick(k) {
+    if (!quiz) { show(k); return; }
+    tries++;
+    if (k === quiz) { score++; box.className = 'ex-info ok'; box.innerHTML = '✓ Yes, that is the <strong>' + info[k][0] + '</strong>. ' + info[k][1]; light(k); setTimeout(ask, 1400); }
+    else { box.className = 'ex-info no'; box.innerHTML = '✗ That is the <strong>' + info[k][0] + '</strong>. Try again: find the ' + info[quiz][0] + '.'; }
+    qline.textContent = 'Find: ' + info[quiz][0] + '  (score ' + score + '/' + tries + ')';
+  }
+  bL.addEventListener('click', function () { var on = bL.getAttribute('aria-pressed') !== 'true'; bL.setAttribute('aria-pressed', on); ex.classList.toggle('nolabels', on); bL.textContent = on ? 'Show labels' : 'Hide labels'; });
+  bQ.addEventListener('click', function () {
+    var on = bQ.getAttribute('aria-pressed') !== 'true'; bQ.setAttribute('aria-pressed', on);
+    if (on) { score = 0; tries = 0; if (bL.getAttribute('aria-pressed') !== 'true') bL.click(); ask(); bQ.textContent = 'Stop quiz'; }
+    else { quiz = null; qline.textContent = ''; bQ.textContent = 'Quiz me: find the part'; box.className = 'ex-info'; box.textContent = 'Click any part of the diagram to see what it does.'; }
+  });
+});
+
+document.querySelectorAll('.sorter').forEach(function (s) {
+  var items = s.querySelectorAll('.sort-item'), sc = s.querySelector('.score');
+  function tally() { var n = s.querySelectorAll('.sort-item.right').length; sc.textContent = n + ' of ' + items.length + ' sorted correctly' + (n === items.length ? '. Well done!' : '.'); }
+  items.forEach(function (it) {
+    var fb = it.querySelector('.fb');
+    it.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var ok = b.dataset.c === it.dataset.ans;
+        it.classList.toggle('right', ok); it.classList.toggle('wrong', !ok); fb.classList.add('show');
+        fb.textContent = ok ? '✓ Correct. ' + fb.dataset.expl : '✗ Not quite. Try another button.';
+        tally();
+      });
+    });
+  });
+  tally();
+});
+
+(function () {
+  var res = document.getElementById('sav-res'), work = document.getElementById('sav-work'), bar = document.getElementById('sav-bar');
+  document.querySelectorAll('#sav button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var d = b.dataset.d.split(',').map(Number), l = d[0], w = d[1], h = d[2], A = 2 * (l * w + l * h + w * h), V = l * w * h;
+      document.querySelectorAll('#sav button').forEach(function (x) { x.style.background = x === b ? '#ccfbf1' : ''; });
+      res.textContent = 'Surface area = ' + A + ' units\u00b2;  SA : V = ' + A + ' : ' + V + ' = ' + (A / V).toFixed(2) + ' : 1';
+      work.textContent = 'Surface area = 2 \u00d7 (' + l + '\u00d7' + w + ' + ' + l + '\u00d7' + h + ' + ' + w + '\u00d7' + h + ') = ' + A + '.  Volume = ' + l + ' \u00d7 ' + w + ' \u00d7 ' + h + ' = ' + V + '.';
+      bar.style.width = Math.min(100, (A / V) / 4.1 * 100) + '%';
+    });
+  });
+  document.querySelector('#sav button').click();
+})();
+</script>
+</body>
+</html>

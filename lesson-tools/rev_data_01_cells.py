@@ -1,0 +1,60 @@
+"""Revision questions for Topic 1: Cell Structure and Organisation (G2 and G3). Format: see the notes at the top of build_revision.py.
+Run:  python3 build_revision.py"""
+from build_revision import pt
+
+TOPICS = [dict(
+    file="revision-01-cells", short="Cell Structure and Organisation", topic="Cell Structure and Organisation",
+    intro="Test yourself on Topic 1 (lessons 1.1 and 1.2). Section A has 10 multiple-choice questions. Section B has short and longer written answers.",
+    mcq=[
+        ("Which structure is partially permeable?", ["Cell wall", "Cell membrane", "Cell sap", "Chloroplast"], 1,
+         "The cell membrane is partially permeable. The cell wall is fully permeable."),
+        ("Which structure carries hereditary information?", ["Ribosome", "Mitochondrion", "DNA in the nucleus", "Cytoplasm"], 2,
+         "Chromosomes in the nucleus are made of DNA, which carries hereditary information."),
+        ("Which pair of organelles can only be seen clearly with an electron microscope?", ["Nucleus and vacuole", "Mitochondria and ribosomes", "Chloroplasts and cell wall", "Cell membrane and cytoplasm"], 1,
+         "Mitochondria and ribosomes are too small for a light microscope."),
+        ("What does cell sap contain?", ["Water with dissolved sugar, mineral salts and amino acids", "Chlorophyll", "Cellulose", "DNA"], 0,
+         "Cell sap in the plant cell vacuole contains dissolved sugar, mineral salts and amino acids."),
+        ("Which stain is used to see the nucleus in human cheek cells?", ["Iodine solution", "Methylene blue", "Chlorophyll", "Cell sap"], 1,
+         "Methylene blue stains animal cells such as cheek cells. Iodine solution is used for onion cells."),
+        ("A cell has a nucleus, a cell membrane, many small vacuoles and no cell wall. What type of cell is it?", ["A leaf cell", "A root hair cell", "An animal cell", "An onion cell"], 2,
+         "No cell wall and small vacuoles: it is an animal cell."),
+        ("Which structure is the site of photosynthesis?", ["Chloroplast", "Mitochondrion", "Ribosome", "Nucleus"], 0,
+         "Chloroplasts contain chlorophyll, which absorbs light for photosynthesis."),
+        ("Which feature of a muscle cell supplies more energy for contraction?", ["No nucleus", "Many mitochondria", "A cell wall", "A long extension"], 1,
+         "Many mitochondria carry out more aerobic respiration, releasing more energy."),
+        ("Which feature of a root hair cell increases the rate of absorption of water and mineral salts?", ["Many chloroplasts", "No nucleus", "A long, narrow extension giving a large surface area", "A thick cell wall"], 2,
+         "The root hair gives a large surface area of cell membrane for absorption."),
+        ("Why can a red blood cell transport more oxygen than if it had a nucleus?", ["It has more mitochondria.", "It has more space for haemoglobin.", "It has a cell wall.", "It has chloroplasts."], 1,
+         "Without a nucleus there is more room for haemoglobin, which binds to oxygen."),
+    ],
+    sb=[
+        dict(id="c1", marks=2, q="State the function of (a) the nucleus and (b) the ribosomes.",
+             model="(a) The nucleus controls cell activities such as cell division, growth and repair (it contains DNA). (b) Ribosomes are the site of protein synthesis.",
+             pts=[pt("Nucleus: controls cell activities (e.g. division, growth, repair) / contains DNA or chromosomes.", r"control|divi|growth|repair|dna|chromosome|heredit"),
+                  pt("Ribosomes: site of protein synthesis / make proteins.", r"protein")]),
+        dict(id="c2", marks=3, q="Compare the structure of a typical plant cell with a typical animal cell. Give one similarity and two differences.",
+             model="Similarity: both have a cell membrane, cytoplasm, nucleus, mitochondria and ribosomes. Differences: a plant cell has a cellulose cell wall but an animal cell does not; "
+                   "a plant cell has chloroplasts but an animal cell does not; a plant cell has one large central vacuole whereas an animal cell has many small, temporary vacuoles.",
+             pts=[pt("Similarity: both have a nucleus / cell membrane / cytoplasm / mitochondria / ribosomes.", r"both|similar|same|common"),
+                  pt("Plant cells have a cell wall; animal cells do not.", r"wall"),
+                  pt("Plant cells have chloroplasts; animal cells do not.", r"chloroplast"),
+                  pt("Plant cells have one large central vacuole; animal cells have small, temporary vacuoles.", r"vacuole")]),
+        dict(id="c3", marks=2, q="A student says, &ldquo;The cell wall controls what enters and leaves a plant cell.&rdquo; Explain why the student is wrong.",
+             model="The cell wall is fully permeable, so it lets almost all substances through. It is the partially permeable cell membrane that controls the movement of substances into and out of the cell.",
+             pts=[pt("The cell wall is fully permeable / lets (almost) everything through.", r"fully permeable|freely permeable|lets? (almost )?(all|every)|completely permeable"),
+                  pt("The (partially permeable) cell membrane controls movement in and out.", r"membrane")]),
+        dict(id="c4", marks=3, q="A red blood cell transports oxygen. Explain how <strong>two</strong> features of its structure adapt it to this function.",
+             model="It has no nucleus, so there is more space for haemoglobin and it can transport more oxygen. It has a biconcave shape, which increases its surface area to volume ratio, "
+                   "so oxygen is taken in and released faster. (Also: it contains haemoglobin, which binds to oxygen; it is flexible, so it squeezes through capillaries.)",
+             pts=[pt("No nucleus, so more space for haemoglobin.", r"no nucleus|lack\w* (a |of )?nucleus|without (a )?nucleus|absence of (a )?nucleus|nucleus is absent|does not have a nucleus|doesn.t have a nucleus"),
+                  pt("Contains haemoglobin, which binds to / carries oxygen.", r"haemoglobin|hemoglobin"),
+                  pt("Biconcave shape increases the surface area to volume ratio.", r"biconcave|surface area"),
+                  pt("Link to function: carries more oxygen / takes up oxygen faster.", r"more oxygen|oxygen[^.]*(faster|quick|rate)|(faster|quick|rate)[^.]*oxygen")]),
+        dict(id="c5", marks=3, q="Explain how a root hair cell and a muscle cell are each adapted to their functions.",
+             model="The root hair cell has a long, narrow extension, which gives a large surface area of cell membrane, so it absorbs water and mineral salts faster. "
+                   "The muscle cell has many mitochondria, which carry out aerobic respiration to release more energy for contraction.",
+             pts=[pt("Root hair cell: long, narrow extension / root hair.", r"long|extension|narrow|hair"),
+                  pt("This gives a large surface area for faster absorption of water and mineral salts.", r"surface area"),
+                  pt("Muscle cell: many mitochondria release more energy (by aerobic respiration) for contraction.", r"mitochondri")]),
+    ],
+)]
