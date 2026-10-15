@@ -468,3 +468,160 @@ def leaf_stomata():
     b += ('<circle cx="560" cy="350" r="4.5" fill="#111827"/><text x="572" y="355" %s>carbon dioxide</text>'
           '<circle cx="560" cy="372" r="4.5" fill="#dc2626"/><text x="572" y="377" %s>oxygen</text>' % (SMALL, SMALL))
     return svg(750, 385, b, "Section through a leaf. In the light, carbon dioxide from the air diffuses in through a stoma on the underside of the leaf, through the air spaces to the palisade cells, which use it in photosynthesis. Oxygen made in photosynthesis diffuses out through the stoma", 700)
+
+
+# ------------------------------------------------------------------ lungs: whole lungs -> air sacs -> one alveolus (redrawn in our own style)
+def _gas(x, y, kind, size=1.0):
+    """A small labelled gas molecule: O2 (red) or CO2 (dark grey)."""
+    col, t = ("#dc2626", "O&#8322;") if kind == "o" else ("#334155", "CO&#8322;")
+    return ('<circle cx="%s" cy="%s" r="%s" fill="#fff" stroke="%s" stroke-width="2"/>'
+            '<text x="%s" y="%s" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="%s" font-weight="700" fill="%s">%s</text>'
+            % (x, y, 11 * size, col, x, y + 4 * size, 10 * size, col, t))
+
+
+ALVEOLUS_SAC = "M168 70 V118 C80 128 70 300 120 345 C160 382 240 382 280 345 C330 300 320 128 232 118 V70"
+CAPILLARY = "M128 38 C126 110 56 150 58 255 C60 380 340 380 342 255 C344 150 274 110 272 38"
+
+
+def alveolus_closeup(labels=True):
+    """One alveolus with a capillary wrapped around it: blue (deoxygenated) blood in on the left, red (oxygenated) out on the right."""
+    b = ('<defs><linearGradient id="bloodgrad" gradientUnits="userSpaceOnUse" x1="60" y1="0" x2="340" y2="0">'
+         '<stop offset="0" stop-color="#2563eb"/><stop offset="0.45" stop-color="#7c3aed"/><stop offset="1" stop-color="#dc2626"/></linearGradient></defs>')
+    b += ARROW_DEFS % ("ab3", "#1d4ed8") + ARROW_DEFS % ("ar3", "#dc2626") + ARROW_DEFS % ("ak3", "#334155")
+    b += '<path d="%s" fill="none" stroke="url(#bloodgrad)" stroke-width="30" stroke-linecap="round"/>' % CAPILLARY
+    for (x, y, c) in ((114, 120, "#1e40af"), (70, 210, "#1e40af"), (80, 320, "#5b21b6"), (200, 371, "#7f1d1d"), (318, 318, "#991b1b"), (332, 210, "#991b1b"), (288, 120, "#991b1b")):
+        b += '<ellipse cx="%d" cy="%d" rx="9" ry="6" fill="%s" opacity="0.85"/>' % (x, y, c)
+    b += '<path d="%s" fill="#e0f2fe" stroke="#f472b6" stroke-width="6"/>' % ALVEOLUS_SAC
+    b += '<text x="200" y="245" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="30" font-weight="700" fill="#0369a1" opacity="0.8">air</text>'
+    # gas exchange across the wall
+    b += _gas(108, 175, "c") + arrow(118, 180, 150, 196, "ak3", "#334155", 2.5)
+    b += _gas(96, 265, "c") + arrow(106, 268, 140, 272, "ak3", "#334155", 2.5)
+    b += _gas(270, 200, "o") + arrow(282, 204, 316, 214, "ar3", "#dc2626", 2.5)
+    b += _gas(262, 290, "o") + arrow(272, 294, 306, 304, "ar3", "#dc2626", 2.5)
+    b += _gas(200, 320, "o") + arrow(200, 332, 200, 362, "ar3", "#dc2626", 2.5)
+    # air in and out at the top
+    b += arrow(186, 34, 186, 98, "ak3", "#0369a1", 2.5) + _gas(186, 22, "o", 0.9)
+    b += arrow(216, 98, 216, 34, "ak3", "#334155", 2.5) + _gas(216, 22, "c", 0.9)
+    # blood in and out
+    b += arrow(128, 4, 128, 30, "ab3", "#1d4ed8", 3) + arrow(272, 30, 272, 4, "ar3", "#dc2626", 3)
+    if labels:
+        b += '<g %s>' % SMALL
+        b += '<text x="120" y="-6" text-anchor="end" %s font-weight="700" fill="#1d4ed8">deoxygenated blood in</text>' % SMALL.replace('fill="#334155"', '')
+        b += '<text x="280" y="-6" %s font-weight="700" fill="#b91c1c">oxygenated blood out</text>' % SMALL.replace('fill="#334155"', '')
+        b += '<text x="170" y="60" text-anchor="end">air in</text><text x="232" y="60">air out</text>'
+        b += lbl("capillary", 20, 150, 66, 170)
+        b += lbl("red blood cell", 20, 330, 74, 322)
+        b += lbl("wall of alveolus (one cell thick)", 40, 420, 128, 352)
+        b += '<text x="352" y="250" font-weight="700" fill="#b91c1c">O&#8322; diffuses</text><text x="352" y="266" font-weight="700" fill="#b91c1c">into the blood</text>'
+        b += '<text x="-40" y="230" font-weight="700" fill="#334155">CO&#8322; diffuses</text><text x="-40" y="246" font-weight="700" fill="#334155">into the air</text>'
+        b += '</g>'
+    return b
+
+
+ALVC_TARGETS = [   # for the labeller (coordinates in the labeller viewBox: the drawing is shifted by +120, +30)
+    dict(key="cap", label="capillary", pt=(186, 200), box=(110, 200), side="l"),
+    dict(key="rbc", label="red blood cell", pt=(200, 352), box=(110, 352), side="l"),
+    dict(key="wall", label="wall of alveolus", pt=(420, 190), box=(490, 150), side="r"),
+    dict(key="air", label="air in the alveolus", pt=(320, 260), box=(490, 250), side="r"),
+    dict(key="deo", label="deoxygenated blood", pt=(248, 40), box=(110, 30), side="l"),
+    dict(key="oxy", label="oxygenated blood", pt=(392, 40), box=(490, 40), side="r"),
+]
+ALVC_VB = (640, 420)
+
+
+def alveolus_labeller_svg():
+    return '<g transform="translate(120 30)">%s</g>' % alveolus_closeup(labels=False)
+
+
+def lungs_figure():
+    """Three linked views: the lungs in the body, a cluster of air sacs, one alveolus close up."""
+    rng = random.Random(51)
+    b = '<g transform="translate(120 40)">%s</g>' % alveolus_closeup(True)
+    # middle: zoom circle with clusters of air sacs on a branching tube
+    cx, cy = 720, 220
+    b += '<circle cx="%d" cy="%d" r="118" fill="#fff" stroke="#94a3b8" stroke-width="2"/>' % (cx, cy)
+    b += '<path d="M%d %d C%d %d %d %d %d %d M%d %d C%d %d %d %d %d %d" fill="none" stroke="#fca5a5" stroke-width="16" stroke-linecap="round"/>' % (
+        cx + 90, cy - 70, cx + 40, cy - 50, cx + 10, cy - 30, cx - 30, cy + 10, cx + 30, cy - 46, cx + 30, cy - 10, cx + 40, cy + 10, cx + 40, cy + 40)
+    for (gx, gy) in ((cx - 50, cy + 30), (cx + 45, cy + 62)):
+        for k in range(16):
+            x, y = gx + rng.uniform(-38, 38), gy + rng.uniform(-30, 30)
+            b += '<circle cx="%.0f" cy="%.0f" r="%.0f" fill="#fda4af" stroke="#be123c" stroke-width="1.5"/>' % (x, y, rng.uniform(11, 15))
+        for k in range(5):   # capillaries over the sacs
+            x0 = gx - 40 + k * 18
+            col = "#dc2626" if k % 2 else "#2563eb"
+            b += '<path d="M%d %d q10 20 0 40 q-10 20 4 36" fill="none" stroke="%s" stroke-width="2.2" opacity="0.85"/>' % (x0, gy - 36, col)
+    b += text(cx, cy + 140, "air sacs (alveoli)", weight=1)
+    # arrow from the zoom circle to the close-up
+    b += ARROW_DEFS % ("az", "#1f2937") + '<path d="M%d %d Q%d %d %d %d" fill="none" stroke="#1f2937" stroke-width="6" marker-end="url(#az)"/>' % (cx - 70, cy - 20, cx - 110, cy - 40, cx - 150, cy - 10)
+    # right: upper body with the lungs
+    bx = 950
+    b += ('<ellipse cx="%d" cy="78" rx="30" ry="36" fill="#bfdbfe"/><rect x="%d" y="108" width="28" height="30" fill="#bfdbfe"/>'
+          '<path d="M%d 136 Q%d 128 %d 150 L%d 420 H%d L%d 150 Q%d 128 %d 136 Z" fill="#bfdbfe"/>'
+          % (bx, bx - 14, bx - 14, bx - 80, bx - 92, bx - 98, bx + 98, bx + 92, bx + 80, bx + 14))
+    b += '<rect x="%d" y="140" width="12" height="70" rx="5" fill="#f1f5f9" stroke="#94a3b8"/>' % (bx - 6)
+    for side in (-1, 1):
+        b += ('<path d="M%d 214 C%d 200 %d 196 %d 230 C%d 290 %d 360 %d 372 C%d 380 %d 360 %d 300 Z" fill="#fca5a5" stroke="#be123c" stroke-width="2" opacity="0.9"/>'
+              % (bx + side * 10, bx + side * 30, bx + side * 62, bx + side * 72, bx + side * 82, bx + side * 80, bx + side * 60, bx + side * 30, bx + side * 14, bx + side * 10))
+        b += '<path d="M%d 208 l%d 24 m%d -12 l%d 30 m%d -18 l%d 30" stroke="#be123c" stroke-width="2" fill="none"/>' % (bx, side * 26, -side * 12, side * 14, side * 10, side * 20)
+    b += '<circle cx="%d" cy="290" r="12" fill="none" stroke="#1f2937" stroke-width="2"/>' % (bx - 48)
+    b += '<line x1="%d" y1="282" x2="%d" y2="130" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/><line x1="%d" y1="298" x2="%d" y2="310" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5 4"/>' % (bx - 58, cx + 50, bx - 58, cx + 60)
+    b += text(bx, 445, "lungs", weight=1)
+    b += '<g %s>' % SMALL + '<circle cx="80" cy="470" r="9" fill="#fff" stroke="#dc2626" stroke-width="2"/><text x="96" y="475">oxygen (O&#8322;)</text>'
+    b += '<circle cx="230" cy="470" r="9" fill="#fff" stroke="#334155" stroke-width="2"/><text x="246" y="475">carbon dioxide (CO&#8322;)</text></g>'
+    return ('<svg viewBox="0 0 1060 490" role="img" aria-label="%s" style="max-width:960px">%s</svg>'
+            % ("Gas exchange in the lungs. Right: the lungs in the chest. Middle: a close-up of the lungs shows clusters of tiny air sacs (alveoli) covered in blood capillaries. "
+               "Left: one alveolus. Deoxygenated blood flows into the capillary around it; oxygen diffuses from the air in the alveolus into the blood, "
+               "and carbon dioxide diffuses from the blood into the air. Oxygenated blood flows out.", b))
+
+
+# ------------------------------------------------------------------ villi in the small intestine
+def villi_figure():
+    """Left: the wall of the small intestine with many villi. Right: one villus close up."""
+    rng = random.Random(53)
+    b = ''
+    # left panel: wall with villi
+    b += '<rect x="10" y="20" width="400" height="300" fill="#fef9c3"/>'
+    b += '<rect x="10" y="270" width="400" height="50" fill="#fecaca" stroke="#9f1239" stroke-width="1.5"/>'
+    b += '<rect x="10" y="298" width="400" height="22" fill="#fda4af"/>'
+    for i in range(9):
+        x = 32 + i * 44
+        h = rng.uniform(150, 190)
+        b += ('<path d="M%d 272 V%.0f a17 17 0 0 1 34 0 V272 Z" fill="#fbcfe8" stroke="#9f1239" stroke-width="2"/>' % (x - 17, 272 - h + 17, ))
+        b += '<path d="M%d 266 V%.0f M%d 266 V%.0f" stroke="#dc2626" stroke-width="2" fill="none"/>' % (x - 6, 272 - h + 30, x + 6, 272 - h + 30)
+    for _ in range(26):
+        x, y = rng.uniform(20, 400), rng.uniform(30, 110)
+        b += '<polygon points="%s" fill="#16a34a"/>' % " ".join("%.1f,%.1f" % (x + 4.5 * __import__("math").cos(a * 1.0472), y + 4.5 * __import__("math").sin(a * 1.0472)) for a in range(6))
+    b += dots(rng, 16, 20, 400, 30, 110, 4, "#7c3aed")
+    b += text(210, 345, "(a) Wall of the small intestine, covered in villi", weight=1)
+    b += '<rect x="226" y="22" width="180" height="22" fill="#fef9c3" opacity="0.85"/>' + '<text x="400" y="38" text-anchor="end" %s>inside the small intestine</text>' % SMALL
+    # zoom marker
+    b += '<rect x="186" y="80" width="48" height="196" fill="none" stroke="#1f2937" stroke-width="2" stroke-dasharray="6 4"/>'
+    b += '<line x1="234" y1="80" x2="500" y2="30" stroke="#94a3b8" stroke-dasharray="5 4"/><line x1="234" y1="276" x2="500" y2="320" stroke="#94a3b8" stroke-dasharray="5 4"/>'
+    # right panel: one villus
+    vx = 590
+    b += '<path d="M%d 320 V110 a90 90 0 0 1 180 0 V320 Z" fill="#fbcfe8" stroke="#9f1239" stroke-width="3"/>' % (vx - 90)
+    for k in range(0, 46):   # microvilli fringe on the surface cells
+        import math
+        if k < 12:
+            x, y, nx, ny = vx - 90, 310 - k * 17, -1, 0
+        elif k < 34:
+            a = math.pi + (k - 12) / 22 * math.pi
+            x, y, nx, ny = vx + 90 * math.cos(a), 110 + 90 * math.sin(a), math.cos(a), math.sin(a)
+        else:
+            x, y, nx, ny = vx + 90, 110 + (k - 34) * 17, 1, 0
+        b += '<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="#9f1239" stroke-width="2"/>' % (x, y, x + nx * 7, y + ny * 7)
+    b += '<path d="M%d 320 V110 a72 72 0 0 1 144 0 V320" fill="none" stroke="#be185d" stroke-width="1.5" stroke-dasharray="3 3"/>' % (vx - 72)
+    b += '<path d="M%d 320 V120 C%d 60 %d 60 %d 120 V320" fill="none" stroke="#2563eb" stroke-width="5"/>' % (vx - 45, vx - 40, vx + 40, vx + 45)
+    for y in range(140, 320, 34):
+        b += '<path d="M%d %d C%d %d %d %d %d %d" fill="none" stroke="#dc2626" stroke-width="3"/>' % (vx - 45, y, vx - 15, y - 14, vx + 15, y + 14, vx + 45, y)
+    b += '<path d="M%d 320 V140 a10 10 0 0 1 20 0 V320" fill="#fefce8" stroke="#ca8a04" stroke-width="2"/>' % (vx - 10)
+    b += '<g %s>' % SMALL
+    b += '<text x="%d" y="16" text-anchor="middle">wall one cell thick, with tiny folds (microvilli)</text>' % vx
+    b += '<line x1="%d" y1="20" x2="%d" y2="44" stroke="#334155" stroke-width="1.3"/>' % (vx + 30, vx + 34)
+    b += lbl("network of blood capillaries", vx + 110, 200, vx + 45, 200, "start")
+    b += lbl("blood carries food away", vx + 110, 300, vx + 45, 300, "start")
+    b += '</g>'
+    b += text(vx, 345, "(b) One villus, close up", weight=1)
+    return ('<svg viewBox="0 0 900 360" role="img" aria-label="%s" style="max-width:880px">%s</svg>'
+            % ("(a) The inner wall of the small intestine is covered in many finger-like villi sticking into the digested food. "
+               "(b) One villus: its wall is one cell thick with tiny folds called microvilli, and inside is a network of blood capillaries that carries absorbed food away.", b))
