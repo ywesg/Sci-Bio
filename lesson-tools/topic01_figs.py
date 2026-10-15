@@ -325,3 +325,43 @@ def liver_and_root_hair():
     s.append('<text x="460" y="238" text-anchor="middle" %s font-weight="700">B</text>' % FONT)
     s.append("</svg>")
     return "".join(s)
+
+
+# ------------------------------------------------------------------ small pictures of specialised cells (lesson 1.2, differentiation)
+def mini_rbc():
+    s = ['<svg viewBox="0 0 200 150" role="img" aria-label="Red blood cells: red discs, darker and thinner in the middle">'
+         '<defs><radialGradient id="mrbc" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#9f1239"/><stop offset="0.5" stop-color="#c81e1e"/><stop offset="1" stop-color="#e11d2e"/></radialGradient></defs>']
+    for x, y, rx, ry, r in ((60, 50, 30, 24, -15), (130, 40, 34, 27, 10), (155, 100, 24, 20, 30), (85, 112, 26, 21, -5), (35, 100, 16, 22, 0)):
+        s.append('<ellipse cx="%d" cy="%d" rx="%d" ry="%d" transform="rotate(%d %d %d)" fill="url(#mrbc)" stroke="#7f1d1d" stroke-width="1.5"/>' % (x, y, rx, ry, r, x, y))
+        s.append('<ellipse cx="%d" cy="%d" rx="%d" ry="%d" transform="rotate(%d %d %d)" fill="#7f1d1d" opacity="0.35"/>' % (x, y, rx * 0.45, ry * 0.45, r, x, y))
+    s.append('</svg>')
+    return "".join(s)
+
+
+def mini_nerve():
+    return ('<svg viewBox="0 0 200 150" role="img" aria-label="Nerve cell: a cell body with a nucleus, many short branches and one long fibre">'
+            '<g fill="none" stroke="#e05a6d" stroke-linecap="round">'
+            '<path d="M100 60 L72 30 L60 12 M72 30 L52 34 M100 60 L130 26 L138 8 M130 26 L152 22 M88 70 L48 66 L28 56 M48 66 L34 80 M112 70 L150 64 L176 52 M150 64 L168 80" stroke-width="5"/>'
+            '<path d="M100 82 C102 104 96 120 100 146 M100 120 L84 140 M101 128 L116 146" stroke-width="6"/></g>'
+            '<path d="M76 66 C78 48 122 46 126 64 C130 82 118 92 100 92 C82 92 74 84 76 66 Z" fill="#f4a3ae" stroke="#be3a4d" stroke-width="2"/>'
+            '<circle cx="101" cy="70" r="10" fill="#7e3f98" stroke="#4c1d95" stroke-width="1.5"/></svg>')
+
+
+def mini_intestine():
+    s = ['<svg viewBox="0 0 200 150" role="img" aria-label="Intestinal cells: rounded cells side by side, each with a nucleus and tiny finger-like folds on the top surface">']
+    for i, x in enumerate((20, 75, 130)):
+        for k in range(6):
+            fx = x + 6 + k * 8
+            s.append('<rect x="%d" y="34" width="5" height="20" rx="2.5" fill="#f59e0b" stroke="#b45309" stroke-width="1"/>' % fx)
+        s.append('<path d="M%d 52 H%d Q%d 52 %d 64 V122 Q%d 134 %d 134 H%d Q%d 134 %d 122 V64 Q%d 52 %d 52 Z" fill="#fbbf24" stroke="#b45309" stroke-width="2"/>'
+                 % (x + 8, x + 44, x + 52, x + 52, x + 52, x + 40, x + 12, x, x, x, x + 8))
+        s.append('<ellipse cx="%d" cy="98" rx="14" ry="12" fill="#c2410c" stroke="#7c2d12" stroke-width="1.5"/>' % (x + 26))
+    s.append('</svg>')
+    return "".join(s)
+
+
+def mini_root_hair():
+    return ('<svg viewBox="140 10 430 200" role="img" aria-label="Root hair cell: a cell with a long, narrow extension">'
+            '<path d="M150 30 Q150 18 162 18 H186 Q198 18 198 30 V96 C290 104 380 76 450 74 C500 72 530 66 556 58 C530 82 492 92 452 98 C380 106 300 124 198 126 V190 Q198 202 186 202 H162 Q150 202 150 190 Z" fill="#d6a07a" stroke="#7c4a2a" stroke-width="3"/>'
+            '<path d="M162 30 H186 V104 C290 112 380 86 450 84 C486 82 510 78 530 72 C506 84 484 88 452 90 C380 96 300 116 186 118 V190 H162 Z" fill="#fbe8cc" stroke="#7c4a2a" stroke-width="2"/>'
+            '<ellipse cx="156" cy="132" rx="4" ry="9" fill="#e11d74"/></svg>')

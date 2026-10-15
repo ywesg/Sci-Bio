@@ -238,14 +238,23 @@ def lesson3():
     b += ('<p>In a large organism, different cells do different jobs. A <strong>specialised cell</strong> has a structure that is <strong>adapted</strong> (suited) to its function. '
           'Each one still has the usual cell parts, but some parts are changed, added or lost.</p>\n'
           '<p class="keyidea"><strong>Key idea:</strong> for every adaptation, say <strong>what the feature is</strong> and <strong>how it helps the cell do its job</strong>.</p>\n')
-    b += ('<div class="practical"><h3>Differentiation</h3><p>As an organism grows, its cells change to become <strong>specialised</strong>: '
-          'each type of cell develops a structure that suits one particular job. This process is called <strong>differentiation</strong>.</p>'
-          '<p>Examples of specialised cells:</p><ul>'
-          '<li><strong>red blood cells</strong> carry oxygen around the body;</li>'
+    b += ('<p class="keyidea"><strong>Differentiation:</strong> as an organism grows, its cells change to become <strong>specialised</strong>: '
+          'each type of cell develops a structure that suits one particular job.</p>\n'
+          '<p>Your body has many kinds of specialised cells, each with its own job. For example:</p>\n'
+          '<ul><li><strong>red blood cells</strong> carry oxygen around the body;</li>'
           '<li><strong>nerve cells</strong> carry messages between parts of the body;</li>'
           '<li><strong>intestinal cells</strong> lining the gut absorb digested food;</li>'
-          '<li><strong>root hair cells</strong> in plants absorb water and mineral salts from the soil.</li></ul>'
-          '<p>Below, you will look closely at red blood cells, muscle cells and root hair cells.</p></div>\n')
+          '<li><strong>root hair cells</strong> in plants absorb water and mineral salts from the soil.</li></ul>\n')
+    cards = [(F.mini_rbc(), "red blood cells", "carry oxygen around the body"),
+             (F.mini_nerve(), "nerve cell", "carries messages between parts of the body"),
+             (F.mini_intestine(), "intestinal cells", "line the gut and absorb digested food"),
+             (F.mini_root_hair(), "root hair cell", "absorbs water and mineral salts from the soil")]
+    b += ('<style>.cellcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.8rem; margin: 1rem 0 0.3rem; }'
+          '.cellcards figure { margin: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.6rem; text-align: center; break-inside: avoid; }'
+          '.cellcards svg { width: 100%; height: 120px; margin: 0 0 0.4rem; }'
+          '.cellcards figcaption { font-size: 0.95rem; line-height: 1.35; }</style>\n')
+    b += '<div class="cellcards">' + "".join('<figure>%s<figcaption><strong>%s</strong><br>%s</figcaption></figure>' % c for c in cards) + '</div>\n'
+    b += '<p class="photo-note">Drawings, not to scale.</p>\n'
 
     b += '<h2>Surface area to volume ratio</h2>\n'
     b += ('<p>Substances such as oxygen, water and mineral salts enter a cell through its <strong>surface</strong> (the cell membrane). '
