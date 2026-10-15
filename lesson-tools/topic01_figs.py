@@ -162,7 +162,9 @@ def muscle_cell():
     for i, x in enumerate(range(80, 520, 42)):
         s.append(mito(x, 128 if i % 2 else 100, 0, 12, 5.5))
     s.append('<line x1="250" y1="30" x2="250" y2="63" stroke="#334155" stroke-width="1.4"/><text x="250" y="24" text-anchor="middle" %s>many nuclei</text>' % FONT)
-    s.append('<line x1="420" y1="185" x2="416" y2="132" stroke="#334155" stroke-width="1.4"/><text x="420" y="202" text-anchor="middle" %s>many mitochondria</text>' % FONT)
+    s.append('<line x1="416" y1="185" x2="376" y2="131" stroke="#334155" stroke-width="1.4"/><circle cx="376" cy="131" r="2.4" fill="#334155"/>'
+             '<line x1="424" y1="185" x2="456" y2="131" stroke="#334155" stroke-width="1.4"/><circle cx="456" cy="131" r="2.4" fill="#334155"/>'
+             '<text x="420" y="202" text-anchor="middle" %s>many mitochondria</text>' % FONT)
     s.append('<line x1="150" y1="185" x2="160" y2="117" stroke="#334155" stroke-width="1.4"/><text x="150" y="202" text-anchor="middle" %s>protein fibres (contract)</text>' % FONT)
     s.append("</svg>")
     return "".join(s)
