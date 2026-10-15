@@ -21,6 +21,10 @@ TOPICS = [
         ("cells-1-2-cell-adaptations", "1.2", "How Are Cells Adapted to Their Functions?", "Syllabus refs (G2 &amp; G3): 1d", False),
         ("revision-01-cells", "", "Revision Questions", "Section A: multiple choice &middot; Section B: short answer and free response", False),
     ]),
+    dict(id="movement", name="Movement of Substances", g3=False, lessons=[
+        ("movement-2-1-diffusion", "2.1", "What Is Diffusion?", "Syllabus refs (G2 &amp; G3): 2a", False),
+        ("movement-2-2-osmosis", "2.2", "What Is Osmosis?", "Syllabus refs (G2 &amp; G3): 2b", False),
+    ]),
 ]
 
 # ------------------------------------------------------------------ pixel-art banner (320 x 110 "pixels", drawn as SVG rectangles)

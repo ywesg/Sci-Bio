@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.1 What Is Diffusion?</title>
+<script>try { if (localStorage.getItem("bio-level") === "g2") document.documentElement.className += " g2"; } catch (e) {}</script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.6; color: #1a1a1a; }
+  h1 { border-bottom: 3px solid #0f766e; padding-bottom: 0.5rem; }
+  h2 { color: #134e4a; margin-top: 2rem; }
+  .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+  .site-nav { font-size: 0.85rem; margin-bottom: 1rem; }
+  .site-nav a { color: #0f766e; text-decoration: none; }
+  .pdf-btn { display: inline-block; background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  .pdf-btn:hover { background: #e2e8f0; }
+  .formula { background: #f0fdfa; border-left: 4px solid #0f766e; padding: 0.75rem 1rem; margin: 1rem 0; font-weight: 600; font-family: "Cambria Math", serif; }
+  blockquote { border-left: 4px solid #94a3b8; margin-left: 0; padding-left: 1rem; color: #475569; }
+  svg { display: block; margin: 1.5rem auto; max-width: 100%; height: auto; }
+  .fig-caption { text-align: center; font-size: 0.9rem; color: #555; }
+  .checkpoint { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .checkpoint p.q { font-weight: 600; margin-top: 0; }
+  .checkpoint label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; }
+  .checkpoint label:hover { background: #f1f5f9; }
+  .checkpoint input[type=text] { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; width: 150px; }
+  .checkpoint button { display: block; margin-top: 0.75rem; background: #0f766e; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  .feedback { margin-top: 0.75rem; padding: 0.6rem 0.9rem; border-radius: 6px; display: none; }
+  .feedback.correct { background: #dcfce7; color: #166534; display: block; }
+  .feedback.incorrect { background: #fee2e2; color: #991b1b; display: block; }
+  .feedback.hint { background: #fef9c3; color: #854d0e; display: block; }
+</style>
+<style>
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.95rem; }
+  th, td { border: 1px solid #cbd5e1; padding: 0.45rem 0.7rem; text-align: left; }
+  th { background: #f0fdfa; color: #134e4a; }
+  .tool { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1.25rem 0; }
+  .tool h3 { margin-top: 0; color: #134e4a; font-size: 1.05rem; }
+  .tool label { font-weight: 600; margin-right: 0.4rem; }
+  .tool input[type=number], .tool select { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+  .tool input[type=number] { width: 7rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-bottom: 0.75rem; }
+  .result { font-size: 1.2rem; font-weight: 700; color: #134e4a; font-family: "Cambria Math", serif; margin: 0.3rem 0; }
+  .working { color: #475569; font-size: 0.9rem; }
+  input[type=range] { width: 100%; }
+  .common { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 0.6rem 1rem; margin: 1rem 0; }
+  .sort-item { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; padding: 0.5rem 0.75rem; margin: 0.4rem 0; background: white; border: 1px solid #cbd5e1; border-radius: 6px; }
+  .sort-item .name { flex: 1 1 10rem; font-weight: 600; }
+  .sort-item button { background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.3rem 0.8rem; cursor: pointer; font-weight: 600; }
+  .sort-item button:hover { background: #e2e8f0; }
+  .sort-item .fb { flex: 1 1 100%; font-size: 0.9rem; display: none; }
+  .sort-item.right { border-color: #86efac; background: #f0fdf4; }
+  .sort-item.wrong { border-color: #fca5a5; background: #fef2f2; }
+  .sort-item .fb.show { display: block; }
+  .score { font-weight: 700; color: #134e4a; margin-top: 0.5rem; }
+  .bar-wrap { background: #e2e8f0; border-radius: 6px; height: 1.1rem; margin: 0.3rem 0; overflow: hidden; }
+  .bar { background: #0f766e; height: 100%; width: 0; transition: width 0.15s; }
+  .print-only { display: none; }
+</style>
+<style>
+  @media print {
+    body { max-width: none; padding: 0; font-size: 11pt; }
+    .site-nav, .pdf-btn, .tool, .video-block, button, .feedback, .print-hide { display: none !important; }
+    .print-only { display: block; }
+    .checkpoint { background: none; border: 1px solid #888; break-inside: avoid; }
+    .checkpoint label { border: none; padding: 0.15rem 0; }
+    .checkpoint input[type=text] { border: none; border-bottom: 1px solid #000; border-radius: 0; width: 220px; }
+    h2 { break-after: avoid; }
+    svg, table, blockquote { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+<style>
+  .video-block { margin: 1.5rem 0; }
+  .video-block p { font-weight: 600; margin-bottom: 0.5rem; }
+  .video-block iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 8px; }
+  .sim-block iframe { aspect-ratio: 16/10; border: 1px solid #cbd5e1; }
+  .vid-credit { font-weight: 400; color: #475569; font-size: 0.85rem; }
+  .vid-note { color: #475569; font-size: 0.9rem; margin: -0.25rem 0 0.5rem; }
+  .more-links { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.95rem; }
+  .more-links a { color: #0f766e; }
+</style>
+<style>
+  .illus { margin: 1.25rem 0; }
+  .illus svg { margin: 0.5rem auto; }
+  .q-fig { margin: 0.5rem 0 0.75rem; overflow-x: auto; }
+  .q-fig svg { margin: 0 auto; }
+  .checkpoint label.fig-opt { display: flex; align-items: center; gap: 0.75rem; }
+  .checkpoint label.fig-opt svg { margin: 0; flex: 0 0 auto; max-width: 150px; height: auto; display: inline-block; }
+  .checkpoint label svg { display: inline-block; margin: 0; }
+  .opt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.4rem 0.6rem; }
+  .opt-grid label { margin: 0; }
+  @media print { .q-fig { overflow: visible; } }
+</style>
+<style>
+  @media (max-width: 640px) { table { display: block; overflow-x: auto; } .tool select, select { max-width: 100%; } }
+</style>
+<style>
+  .photo { position: relative; margin: 1.25rem 0; border-radius: 10px; overflow: hidden; background: #111; }
+  .photo img { display: block; width: 100%; height: auto; }
+  .photo .chip { position: absolute; top: 3%; background: rgba(0,0,0,0.78); color: #fde047; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 8px; font-size: clamp(0.8rem, 2.4vw, 1.2rem); }
+  .photo .chip.l { left: 2%; } .photo .chip.r { left: 52%; color: #fff; }
+  .photo .capbar { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; background: #111; padding: 0.7rem 3% 0.8rem; color: #fff; font-size: clamp(0.75rem, 2vw, 1rem); line-height: 1.4; }
+  .photo .capbar strong { color: #fde047; } .photo .capbar .r strong { color: #7dd3fc; }
+  .photo-note { font-size: 0.85rem; color: #555; text-align: center; margin-top: 0.3rem; }
+</style>
+<style>
+  figure.pic { margin: 1.25rem 0; }
+  figure.pic img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  figure.pic figcaption { font-size: 0.9rem; color: #555; text-align: center; margin-top: 0.4rem; }
+  figure.pic figcaption em { color: #666; }
+</style>
+<style>
+  .back-bottom { margin: 2.5rem 0 1rem; text-align: center; }
+  .back-btn { display: inline-block; background: #0f766e; color: #fff; text-decoration: none; font-weight: 700; padding: 0.75rem 1.6rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(15,118,110,0.35); }
+  .back-btn:hover { background: #115e59; }
+  @media print { .back-bottom { display: none !important; } }
+</style>
+<style>
+  /* polish: touch targets, focus, contrast */
+  @media screen {
+    input[type=range] { height: 2rem; cursor: pointer; accent-color: #0f766e; }
+    .checkpoint input[type=text] { min-height: 2.75rem; }
+    .checkpoint label { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+  }
+  :focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Chakra+Petch:wght@500;600;700&display=swap">
+<style>
+  /* nav: contents, previous/next, heading touch */
+  h1, h2 { font-family: "Rajdhani", system-ui, sans-serif; }
+  h1 { font-size: 2.3rem; line-height: 1.25; letter-spacing: 0.01em; border-bottom: 3px solid; border-image: linear-gradient(90deg, #db2777 0, #db2777 72px, #0f766e 72px) 1; }
+  h2 { font-size: 1.65rem; letter-spacing: 0.01em; scroll-margin-top: 1rem; }
+  h2 .droid { width: 22px; height: 27px; margin: 0 0.5rem -3px 0; display: inline-block; vertical-align: baseline; }
+  .toc { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; margin: 1rem 0 1.5rem; font-size: 0.88rem; }
+  .toc strong { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-size: 1.05rem; color: #475569; margin-right: 0.3rem; }
+  .toc a { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; display: inline-block; padding: 0.6rem 0.9rem; border: 1px solid #cbd5e1; border-radius: 999px; background: #f8fafc; color: #134e4a; text-decoration: none; line-height: 1.3; }
+  .toc a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav { display: flex; flex-wrap: wrap; gap: 1rem; margin: 2.5rem 0 1rem; }
+  .lesson-nav a { flex: 1 1 15rem; display: block; padding: 0.8rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; background: #f8fafc; color: #134e4a; text-decoration: none; }
+  .lesson-nav a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav .dir { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; }
+  .lesson-nav .t { display: block; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+  .lesson-nav .next { text-align: right; }
+  .lesson-nav .g3t { display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.5rem; border-radius: 999px; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-size: 0.75rem; font-weight: 800; vertical-align: middle; }
+  @media print { .toc, .lesson-nav { display: none !important; } }
+</style>
+<style>
+  /* alert: sound controls */
+  .alert-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.75rem 0 1rem; font-size: 0.85rem; }
+  .alert-ctl button { min-height: 2.75rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+  .alert-ctl button:hover { background: #f0fdfa; border-color: #0f766e; }
+  .alert-ctl button[aria-pressed="true"] { background: #134e4a; border-color: #134e4a; color: #fff; }
+  .alert-ctl .note { color: #475569; }
+  @media print { .alert-ctl { display: none !important; } }
+</style>
+<style>
+  .g3-badge { display: inline-block; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 0.22rem 0.8rem; border-radius: 999px; letter-spacing: 0.02em; vertical-align: middle; margin-left: 0.5rem; }
+  h1 .g3-badge { font-size: 0.8rem; }
+  .photo .capbar.one { grid-template-columns: 1fr; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+  /* biology site: body font, G2/G3 switch (set on the home page), shared boxes */
+  body { font-family: "Source Sans 3", system-ui, sans-serif; font-size: 1.08rem; }
+  .g2 .g3-only { display: none !important; }
+  .keyidea { border-left: 4px solid #94a3b8; padding: 0.2rem 0 0.2rem 1rem; margin: 1rem 0; color: #334155; }
+  .practical { border: 1px solid #a7f3d0; background: #f0fdf4; border-radius: 10px; padding: 0.9rem 1.2rem; margin: 1.2rem 0; }
+  .practical h3 { margin: 0.2rem 0 0.4rem; color: #166534; font-size: 1.1rem; }
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 1rem 0; }
+  .flow span { padding: 0.45rem 0.9rem; border-radius: 999px; background: #f0fdfa; border: 1px solid #99f6e4; font-weight: 600; color: #134e4a; }
+  .flow b { color: #db2777; }
+  .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem 1.2rem; align-items: start; }
+  .eg-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem 1.1rem; margin: 0.5rem 0; } .eg-box .q { font-weight: 700; margin-top: 0; }
+  .three-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem 1rem; align-items: start; }
+  .three-col svg { width: 100%; max-width: 240px; }
+  .tag-p { color: #15803d; font-weight: 700; } .tag-a { color: #be185d; font-weight: 700; } .tag-b { color: #1d4ed8; font-weight: 700; }
+  /* clickable diagram (explorer) */
+  .explorer { margin: 1.25rem 0; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem 0.6rem; background: #fff; }
+  .explorer svg { margin: 0.3rem auto; }
+  .explorer .part, .explorer .lbl { cursor: pointer; }
+  .explorer .part:hover, .explorer .lbl:hover { filter: brightness(1.06) saturate(1.2); }
+  .explorer .part.on { filter: drop-shadow(0 0 3px #f59e0b) drop-shadow(0 0 2px #f59e0b); }
+  .explorer .lbl.on text { fill: #b45309; }
+  .explorer .part:focus, .explorer .lbl:focus { outline: none; }
+  .explorer .part:focus-visible, .explorer .lbl:focus-visible { filter: drop-shadow(0 0 3px #0f766e) drop-shadow(0 0 2px #0f766e); }
+  .explorer.nolabels .lbl text { visibility: hidden; }
+  .ex-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .ex-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .ex-ctl button[aria-pressed="true"] { background: #134e4a; color: #fff; border-color: #134e4a; }
+  .ex-q { font-weight: 700; color: #134e4a; }
+  .ex-info { min-height: 3.2rem; padding: 0.6rem 0.9rem; border-radius: 8px; background: #f0fdfa; border: 1px solid #99f6e4; }
+  .ex-info.ok { background: #dcfce7; border-color: #86efac; } .ex-info.no { background: #fee2e2; border-color: #fca5a5; }
+  @media print { .explorer { border: none; padding: 0; } .ex-ctl, .ex-info { display: none !important; } .explorer.nolabels .lbl text { visibility: visible; } }
+</style>
+</head>
+<body>
+<p class="site-nav"><a href="index.html">&larr; Back to Biology lessons</a></p>
+<main>
+<h1>2.1 What Is Diffusion?</h1>
+<p class="meta">Biology &middot; Movement of Substances &middot; Syllabus refs (G2 &amp; G3): 2a</p>
+<p class="print-only">Name: ______________________ &nbsp; Class: ________ &nbsp; Date: ____________</p>
+<p class="print-hide"><a class="pdf-btn" href="movement-2-1-diffusion.pdf" target="_blank" rel="noopener">&#128196; Download printable version (PDF)</a></p>
+<nav class="toc print-hide" aria-label="On this page"><strong>On this page</strong><a href="#trigger-activity">Trigger activity</a><a href="#what-is-diffusion">What is diffusion?</a><a href="#diffusion-across-a-membrane">Diffusion across a membrane</a><a href="#factors-that-affect-the-rate-of-diffusio">Factors that affect the rate of diffusion</a><a href="#check-your-understanding">Check your understanding</a></nav>
+<style>
+  .sim { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.1rem; margin: 1.25rem 0; }
+  .sim h3 { margin-top: 0; color: #134e4a; font-size: 1.08rem; }
+  .sim canvas { display: block; width: 100%; height: auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; touch-action: pan-y; }
+  .sim .btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
+  .sim .btns button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font: 700 0.95rem "Source Sans 3", system-ui, sans-serif; cursor: pointer; }
+  .sim .btns button.go { background: #0f766e; border-color: #0f766e; color: #fff; }
+  .sim .read { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin-top: 0.4rem; }
+  .sim .read div { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.4rem 0.7rem; font-size: 0.92rem; color: #475569; }
+  .sim .read b { display: block; font-size: 1.2rem; color: #134e4a; }
+  .sim .status { margin: 0.6rem 0 0; padding: 0.5rem 0.8rem; border-radius: 8px; background: #f0fdfa; border: 1px solid #99f6e4; font-weight: 600; color: #134e4a; }
+  .sim .key { font-size: 0.9rem; color: #475569; margin: 0.4rem 0 0; }
+  .sim .key i { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 50%; vertical-align: -0.05em; margin: 0 0.25em 0 0.6em; }
+  @media print { .sim { display: none !important; } }
+</style>
+<style>
+  .defn { border: 1px solid #fbcfe8; background: #fdf2f8; border-radius: 10px; padding: 0.8rem 1.1rem; margin: 1rem 0; }
+  .defn strong:first-child { color: #9d174d; }
+  details.ans { margin: 0.4rem 0 0.6rem; } details.ans summary { cursor: pointer; color: #0f766e; font-weight: 700; }
+  details.ans div { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.5rem 0.8rem; margin-top: 0.3rem; }
+  .figrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; align-items: end; }
+  .figrow .illus svg { width: 100%; height: auto; }
+  .cellcmp td svg { width: 100%; max-width: 220px; height: auto; display: block; margin: 0.3rem auto; }
+  .cellcmp td { vertical-align: top; }
+  .rbcrow { display: flex; align-items: center; justify-content: center; gap: 0.3rem; margin-top: 0.5rem; }
+  .cellcmp .rbcrow svg { width: 72px; height: auto; margin: 0; } .rbcrow b { color: #2563eb; font-size: 1.3rem; }
+  .sidebox { border-left: 4px solid #84cc16; background: #f7fee7; padding: 0.5rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+  .sidebox h4 { margin: 0.2rem 0; color: #3f6212; }
+  @media print { details.ans div { display: block; } }
+</style>
+<style>
+  .labeller { margin: 1.25rem 0; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem; background: #fff; }
+  .lab-title { margin: 0 0 0.5rem; }
+  .bank { display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0.6rem; background: #f0fdfa; border: 1px dashed #5eead4; border-radius: 10px; min-height: 2.9rem; }
+  .chip { touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; min-height: 2.4rem; padding: 0 0.85rem; border: 1px solid #0f766e; border-radius: 999px; background: #fff; color: #134e4a; font: 700 0.95rem "Source Sans 3", system-ui, sans-serif; }
+  .chip.sel { background: #134e4a; color: #fff; }
+  .chip.dragging { position: fixed; z-index: 50; pointer-events: none; box-shadow: 0 6px 18px rgba(0,0,0,0.25); cursor: grabbing; }
+  .lab-stage { position: relative; margin: 0.8rem auto 0.3rem; }
+  .lab-stage svg { display: block; width: 100%; height: auto; margin: 0; }
+  .drop { position: absolute; transform: translate(-100%, -50%); min-width: 7.4em; max-width: 12em; min-height: 2em; padding: 0.15rem 0.45rem; border: 2px dashed #64748b; border-radius: 8px; background: rgba(255,255,255,0.94);
+    font: 700 clamp(0.6rem, 1.7vw, 0.92rem)/1.15 "Source Sans 3", system-ui, sans-serif; color: #134e4a; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 0.3rem; }
+  .drop.r { transform: translate(0, -50%); } .drop.c { transform: translate(-50%, -50%); }
+  .drop .n { flex: 0 0 auto; width: 1.3em; height: 1.3em; border-radius: 50%; background: #e2e8f0; color: #334155; font-size: 0.8em; display: inline-flex; align-items: center; justify-content: center; }
+  .drop.filled { border-style: solid; border-color: #0f766e; }
+  .drop .v { flex: 1 1 auto; min-width: 0; }
+  .drop .chip { min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; font: inherit; color: inherit; text-align: left; white-space: nowrap; }
+  .drop .chip.sel { background: #134e4a; color: #fff; border-radius: 4px; padding: 0 0.2rem; }
+  .drop.over, .drop.armed:hover { background: #ccfbf1; border-color: #0f766e; }
+  .drop.ok { border-color: #16a34a; background: #dcfce7; } .drop.no { border-color: #dc2626; background: #fee2e2; }
+  .lab-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.4rem; }
+  .lab-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .lab-ctl button[data-act=check] { background: #0f766e; border-color: #0f766e; color: #fff; }
+  .lab-score { font-weight: 700; color: #134e4a; }
+  .two-col figure.pic img { height: 340px; object-fit: contain; background: #f1f5f9; }
+  .cellcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.8rem; margin: 1rem 0 0.3rem; }
+  .cellcards figure { margin: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.6rem; text-align: center; break-inside: avoid; }
+  .cellcards svg { width: 100%; height: 130px; margin: 0 0 0.4rem; }
+  .cellcards figcaption { font-size: 0.95rem; line-height: 1.35; }
+  ul.spot { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.7rem 1rem 0.7rem 2rem; }
+  .scopes img { height: 300px; object-fit: contain; background: #fff; }
+  .credit { font-size: 0.8rem; color: #64748b; text-align: center; margin: 0.2rem 0 0; }
+  .credit a { color: #64748b; }
+  .lab-swipe { display: none; font-size: 0.85rem; color: #475569; margin: 0.4rem 0 0; }
+  @media (max-width: 560px) { .labeller { padding: 0.7rem 0.5rem; } .lab-swipe { display: block; } .lab-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0.4rem; }
+    .lab-stage { width: 640px; max-width: none !important; } .drop { font-size: 0.8rem; min-width: 6.5em; } .drop .n { display: none; } }
+  @media print { .lab-swipe { display: none !important; } .lab-scroll { overflow: visible; } }
+  @media print { .labeller { border: none; padding: 0; break-inside: avoid; } .labeller .bank .chip { display: inline-block !important; min-height: 0; padding: 0.1rem 0.6rem; } .labeller .drop { display: flex !important; } .chip { cursor: default; } .drop .v { visibility: hidden; } .drop { border: 1.5px solid #000; background: #fff; } }
+</style>
+<div class="practical"><h3>Learning outcomes</h3><ul>
+<li>Define diffusion and describe its role in nutrient uptake and gaseous exchange in plants and humans.</li>
+<li>Describe the factors that affect the rate of diffusion.</li></ul></div>
+<h2 id="trigger-activity">Trigger activity</h2>
+<p>Someone sprays perfume at one end of a room. A few moments later, a person at the other end can smell it. <strong>How did the perfume get there, when nobody carried it?</strong></p>
+<div class="illus"><svg viewBox="0 0 640 250" role="img" aria-label="Perfume particles spread from a bottle, where they are crowded, across the room to a person far away" style="max-width:640px"><defs><marker id="ap" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#be185d"/></marker></defs><rect x="10" y="10" width="620" height="230" rx="6" fill="#fffbeb" stroke="#3f3f46" stroke-width="2"/><rect x="30" y="170" width="130" height="10" fill="#a16207"/><rect x="40" y="180" width="8" height="58" fill="#a16207"/><rect x="142" y="180" width="8" height="58" fill="#a16207"/><rect x="78" y="128" width="34" height="42" rx="6" fill="#fbcfe8" stroke="#9d174d" stroke-width="2"/><rect x="88" y="116" width="14" height="13" fill="#9d174d"/><circle cx="212" cy="152" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="293" cy="121" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="355" cy="127" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="205" cy="26" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="99" cy="99" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="124" cy="71" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="242" cy="32" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="242" cy="91" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="169" cy="215" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="96" cy="99" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="251" cy="50" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="324" cy="211" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="277" cy="94" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="133" cy="72" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="196" cy="204" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="349" cy="171" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="218" cy="190" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="214" cy="65" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="373" cy="107" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="241" cy="98" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="236" cy="224" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="140" cy="102" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="269" cy="135" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="297" cy="150" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="134" cy="95" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="178" cy="210" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="210" cy="86" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="261" cy="46" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="347" cy="180" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="205" cy="100" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="187" cy="205" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="301" cy="217" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="471" cy="217" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="344" cy="143" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="224" cy="100" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="212" cy="74" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="159" cy="39" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="265" cy="35" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="101" cy="109" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="219" cy="59" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="218" cy="205" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="99" cy="75" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="266" cy="217" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="334" cy="31" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="134" cy="67" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="236" cy="201" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="322" cy="145" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="272" cy="195" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="184" cy="87" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="213" cy="179" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="121" cy="27" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="242" cy="30" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="437" cy="144" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="276" cy="142" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="325" cy="76" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="409" cy="206" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="307" cy="52" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="150" cy="30" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="286" cy="156" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="328" cy="50" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="224" cy="124" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="127" cy="69" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="143" cy="101" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="178" cy="167" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="135" cy="27" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="357" cy="118" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="330" cy="60" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="194" cy="167" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="99" cy="88" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="327" cy="33" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="194" cy="205" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="178" cy="84" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="284" cy="215" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="99" cy="45" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="239" cy="172" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="201" cy="218" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="181" cy="130" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="311" cy="137" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="349" cy="220" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="202" cy="96" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="292" cy="47" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="526" cy="40" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="342" cy="177" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="217" cy="115" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="243" cy="105" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="111" cy="70" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="248" cy="74" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="194" cy="116" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="314" cy="72" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="225" cy="151" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="209" cy="218" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="242" cy="123" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="183" cy="168" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="296" cy="150" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="261" cy="177" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="241" cy="165" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="353" cy="162" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="105" cy="102" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="429" cy="148" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="270" cy="223" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="439" cy="26" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="145" cy="103" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="215" cy="54" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="153" cy="86" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="103" cy="47" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="262" cy="216" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="124" cy="92" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="193" cy="153" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="201" cy="89" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="103" cy="56" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="385" cy="161" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="158" cy="80" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="288" cy="101" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="252" cy="112" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="113" cy="102" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="186" cy="79" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="239" cy="32" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="449" cy="187" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="310" cy="29" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="188" cy="125" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="294" cy="165" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="145" cy="73" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="283" cy="44" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="104" cy="87" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="400" cy="99" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="185" cy="52" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="167" cy="131" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="364" cy="35" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="236" cy="70" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="188" cy="210" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="368" cy="202" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="292" cy="41" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="100" cy="63" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="348" cy="37" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="177" cy="149" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="283" cy="119" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="137" cy="79" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="225" cy="96" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="296" cy="39" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="259" cy="161" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="169" cy="63" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="101" cy="32" r="3.2" fill="#db2777" opacity="0.85"/><circle cx="560" cy="120" r="24" fill="#fde68a" stroke="#3f3f46" stroke-width="2"/><path d="M536 122 l-9 6 l9 3" fill="#fde68a" stroke="#3f3f46" stroke-width="2"/><path d="M520 240 q40 -80 80 0" fill="#93c5fd" stroke="#3f3f46" stroke-width="2"/><line x1="200" y1="45" x2="470" y2="45" stroke="#be185d" stroke-width="3" marker-end="url(#ap)"/><text x="335" y="36" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">net movement of perfume particles</text><text x="95" y="100" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round" font-weight="700"><tspan x="95" dy="0">higher</tspan><tspan x="95" dy="1.15em">concentration</tspan></text><text x="440" y="222" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round" font-weight="700">lower concentration</text></svg><p class="fig-caption"><strong>Fig. 2.1</strong> &mdash; Perfume particles spread out from where they are crowded to where there are fewer of them.</p></div>
+<p>The perfume particles are always moving about at random, bumping into air particles. Near the bottle there are many perfume particles; far away there are few. So, overall, more particles move <em>away</em> from the bottle than towards it. The perfume spreads until it is evenly mixed in the air.</p>
+<h2 id="what-is-diffusion">What is diffusion?</h2>
+<p>The difference in concentration between two regions is called a <strong>concentration gradient</strong>. Particles spread from the region of higher concentration to the region of lower concentration: we say they move <strong>down the concentration gradient</strong>.</p>
+<p class="defn"><strong>Diffusion</strong> is the net movement of particles (atoms, molecules or ions) from a region where they are at a higher concentration to a region where they are at a lower concentration, that is, down a concentration gradient.</p>
+<p class="keyidea"><strong>Key idea:</strong> the <strong>steeper</strong> the concentration gradient (the bigger the difference in concentration), the <strong>faster</strong> the rate of diffusion.</p>
+<p><strong>Why &ldquo;net&rdquo;?</strong> Each particle moves at random, in any direction. Some particles even move back towards the crowded region. The <em>net</em> movement is the overall result: more particles go one way than the other.</p>
+<div class="sim print-hide" id="sim-free" data-mode="free">
+  <h3>See it happen: diffusion in water</h3>
+  <p>Blue particles of a substance start crowded on the left. Press <strong>Start</strong> and watch the numbers on each side.</p>
+  <canvas width="720" height="300" aria-label="Animation of moving particles"></canvas>
+  <p class="key"><i style="background:#3b82f6"></i>particles of a dissolved substance</p>
+  <div class="btns"><button type="button" class="go" data-act="play">&#9654; Start</button><button type="button" data-act="reset">&#8634; Start again</button></div>
+  <div class="read"><div>Particles on the left<b data-r="l0">-</b></div><div>Particles on the right<b data-r="r0">-</b></div><div>Time (steps)<b data-r="t">0</b></div></div>
+  <p class="status" aria-live="polite">Press Start.</p>
+</div>
+<div class="practical"><h3>Practical: diffusion of a dissolved substance in water</h3><p><strong>Aim:</strong> to investigate how a dissolved substance spreads through water.</p><p><strong>Procedure</strong></p><ol><li>Gently drop one crystal of <strong>copper(II) sulfate</strong> into a gas jar filled with water. Cover the jar.</li><li>Leave the jar to stand, without shaking it, for a few days.</li><li>Observe how the colour of the water changes.</li></ol><div class="illus"><svg viewBox="0 0 610 305" role="img" aria-label="Three gas jars of water. On day 0 a blue copper(II) sulfate crystal sits at the bottom. After one day the blue colour has spread upwards, darkest at the bottom. After a few days the whole jar is evenly pale blue" style="max-width:610px"><defs><linearGradient id="cu0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4ed8" stop-opacity="0"/><stop offset="0.8" stop-color="#1d4ed8" stop-opacity="0"/><stop offset="0.93" stop-color="#1d4ed8" stop-opacity="0.25"/><stop offset="1" stop-color="#1d4ed8" stop-opacity="0.8"/></linearGradient></defs><g transform="translate(10 0)"><rect x="30" y="50" width="110" height="200" fill="#dbeafe"/><rect x="30" y="50" width="110" height="200" fill="url(#cu0)"/><path d="M24 28 V250 q0 8 8 8 H138 q8 0 8 -8 V28" fill="none" stroke="#3f3f46" stroke-width="3"/><rect x="18" y="20" width="134" height="8" rx="2" fill="#cbd5e1" stroke="#3f3f46" stroke-width="1.5"/><rect x="10" y="258" width="150" height="8" rx="2" fill="#f59e0b"/><path d="M73 250 l12 -19.200000000000003 l12 19.200000000000003 z" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1"/></g><text x="95" y="292" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">Day 0: crystal dropped in</text><defs><linearGradient id="cu1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4ed8" stop-opacity="0.02"/><stop offset="0.35" stop-color="#1d4ed8" stop-opacity="0.08"/><stop offset="0.75" stop-color="#1d4ed8" stop-opacity="0.35"/><stop offset="1" stop-color="#1d4ed8" stop-opacity="0.7"/></linearGradient></defs><g transform="translate(210 0)"><rect x="30" y="50" width="110" height="200" fill="#dbeafe"/><rect x="30" y="50" width="110" height="200" fill="url(#cu1)"/><path d="M24 28 V250 q0 8 8 8 H138 q8 0 8 -8 V28" fill="none" stroke="#3f3f46" stroke-width="3"/><rect x="18" y="20" width="134" height="8" rx="2" fill="#cbd5e1" stroke="#3f3f46" stroke-width="1.5"/><rect x="10" y="258" width="150" height="8" rx="2" fill="#f59e0b"/><path d="M78 250 l7 -11.200000000000001 l7 11.200000000000001 z" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1"/></g><text x="295" y="292" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">After 1 day</text><defs><linearGradient id="cu2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4ed8" stop-opacity="0.32"/><stop offset="1" stop-color="#1d4ed8" stop-opacity="0.36"/></linearGradient></defs><g transform="translate(410 0)"><rect x="30" y="50" width="110" height="200" fill="#dbeafe"/><rect x="30" y="50" width="110" height="200" fill="url(#cu2)"/><path d="M24 28 V250 q0 8 8 8 H138 q8 0 8 -8 V28" fill="none" stroke="#3f3f46" stroke-width="3"/><rect x="18" y="20" width="134" height="8" rx="2" fill="#cbd5e1" stroke="#3f3f46" stroke-width="1.5"/><rect x="10" y="258" width="150" height="8" rx="2" fill="#f59e0b"/></g><text x="495" y="292" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">After a few days</text></svg><p class="fig-caption"><strong>Fig. 2.2</strong> &mdash; The copper(II) sulfate crystal dissolves, and the blue colour slowly spreads through all the water.</p></div>
+<p><strong>Observation and discussion</strong></p><ol><li>Use the idea of a concentration gradient to explain why the blue colour slowly spreads through the water.<details class="ans print-hide"><summary>Show answer</summary><div>At first, copper(II) sulfate particles are at a high concentration near the crystal and a low concentration in the rest of the water. The particles diffuse down this concentration gradient, from the bottom of the jar to the top, so the blue colour spreads.</div></details></li><li>When does diffusion stop?<details class="ans print-hide"><summary>Show answer</summary><div>When the copper(II) sulfate particles are evenly spread through the water (the colour is the same everywhere). There is no concentration gradient any more, so there is no <em>net</em> movement. The particles are still moving at random.</div></details></li></ol></div>
+<p>In the practical, the copper(II) sulfate particles moved from the region of higher concentration around the crystal to regions of lower concentration in the water. The solute diffused until it was evenly spread, forming a solution.</p>
+<p>If <strong>more than one substance</strong> is dissolved in the same liquid, each one diffuses on its own, down its own concentration gradient. The particles of one substance do not affect the diffusion of the other.</p>
+<div class="video-block">
+  <p>Video: What is diffusion? How does it work? <span class="vid-credit">(YouTube: Cognito)</span></p>
+  <p class="vid-note">Watch from the start to the end of the section on factors. Ignore the part about temperature: our textbook does not include it in this lesson.</p>
+  <iframe src="https://www.youtube-nocookie.com/embed/lxHMJaXOzP4" title="Video: What is diffusion? How does it work?" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <p class="vid-note print-hide"><a href="https://www.youtube.com/watch?v=lxHMJaXOzP4" target="_blank" rel="noopener">&#9654; Video not playing? Watch on YouTube</a></p>
+</div>
+<h2 id="diffusion-across-a-membrane">Diffusion across a membrane</h2>
+<p>A <strong>permeable membrane</strong> lets both the solvent (water) and the solutes (the dissolved substances) pass through it. In Fig. 2.3, a permeable membrane divides a beaker into two halves:</p>
+<ul><li>the <strong>left</strong> side has a higher concentration of <strong>potassium nitrate</strong> (yellow);</li><li>the <strong>right</strong> side has a higher concentration of <strong>copper(II) sulfate</strong> (blue).</li></ul>
+<div class="illus"><svg viewBox="0 0 690 322" role="img" aria-label="Beaker (a): potassium nitrate particles on the left and copper(II) sulfate particles on the right of a permeable membrane, with arrows showing each moving to the other side. Beaker (b): both kinds of particle evenly spread on both sides" style="max-width:690px"><defs><marker id="am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#334155"/></marker></defs><defs><marker id="ay" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ca8a04"/></marker></defs><defs><marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2563eb"/></marker></defs><g transform="translate(10 0)"><rect x="20" y="60" width="240" height="190" fill="#dbeafe"/><path d="M14 40 V246 q0 10 10 10 H256 q10 0 10 -10 V40" fill="none" stroke="#3f3f46" stroke-width="3"/><line x1="140" y1="30" x2="140" y2="252" stroke="#475569" stroke-width="2.5" stroke-dasharray="9 6"/><circle cx="122.5" cy="233.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="119.2" cy="84.4" r="5" fill="#eab308" stroke="#a16207"/><circle cx="89.2" cy="142.9" r="5" fill="#eab308" stroke="#a16207"/><circle cx="83.0" cy="92.4" r="5" fill="#eab308" stroke="#a16207"/><circle cx="49.2" cy="146.5" r="5" fill="#eab308" stroke="#a16207"/><circle cx="52.1" cy="148.3" r="5" fill="#eab308" stroke="#a16207"/><circle cx="32.5" cy="84.8" r="5" fill="#eab308" stroke="#a16207"/><circle cx="101.0" cy="142.5" r="5" fill="#eab308" stroke="#a16207"/><circle cx="81.3" cy="196.3" r="5" fill="#eab308" stroke="#a16207"/><circle cx="65.9" cy="79.9" r="5" fill="#eab308" stroke="#a16207"/><circle cx="108.3" cy="171.3" r="5" fill="#eab308" stroke="#a16207"/><circle cx="95.8" cy="176.8" r="5" fill="#eab308" stroke="#a16207"/><circle cx="127.1" cy="132.4" r="5" fill="#eab308" stroke="#a16207"/><circle cx="106.0" cy="133.4" r="5" fill="#eab308" stroke="#a16207"/><circle cx="87.2" cy="183.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="61.4" cy="84.7" r="5" fill="#eab308" stroke="#a16207"/><circle cx="77.4" cy="193.5" r="5" fill="#eab308" stroke="#a16207"/><circle cx="89.1" cy="147.0" r="5" fill="#eab308" stroke="#a16207"/><circle cx="94.2" cy="101.3" r="5" fill="#eab308" stroke="#a16207"/><circle cx="47.9" cy="125.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="111.6" cy="103.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="41.4" cy="87.0" r="5" fill="#eab308" stroke="#a16207"/><circle cx="33.9" cy="117.4" r="5" fill="#eab308" stroke="#a16207"/><circle cx="87.3" cy="211.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="63.1" cy="133.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="58.8" cy="122.4" r="5" fill="#eab308" stroke="#a16207"/><circle cx="227.8" cy="164.4" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="175.8" cy="88.4" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="228.4" cy="191.6" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="232.9" cy="110.9" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="204.5" cy="228.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="209.3" cy="232.6" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="166.7" cy="237.7" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="155.6" cy="141.6" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="152.3" cy="209.2" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="218.7" cy="237.5" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="230.5" cy="233.2" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="203.9" cy="240.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="224.9" cy="129.5" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="247.4" cy="134.8" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="169.3" cy="83.1" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="196.6" cy="103.8" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="243.4" cy="233.5" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="171.6" cy="87.8" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="202.9" cy="99.2" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="204.4" cy="209.8" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="175.3" cy="142.5" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="240.1" cy="146.5" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="184.3" cy="223.5" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="231.4" cy="224.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="218.8" cy="141.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="219.3" cy="212.7" r="5" fill="#3b82f6" stroke="#1e40af"/><line x1="60" y1="95" x2="205" y2="95" stroke="#ca8a04" stroke-width="3" marker-end="url(#ay)"/><line x1="60" y1="175" x2="205" y2="175" stroke="#ca8a04" stroke-width="3" marker-end="url(#ay)"/><line x1="220" y1="135" x2="75" y2="135" stroke="#2563eb" stroke-width="3" marker-end="url(#ab)"/><line x1="220" y1="215" x2="75" y2="215" stroke="#2563eb" stroke-width="3" marker-end="url(#ab)"/></g><g transform="translate(400 0)"><rect x="20" y="60" width="240" height="190" fill="#dbeafe"/><path d="M14 40 V246 q0 10 10 10 H256 q10 0 10 -10 V40" fill="none" stroke="#3f3f46" stroke-width="3"/><line x1="140" y1="30" x2="140" y2="252" stroke="#475569" stroke-width="2.5" stroke-dasharray="9 6"/><circle cx="94.0" cy="111.0" r="5" fill="#eab308" stroke="#a16207"/><circle cx="59.5" cy="140.5" r="5" fill="#eab308" stroke="#a16207"/><circle cx="107.2" cy="165.8" r="5" fill="#eab308" stroke="#a16207"/><circle cx="85.0" cy="212.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="40.8" cy="178.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="63.3" cy="166.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="113.5" cy="112.7" r="5" fill="#eab308" stroke="#a16207"/><circle cx="125.2" cy="83.5" r="5" fill="#eab308" stroke="#a16207"/><circle cx="86.2" cy="163.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="53.5" cy="166.5" r="5" fill="#eab308" stroke="#a16207"/><circle cx="77.1" cy="147.3" r="5" fill="#eab308" stroke="#a16207"/><circle cx="101.8" cy="70.7" r="5" fill="#eab308" stroke="#a16207"/><circle cx="67.7" cy="205.1" r="5" fill="#eab308" stroke="#a16207"/><circle cx="164.2" cy="219.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="170.4" cy="187.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="167.3" cy="147.3" r="5" fill="#eab308" stroke="#a16207"/><circle cx="192.3" cy="84.1" r="5" fill="#eab308" stroke="#a16207"/><circle cx="220.0" cy="152.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="218.9" cy="162.7" r="5" fill="#eab308" stroke="#a16207"/><circle cx="205.6" cy="160.5" r="5" fill="#eab308" stroke="#a16207"/><circle cx="179.8" cy="224.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="158.6" cy="220.8" r="5" fill="#eab308" stroke="#a16207"/><circle cx="236.3" cy="155.6" r="5" fill="#eab308" stroke="#a16207"/><circle cx="227.7" cy="185.8" r="5" fill="#eab308" stroke="#a16207"/><circle cx="210.5" cy="120.2" r="5" fill="#eab308" stroke="#a16207"/><circle cx="182.0" cy="130.1" r="5" fill="#eab308" stroke="#a16207"/><circle cx="60.2" cy="235.1" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="64.1" cy="136.7" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="72.0" cy="210.4" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="77.8" cy="165.2" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="55.5" cy="117.8" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="38.9" cy="107.4" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="56.4" cy="216.6" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="80.2" cy="89.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="76.3" cy="90.8" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="86.6" cy="146.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="115.8" cy="114.6" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="115.1" cy="112.6" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="128.3" cy="179.1" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="154.3" cy="208.8" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="177.6" cy="132.3" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="164.7" cy="214.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="159.0" cy="197.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="189.6" cy="186.9" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="179.3" cy="83.5" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="241.5" cy="182.6" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="167.0" cy="237.9" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="241.2" cy="101.4" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="151.9" cy="175.1" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="163.9" cy="195.9" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="196.9" cy="192.0" r="5" fill="#3b82f6" stroke="#1e40af"/><circle cx="207.0" cy="202.6" r="5" fill="#3b82f6" stroke="#1e40af"/></g><line x1="305" y1="150" x2="375" y2="150" stroke="#334155" stroke-width="4" marker-end="url(#am)"/><text x="80" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" font-weight="700">LEFT</text><text x="210" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" font-weight="700">RIGHT</text><text x="470" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" font-weight="700">LEFT</text><text x="600" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" font-weight="700">RIGHT</text><text x="150" y="282" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">(a) At the start</text><text x="540" y="282" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">(b) Later: no net movement</text><circle cx="40" cy="306" r="5" fill="#eab308" stroke="#a16207"/><text x="52" y="311" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">potassium nitrate particle</text><circle cx="250" cy="306" r="5" fill="#3b82f6" stroke="#1e40af"/><text x="262" y="311" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">copper(II) sulfate particle</text><line x1="470" y1="298" x2="470" y2="314" stroke="#475569" stroke-width="2.5" stroke-dasharray="5 3"/><text x="482" y="311" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">permeable membrane</text></svg><p class="fig-caption"><strong>Fig. 2.3</strong> &mdash; Potassium nitrate and copper(II) sulfate particles diffusing through a permeable membrane.</p></div>
+<p>So the potassium nitrate particles diffuse across the membrane to the right, and the copper(II) sulfate particles diffuse across to the left. In the end, the concentration of each substance is the <strong>same on both sides</strong> of the membrane.</p>
+<div class="sim print-hide" id="sim-two" data-mode="two">
+  <h3>See it happen: two substances, one membrane</h3>
+  <p>The grey line is a permeable membrane with gaps. Both kinds of particle can pass through the gaps.</p>
+  <canvas width="720" height="300" aria-label="Animation of moving particles"></canvas>
+  <p class="key"><i style="background:#eab308"></i>potassium nitrate <i style="background:#3b82f6"></i>copper(II) sulfate</p>
+  <div class="btns"><button type="button" class="go" data-act="play">&#9654; Start</button><button type="button" data-act="reset">&#8634; Start again</button></div>
+  <div class="read"><div>Yellow: left | right<b data-r="y">-</b></div><div>Blue: left | right<b data-r="b">-</b></div><div>Time (steps)<b data-r="t">0</b></div></div>
+  <p class="status" aria-live="polite">Press Start.</p>
+</div>
+<h2 id="factors-that-affect-the-rate-of-diffusio">Factors that affect the rate of diffusion</h2>
+<p>How fast a substance diffuses depends on:</p>
+<div class="flow"><span>concentration gradient</span><span>diffusion distance</span><span>surface area to volume ratio</span></div>
+<h3>1. Concentration gradient</h3>
+<p>The steeper the concentration gradient, the faster the rate of diffusion (see above). When there is no concentration gradient, there is no net diffusion.</p>
+<h3>2. Diffusion distance</h3>
+<p>The distance a substance has to travel is the <strong>diffusion distance</strong>. The <strong>shorter</strong> the diffusion distance, the less time the substance needs to get there, so the <strong>faster</strong> the rate of diffusion.</p>
+<p>A cell membrane is not like the membrane in Fig. 2.3: it is <strong>partially permeable</strong>. It lets some substances through but not others. Small molecules such as <strong>oxygen</strong> and <strong>carbon dioxide</strong> pass through easily; large molecules such as <strong>proteins</strong> cannot. Diffusion is an important way for oxygen and carbon dioxide to move into and out of cells.</p>
+<h3>Diffusion in humans and plants</h3>
+<p><strong>Gas exchange in the lungs.</strong> Oxygen and carbon dioxide are exchanged in the lungs by diffusion. The air in the lungs has a high concentration of oxygen, and the blood arriving there has a low concentration. Oxygen diffuses from the air space, through a very thin wall, into the red blood cells. Carbon dioxide diffuses the other way, from the blood into the air space, and is breathed out.</p>
+<div class="illus"><svg viewBox="0 0 680 390" role="img" aria-label="Close-up of an air sac in the lung. Oxygen diffuses from the air space through the thin wall into a red blood cell in the capillary. Carbon dioxide diffuses the other way, from the blood into the air space" style="max-width:680px"><defs><marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs><defs><marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#111827"/></marker></defs><rect x="20" y="20" width="250" height="300" fill="#f8fafc"/><path d="M270 20 C262 100 278 220 270 320 L300 320 C308 220 292 100 300 20 Z" fill="#fecdd3" stroke="#9f1239" stroke-width="2"/><ellipse cx="286" cy="70" rx="6" ry="9" fill="#9f1239"/><ellipse cx="286" cy="170" rx="6" ry="9" fill="#9f1239"/><ellipse cx="286" cy="270" rx="6" ry="9" fill="#9f1239"/><path d="M300 20 C308 100 292 220 300 320 L340 320 L340 20 Z" fill="#fff1f2"/><rect x="340" y="20" width="12" height="300" fill="#fda4af"/><rect x="352" y="20" width="168" height="300" fill="#fee2e2"/><ellipse cx="420" cy="70" rx="38" ry="22" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/><ellipse cx="420" cy="70" rx="16" ry="8" fill="#ef4444"/><ellipse cx="460" cy="160" rx="38" ry="22" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/><ellipse cx="460" cy="160" rx="16" ry="8" fill="#ef4444"/><ellipse cx="415" cy="250" rx="38" ry="22" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/><ellipse cx="415" cy="250" rx="16" ry="8" fill="#ef4444"/><circle cx="119.2" cy="281.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="217.1" cy="95.7" r="4.5" fill="#dc2626" stroke="none"/><circle cx="223.1" cy="205.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="48.9" cy="287.8" r="4.5" fill="#dc2626" stroke="none"/><circle cx="93.7" cy="119.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="129.1" cy="193.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="66.1" cy="218.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="214.8" cy="173.2" r="4.5" fill="#dc2626" stroke="none"/><circle cx="206.8" cy="202.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="213.2" cy="87.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="115.3" cy="162.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="61.8" cy="293.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="173.6" cy="65.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="162.4" cy="147.8" r="4.5" fill="#dc2626" stroke="none"/><circle cx="79.8" cy="81.8" r="4.5" fill="#dc2626" stroke="none"/><circle cx="136.8" cy="58.3" r="4.5" fill="#dc2626" stroke="none"/><circle cx="158.2" cy="173.9" r="4.5" fill="#dc2626" stroke="none"/><circle cx="66.7" cy="267.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="48.5" cy="84.7" r="4.5" fill="#dc2626" stroke="none"/><circle cx="211.6" cy="97.4" r="4.5" fill="#dc2626" stroke="none"/><circle cx="129.1" cy="185.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="131.5" cy="168.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="146.0" cy="165.5" r="4.5" fill="#111827" stroke="none"/><circle cx="52.1" cy="252.2" r="4.5" fill="#111827" stroke="none"/><circle cx="99.4" cy="52.4" r="4.5" fill="#111827" stroke="none"/><circle cx="125.7" cy="251.8" r="4.5" fill="#111827" stroke="none"/><circle cx="172.1" cy="158.9" r="4.5" fill="#111827" stroke="none"/><circle cx="140.4" cy="97.1" r="4.5" fill="#111827" stroke="none"/><circle cx="455.8" cy="128.1" r="4.5" fill="#111827" stroke="none"/><circle cx="369.9" cy="66.4" r="4.5" fill="#111827" stroke="none"/><circle cx="374.4" cy="221.7" r="4.5" fill="#111827" stroke="none"/><circle cx="496.7" cy="241.5" r="4.5" fill="#111827" stroke="none"/><circle cx="394.0" cy="71.2" r="4.5" fill="#111827" stroke="none"/><circle cx="507.3" cy="134.7" r="4.5" fill="#111827" stroke="none"/><circle cx="385.9" cy="190.0" r="4.5" fill="#111827" stroke="none"/><circle cx="455.9" cy="181.4" r="4.5" fill="#111827" stroke="none"/><circle cx="430.1" cy="115.1" r="4.5" fill="#111827" stroke="none"/><circle cx="436.7" cy="158.1" r="4.5" fill="#111827" stroke="none"/><circle cx="465.6" cy="155.5" r="4.5" fill="#111827" stroke="none"/><circle cx="415.0" cy="306.1" r="4.5" fill="#111827" stroke="none"/><circle cx="377.2" cy="241.6" r="4.5" fill="#111827" stroke="none"/><circle cx="424.7" cy="255.5" r="4.5" fill="#111827" stroke="none"/><line x1="150" y1="110" x2="432" y2="158" stroke="#dc2626" stroke-width="4" marker-end="url(#ao)"/><line x1="470" y1="230" x2="170" y2="250" stroke="#111827" stroke-width="4" marker-end="url(#ac)"/><text x="130" y="345" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">air space in the lung</text><text x="436" y="345" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">blood capillary</text><line x1="254" y1="370" x2="286" y2="300" stroke="#334155" stroke-width="1.3"/><circle cx="286" cy="300" r="2.3" fill="#334155"/><text x="260" y="375" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">wall of air sac (one cell thick)</text><text x="40" y="100" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#b91c1c" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">oxygen diffuses into the blood</text><text x="40" y="282" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">carbon dioxide diffuses out</text><line x1="458" y1="70" x2="540" y2="70" stroke="#334155" stroke-width="1.3"/><text x="546" y="75" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">red blood cell</text><circle cx="560" cy="200" r="4.5" fill="#dc2626"/><text x="572" y="205" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">oxygen</text><circle cx="560" cy="226" r="4.5" fill="#111827"/><text x="572" y="231" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">carbon dioxide</text></svg><p class="fig-caption"><strong>Fig. 2.4(a)</strong> &mdash; Gas exchange between an air space in the lung and the blood.</p></div>
+<p><strong>Gas exchange in plant cells.</strong> Plant cells such as root hair cells also take in oxygen and get rid of carbon dioxide by diffusion. Oxygen diffuses in from the air spaces in the soil, and carbon dioxide diffuses out.</p>
+<div class="illus"><svg viewBox="0 0 600 300" role="img" aria-label="A root hair cell growing out between soil particles. Oxygen from the air spaces in the soil diffuses into the root hair cell; carbon dioxide diffuses out" style="max-width:560px"><defs><marker id="ro" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs><defs><marker id="rc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#111827"/></marker></defs><rect x="0" y="0" width="600" height="300" fill="#e7d7bd"/><circle cx="116" cy="28" r="20" fill="#b08962" stroke="#7c5a3a"/><circle cx="109" cy="265" r="16" fill="#b08962" stroke="#7c5a3a"/><circle cx="49" cy="267" r="17" fill="#b08962" stroke="#7c5a3a"/><circle cx="53" cy="245" r="19" fill="#b08962" stroke="#7c5a3a"/><circle cx="17" cy="283" r="18" fill="#b08962" stroke="#7c5a3a"/><circle cx="63" cy="120" r="14" fill="#b08962" stroke="#7c5a3a"/><circle cx="415" cy="271" r="19" fill="#b08962" stroke="#7c5a3a"/><circle cx="153" cy="289" r="12" fill="#b08962" stroke="#7c5a3a"/><circle cx="533" cy="14" r="19" fill="#b08962" stroke="#7c5a3a"/><circle cx="106" cy="110" r="16" fill="#b08962" stroke="#7c5a3a"/><circle cx="274" cy="36" r="14" fill="#b08962" stroke="#7c5a3a"/><circle cx="41" cy="106" r="11" fill="#b08962" stroke="#7c5a3a"/><circle cx="326" cy="264" r="13" fill="#b08962" stroke="#7c5a3a"/><rect x="0" y="250" width="600" height="50" fill="#fef9c3" stroke="#3f3f46" stroke-width="1.5"/><rect x="0" y="250" width="110" height="50" fill="#fef3c7" stroke="#3f3f46" stroke-width="1.5"/><rect x="110" y="250" width="110" height="50" fill="#fef3c7" stroke="#3f3f46" stroke-width="1.5"/><rect x="340" y="250" width="110" height="50" fill="#fef3c7" stroke="#3f3f46" stroke-width="1.5"/><rect x="450" y="250" width="110" height="50" fill="#fef3c7" stroke="#3f3f46" stroke-width="1.5"/><rect x="560" y="250" width="110" height="50" fill="#fef3c7" stroke="#3f3f46" stroke-width="1.5"/><path d="M220 300 V250 C220 210 240 175 300 150 C360 128 430 110 520 100 Q536 104 520 116 C440 126 372 146 320 166 C276 184 262 214 262 250 V300 Z" fill="#fbf3c6" stroke="#3f3f46" stroke-width="2"/><path d="M232 292 V252 C232 214 252 186 306 162 C360 140 420 124 500 112 C424 124 368 144 318 170 C280 188 252 216 252 292 Z" fill="#e0f2fe" opacity="0.9"/><ellipse cx="300" cy="157" rx="12" ry="8" fill="#ebe3f6" stroke="#3f3f46" stroke-width="1.5"/><circle cx="464.4" cy="30.2" r="4.5" fill="#dc2626" stroke="none"/><circle cx="313.8" cy="77.8" r="4.5" fill="#dc2626" stroke="none"/><circle cx="371.1" cy="66.9" r="4.5" fill="#dc2626" stroke="none"/><circle cx="323.3" cy="63.7" r="4.5" fill="#dc2626" stroke="none"/><circle cx="398.6" cy="57.6" r="4.5" fill="#dc2626" stroke="none"/><circle cx="300.8" cy="83.7" r="4.5" fill="#dc2626" stroke="none"/><circle cx="502.6" cy="74.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="449.0" cy="43.6" r="4.5" fill="#dc2626" stroke="none"/><circle cx="346.0" cy="80.3" r="4.5" fill="#dc2626" stroke="none"/><circle cx="379.0" cy="53.0" r="4.5" fill="#dc2626" stroke="none"/><line x1="420" y1="40" x2="400" y2="118" stroke="#dc2626" stroke-width="4" marker-end="url(#ro)"/><line x1="290" y1="182" x2="200" y2="110" stroke="#111827" stroke-width="4" marker-end="url(#rc)"/><text x="330" y="24" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#b91c1c" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">oxygen diffuses into the root hair cell</text><text x="20" y="96" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round"><tspan x="20">carbon dioxide diffuses</tspan><tspan x="20" dy="1.2em">out of the root hair cell</tspan></text><line x1="470" y1="112" x2="500" y2="190" stroke="#334155" stroke-width="1.3"/><text x="506" y="204" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">root hair cell</text><line x1="60" y1="275" x2="60" y2="240" stroke="#334155" stroke-width="1.3"/><text x="60" y="234" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" text-anchor="middle" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">epidermal cell of root</text><line x1="160" y1="40" x2="180" y2="60" stroke="#334155" stroke-width="1.3"/><text x="150" y="36" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" text-anchor="end" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round">air space in soil</text></svg><p class="fig-caption"><strong>Fig. 2.4(b)</strong> &mdash; Gas exchange between a root hair cell and the air in the soil.</p></div>
+<p>In both cases the diffusion distance is <strong>short</strong>, so diffusion happens quickly.</p>
+<p><strong>Taking in nutrients.</strong> Dissolved substances (solutes) can diffuse too. In the <strong>small intestine</strong>, digested food such as <strong>glucose</strong> and <strong>amino acids</strong> diffuses into the blood capillaries in the wall of the intestine, and the blood carries it around the body. Root hair cells take in some mineral salts from the soil in the same way.</p>
+<p class="keyidea">A <strong>solute</strong> is a substance that is dissolved in another substance (the <strong>solvent</strong>). Together they make a <strong>solution</strong>.</p>
+<div class="sidebox"><h4>Big idea: systems</h4><p>Living things depend on diffusion to exchange gases with their surroundings. Without it, cells would not get the oxygen they need to stay alive. You will meet gas exchange again in the topics on respiration in humans and on plants.</p></div>
+<div class="labeller" id="lab-alv">
+  <p class="lab-title"><strong>Label gas exchange in the lungs.</strong> <span class="print-hide">Drag each label into a box (or tap a label, then tap a box).</span></p>
+  <div class="bank" aria-label="Labels"><button type="button" class="chip" data-key="x1">chloroplast</button><button type="button" class="chip" data-key="wall">wall of air sac</button><button type="button" class="chip" data-key="o2">oxygen</button><button type="button" class="chip" data-key="rbc">red blood cell</button><button type="button" class="chip" data-key="cap">blood capillary</button><button type="button" class="chip" data-key="air">air space in the lung</button><button type="button" class="chip" data-key="x0">cell wall</button><button type="button" class="chip" data-key="co2">carbon dioxide</button></div>
+  <p class="lab-swipe">&#8596; Swipe sideways to see the whole diagram.</p>
+  <div class="lab-scroll"><div class="lab-stage" style="max-width:680px"><svg viewBox="0 0 680 360" role="img" aria-label="Gas exchange in the lungs."><defs><marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs><defs><marker id="ac" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#111827"/></marker></defs><rect x="20" y="20" width="250" height="300" fill="#f8fafc"/><path d="M270 20 C262 100 278 220 270 320 L300 320 C308 220 292 100 300 20 Z" fill="#fecdd3" stroke="#9f1239" stroke-width="2"/><ellipse cx="286" cy="70" rx="6" ry="9" fill="#9f1239"/><ellipse cx="286" cy="170" rx="6" ry="9" fill="#9f1239"/><ellipse cx="286" cy="270" rx="6" ry="9" fill="#9f1239"/><path d="M300 20 C308 100 292 220 300 320 L340 320 L340 20 Z" fill="#fff1f2"/><rect x="340" y="20" width="12" height="300" fill="#fda4af"/><rect x="352" y="20" width="168" height="300" fill="#fee2e2"/><ellipse cx="420" cy="70" rx="38" ry="22" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/><ellipse cx="420" cy="70" rx="16" ry="8" fill="#ef4444"/><ellipse cx="460" cy="160" rx="38" ry="22" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/><ellipse cx="460" cy="160" rx="16" ry="8" fill="#ef4444"/><ellipse cx="415" cy="250" rx="38" ry="22" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/><ellipse cx="415" cy="250" rx="16" ry="8" fill="#ef4444"/><circle cx="119.2" cy="281.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="217.1" cy="95.7" r="4.5" fill="#dc2626" stroke="none"/><circle cx="223.1" cy="205.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="48.9" cy="287.8" r="4.5" fill="#dc2626" stroke="none"/><circle cx="93.7" cy="119.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="129.1" cy="193.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="66.1" cy="218.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="214.8" cy="173.2" r="4.5" fill="#dc2626" stroke="none"/><circle cx="206.8" cy="202.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="213.2" cy="87.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="115.3" cy="162.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="61.8" cy="293.0" r="4.5" fill="#dc2626" stroke="none"/><circle cx="173.6" cy="65.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="162.4" cy="147.8" r="4.5" fill="#dc2626" stroke="none"/><circle cx="79.8" cy="81.8" r="4.5" fill="#dc2626" stroke="none"/><circle cx="136.8" cy="58.3" r="4.5" fill="#dc2626" stroke="none"/><circle cx="158.2" cy="173.9" r="4.5" fill="#dc2626" stroke="none"/><circle cx="66.7" cy="267.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="48.5" cy="84.7" r="4.5" fill="#dc2626" stroke="none"/><circle cx="211.6" cy="97.4" r="4.5" fill="#dc2626" stroke="none"/><circle cx="129.1" cy="185.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="131.5" cy="168.5" r="4.5" fill="#dc2626" stroke="none"/><circle cx="146.0" cy="165.5" r="4.5" fill="#111827" stroke="none"/><circle cx="52.1" cy="252.2" r="4.5" fill="#111827" stroke="none"/><circle cx="99.4" cy="52.4" r="4.5" fill="#111827" stroke="none"/><circle cx="125.7" cy="251.8" r="4.5" fill="#111827" stroke="none"/><circle cx="172.1" cy="158.9" r="4.5" fill="#111827" stroke="none"/><circle cx="140.4" cy="97.1" r="4.5" fill="#111827" stroke="none"/><circle cx="455.8" cy="128.1" r="4.5" fill="#111827" stroke="none"/><circle cx="369.9" cy="66.4" r="4.5" fill="#111827" stroke="none"/><circle cx="374.4" cy="221.7" r="4.5" fill="#111827" stroke="none"/><circle cx="496.7" cy="241.5" r="4.5" fill="#111827" stroke="none"/><circle cx="394.0" cy="71.2" r="4.5" fill="#111827" stroke="none"/><circle cx="507.3" cy="134.7" r="4.5" fill="#111827" stroke="none"/><circle cx="385.9" cy="190.0" r="4.5" fill="#111827" stroke="none"/><circle cx="455.9" cy="181.4" r="4.5" fill="#111827" stroke="none"/><circle cx="430.1" cy="115.1" r="4.5" fill="#111827" stroke="none"/><circle cx="436.7" cy="158.1" r="4.5" fill="#111827" stroke="none"/><circle cx="465.6" cy="155.5" r="4.5" fill="#111827" stroke="none"/><circle cx="415.0" cy="306.1" r="4.5" fill="#111827" stroke="none"/><circle cx="377.2" cy="241.6" r="4.5" fill="#111827" stroke="none"/><circle cx="424.7" cy="255.5" r="4.5" fill="#111827" stroke="none"/><line x1="150" y1="110" x2="432" y2="158" stroke="#dc2626" stroke-width="4" marker-end="url(#ao)"/><line x1="470" y1="230" x2="170" y2="250" stroke="#111827" stroke-width="4" marker-end="url(#ac)"/><line x1="110" y1="340" x2="110" y2="200" stroke="#334155" stroke-width="1.5"/><circle cx="110" cy="200" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="286" y1="340" x2="286" y2="300" stroke="#334155" stroke-width="1.5"/><circle cx="286" cy="300" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="470" y1="340" x2="500" y2="300" stroke="#334155" stroke-width="1.5"/><circle cx="500" cy="300" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="560" y1="70" x2="458" y2="70" stroke="#334155" stroke-width="1.5"/><circle cx="458" cy="70" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="560" y1="170" x2="432" y2="158" stroke="#334155" stroke-width="1.5"/><circle cx="432" cy="158" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="560" y1="250" x2="170" y2="250" stroke="#334155" stroke-width="1.5"/><circle cx="170" cy="250" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/></svg><button type="button" class="drop c" data-ans="air" style="left:16.18%;top:94.44%" aria-label="Empty label box 1"><span class="n">1</span><span class="v"></span></button><button type="button" class="drop c" data-ans="wall" style="left:42.06%;top:94.44%" aria-label="Empty label box 2"><span class="n">2</span><span class="v"></span></button><button type="button" class="drop c" data-ans="cap" style="left:69.12%;top:94.44%" aria-label="Empty label box 3"><span class="n">3</span><span class="v"></span></button><button type="button" class="drop r" data-ans="rbc" style="left:82.35%;top:19.44%" aria-label="Empty label box 4"><span class="n">4</span><span class="v"></span></button><button type="button" class="drop r" data-ans="o2" style="left:82.35%;top:47.22%" aria-label="Empty label box 5"><span class="n">5</span><span class="v"></span></button><button type="button" class="drop r" data-ans="co2" style="left:82.35%;top:69.44%" aria-label="Empty label box 6"><span class="n">6</span><span class="v"></span></button></div></div>
+  <div class="lab-ctl print-hide"><button type="button" data-act="check">Check my labels</button><button type="button" data-act="show">Show answers</button><button type="button" data-act="reset">Start again</button><span class="lab-score" aria-live="polite"></span></div>
+  <p class="fig-caption">Gas exchange in the lungs.</p>
+</div>
+<h3>3. Surface area to volume ratio</h3>
+<p><em>Why are cells usually so small? Why are large organisms made of many small cells instead of one giant cell?</em></p>
+<p>The answer is about how fast materials can cross the cell membrane. A cell must take in oxygen and nutrients, and get rid of waste, fast enough to stay alive.</p>
+<p>Substances enter and leave a cell through its surface, so the rate depends on how big the cell membrane is: the cell&rsquo;s <strong>surface area</strong>. For two cells with the same volume, the one with the larger surface area takes substances in faster. Comparing a cell&rsquo;s surface area with its volume gives its <strong>surface area to volume ratio</strong> (SA&nbsp;:&nbsp;V).</p>
+<p class="keyidea"><strong>Key idea:</strong> the <strong>greater</strong> the surface area to volume ratio of a cell, the <strong>faster</strong> substances move into and out of it.</p>
+<p>As a cell gets bigger, its volume grows faster than its surface area, so its SA&nbsp;:&nbsp;V gets smaller. A very large cell could not take in oxygen fast enough for all of its volume. That is why cells stay small, and why specialised cells such as root hair cells and red blood cells have shapes that give them a large SA&nbsp;:&nbsp;V.</p>
+<p class="more-links"><strong>Try it again:</strong> the shape builder and the agar-cube experiment on SA&nbsp;:&nbsp;V are in <a href="cells-1-2-cell-adaptations.html#surface-area-to-volume-ratio">Lesson 1.2</a>.</p>
+<div class="checkpoint" data-type="calculation" data-answer="2" data-tol="0.01">
+  <p class="q">A. Cube X has sides of 1 cm: surface area 6 cm&sup2;, volume 1 cm&sup3;. Cube Y has sides of 3 cm: surface area 54 cm&sup2;, volume 27 cm&sup3;. Work out the SA : V of cube Y (as a number : 1).</p>
+  <input type="text" inputmode="decimal" placeholder="Your answer (: 1)" aria-label="Your answer in : 1">
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="54 : 27 = 2 : 1. Cube X has 6 : 1, so the smaller cube has the greater SA : V, and substances diffuse into it relatively faster."></div>
+</div>
+<div class="tool sorter" id="sort-rate">
+  <h3>Try it: faster or slower diffusion?</h3>
+  <p>Choose a button for each change.</p>
+  <div class="sort-item" data-ans="0"><span class="name">The concentration gradient becomes steeper</span><button type="button" data-c="0">Faster</button><button type="button" data-c="1">Slower</button><span class="fb" data-expl="A bigger difference in concentration means a faster rate."></span></div>
+  <div class="sort-item" data-ans="1"><span class="name">The diffusion distance is longer</span><button type="button" data-c="0">Faster</button><button type="button" data-c="1">Slower</button><span class="fb" data-expl="Particles take longer to travel further."></span></div>
+  <div class="sort-item" data-ans="0"><span class="name">The cell has a larger surface area to volume ratio</span><button type="button" data-c="0">Faster</button><button type="button" data-c="1">Slower</button><span class="fb" data-expl="More surface for each unit of volume, so substances move in and out faster."></span></div>
+  <div class="sort-item" data-ans="1"><span class="name">The concentrations on both sides become equal</span><button type="button" data-c="0">Faster</button><button type="button" data-c="1">Slower</button><span class="fb" data-expl="No concentration gradient: no net diffusion."></span></div>
+  <div class="sort-item" data-ans="0"><span class="name">The wall between the air space and the blood is thinner</span><button type="button" data-c="0">Faster</button><button type="button" data-c="1">Slower</button><span class="fb" data-expl="A thinner wall means a shorter diffusion distance."></span></div>
+  <div class="sort-item" data-ans="1"><span class="name">The cell grows much bigger</span><button type="button" data-c="0">Faster</button><button type="button" data-c="1">Slower</button><span class="fb" data-expl="Its SA : V becomes smaller."></span></div>
+  <p class="score" aria-live="polite"></p>
+</div>
+<h2 id="check-your-understanding">Check your understanding</h2>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">1. Which statement describes diffusion?</p>
+  <label><input type="radio" name="q1" value="0"> Net movement of particles from a region of lower concentration to a region of higher concentration</label>
+  <label><input type="radio" name="q1" value="1"> Net movement of particles from a region of higher concentration to a region of lower concentration</label>
+  <label><input type="radio" name="q1" value="2"> Movement of water only, through a partially permeable membrane</label>
+  <label><input type="radio" name="q1" value="3"> Movement of particles only through a membrane</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Diffusion is net movement down a concentration gradient: from higher to lower concentration. It can happen with or without a membrane."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">2. A crystal of copper(II) sulfate is left in a gas jar of water. After many days the water is evenly blue. Which is correct?</p>
+  <label><input type="radio" name="q2" value="0"> The copper(II) sulfate particles have stopped moving.</label>
+  <label><input type="radio" name="q2" value="1"> There is no net movement, but the particles are still moving.</label>
+  <label><input type="radio" name="q2" value="2"> The particles are now moving towards the bottom of the jar.</label>
+  <label><input type="radio" name="q2" value="3"> The water has turned into copper(II) sulfate.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Once the concentration is the same everywhere there is no net movement, but the particles keep moving at random."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="3">
+  <p class="q">3. Which change makes diffusion faster?</p>
+  <label><input type="radio" name="q3" value="0"> A shallower concentration gradient</label>
+  <label><input type="radio" name="q3" value="1"> A longer diffusion distance</label>
+  <label><input type="radio" name="q3" value="2"> A smaller surface area to volume ratio</label>
+  <label><input type="radio" name="q3" value="3"> A steeper concentration gradient</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="The steeper the concentration gradient, the faster the rate of diffusion."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">4. In the lungs, in which direction does oxygen diffuse?</p>
+  <label><input type="radio" name="q4" value="0"> From the blood into the air space</label>
+  <label><input type="radio" name="q4" value="1"> From the air space into the blood</label>
+  <label><input type="radio" name="q4" value="2"> It does not move</label>
+  <label><input type="radio" name="q4" value="3"> From the red blood cells into the air space</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Oxygen is at a higher concentration in the air space than in the blood, so it diffuses into the blood."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="3">
+  <p class="q">5. Which substance cannot pass through a cell membrane?</p>
+  <label><input type="radio" name="q5" value="0"> Oxygen</label>
+  <label><input type="radio" name="q5" value="1"> Carbon dioxide</label>
+  <label><input type="radio" name="q5" value="2"> Water</label>
+  <label><input type="radio" name="q5" value="3"> Protein</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="The cell membrane is partially permeable. Proteins are large molecules and cannot pass through."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="0">
+  <p class="q">6. How do glucose and amino acids get from the small intestine into the blood?</p>
+  <label><input type="radio" name="q6" value="0"> By diffusion into the blood capillaries</label>
+  <label><input type="radio" name="q6" value="1"> By photosynthesis</label>
+  <label><input type="radio" name="q6" value="2"> By breathing</label>
+  <label><input type="radio" name="q6" value="3"> They stay in the small intestine</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Digested food such as glucose and amino acids diffuses into the blood capillaries in the wall of the small intestine."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">7. Why are most cells very small?</p>
+  <label><input type="radio" name="q7" value="0"> Small cells have a smaller surface area to volume ratio.</label>
+  <label><input type="radio" name="q7" value="1"> Small cells have a larger surface area to volume ratio, so substances can move in and out fast enough.</label>
+  <label><input type="radio" name="q7" value="2"> Small cells do not need oxygen.</label>
+  <label><input type="radio" name="q7" value="3"> Small cells have no cell membrane.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="A small cell has a large SA : V, so substances can enter and leave it quickly enough to keep it alive."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">8. A beaker is divided by a permeable membrane. The left side has more potassium nitrate; the right side has more copper(II) sulfate. What happens?</p>
+  <label><input type="radio" name="q8" value="0"> Only potassium nitrate moves.</label>
+  <label><input type="radio" name="q8" value="1"> Potassium nitrate moves to the right and copper(II) sulfate moves to the left.</label>
+  <label><input type="radio" name="q8" value="2"> Both substances move to the left.</label>
+  <label><input type="radio" name="q8" value="3"> Nothing moves, because they block each other.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Each substance diffuses down its own concentration gradient, independently of the other."></div>
+</div>
+</main>
+<nav class="lesson-nav print-hide" aria-label="Lesson navigation"><a class="prev" href="revision-01-cells.html"><span class="dir">← Previous chapter: Cell Structure and Organisation</span><span class="t">Revision Questions</span></a><a class="next" href="movement-2-2-osmosis.html"><span class="dir">Next →</span><span class="t">What Is Osmosis?</span></a></nav>
+<p class="back-bottom print-hide"><a class="back-btn" href="index.html">&larr; Back to Biology lessons</a></p>
+<script>
+function checkAnswer(btn) {
+  const block = btn.closest('.checkpoint');
+  const feedback = block.querySelector('.feedback');
+  const correctAns = block.dataset.answer;
+  const tol = parseFloat(block.dataset.tol || '0.05');
+  let isCorrect;
+
+  if (block.dataset.type === 'mcq') {
+    const checked = block.querySelector('input[type=radio]:checked');
+    if (!checked) { showHint(feedback, 'Pick an answer first.'); return; }
+    isCorrect = checked.value === correctAns;
+  } else {
+    const val = parseFloat(block.querySelector('input[type=text]').value);
+    if (isNaN(val)) { showHint(feedback, 'Enter a number first.'); return; }
+    isCorrect = Math.abs(val - parseFloat(correctAns)) <= tol;
+  }
+
+  feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  feedback.textContent = (isCorrect ? '\u2713 Correct. ' : '\u2717 Not quite. ') + feedback.dataset.explanation;
+}
+
+function showHint(feedback, text) {
+  feedback.className = 'feedback hint';
+  feedback.textContent = text;
+}
+
+document.querySelectorAll('.sorter').forEach(function (s) {
+  var items = s.querySelectorAll('.sort-item'), sc = s.querySelector('.score');
+  function tally() { var n = s.querySelectorAll('.sort-item.right').length; sc.textContent = n + ' of ' + items.length + ' sorted correctly' + (n === items.length ? '. Well done!' : '.'); }
+  items.forEach(function (it) {
+    var fb = it.querySelector('.fb');
+    it.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var ok = b.dataset.c === it.dataset.ans;
+        it.classList.toggle('right', ok); it.classList.toggle('wrong', !ok); fb.classList.add('show');
+        fb.textContent = ok ? '✓ Correct. ' + fb.dataset.expl : '✗ Not quite. Try another button.';
+        tally();
+      });
+    });
+  });
+  tally();
+});
+
+document.querySelectorAll('.labeller').forEach(function (lab) {
+  var bank = lab.querySelector('.bank'), drops = lab.querySelectorAll('.drop'), score = lab.querySelector('.lab-score'), sel = null;
+  function clearMarks() { drops.forEach(function (d) { d.classList.remove('ok', 'no'); }); score.textContent = ''; }
+  function chipIn(d) { return d.querySelector('.chip'); }
+  function place(chip, d) {
+    clearMarks();
+    if (!d) { bank.appendChild(chip); }
+    else { var old = chipIn(d); if (old && old !== chip) bank.appendChild(old); d.querySelector('.v').appendChild(chip); }
+    drops.forEach(function (x) { x.classList.toggle('filled', !!chipIn(x)); x.setAttribute('aria-label', chipIn(x) ? 'Label box: ' + chipIn(x).textContent : 'Empty label box'); });
+    select(null);
+  }
+  function select(c) { if (sel) sel.classList.remove('sel'); sel = c; if (c) c.classList.add('sel'); drops.forEach(function (d) { d.classList.toggle('armed', !!c); }); }
+  lab.addEventListener('click', function (e) {
+    var chip = e.target.closest('.chip'), d = e.target.closest('.drop');
+    if (chip && !lab.dataset.dragged) {
+      if (chip.parentNode.classList.contains('v') && !sel) { place(chip, null); return; }   // tap a placed label to send it back
+      if (sel === chip) { select(null); return; }
+      if (sel && d) { place(sel, d); return; }
+      select(chip); e.stopPropagation(); return;
+    }
+    if (d && sel) place(sel, d);
+    else if (e.target.closest('.bank') && sel && sel.parentNode.classList.contains('v')) place(sel, null);
+  });
+  // drag with mouse or finger
+  lab.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('pointerdown', function (e) {
+      if (e.button) return;
+      var sx = e.clientX, sy = e.clientY, moving = false, ghost = null, over = null;
+      function move(ev) {
+        if (!moving && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 6) return;
+        if (!moving) { moving = true; ghost = chip.cloneNode(true); ghost.classList.add('dragging'); document.body.appendChild(ghost); chip.style.opacity = '0.35'; }
+        ghost.style.left = (ev.clientX - ghost.offsetWidth / 2) + 'px'; ghost.style.top = (ev.clientY - ghost.offsetHeight / 2) + 'px';
+        var el = document.elementFromPoint(ev.clientX, ev.clientY), d = el && el.closest('.drop');
+        if (d && !lab.contains(d)) d = null;
+        if (over !== d) { if (over) over.classList.remove('over'); over = d; if (d) d.classList.add('over'); }
+        ev.preventDefault();
+      }
+      function up(ev) {
+        document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
+        if (!moving) return;
+        ghost.remove(); chip.style.opacity = ''; if (over) over.classList.remove('over');
+        var el = document.elementFromPoint(ev.clientX, ev.clientY), inBank = el && el.closest('.bank') === bank;
+        if (over) place(chip, over); else if (inBank) place(chip, null);
+        lab.dataset.dragged = '1'; setTimeout(function () { delete lab.dataset.dragged; }, 50);
+      }
+      document.addEventListener('pointermove', move, { passive: false }); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+    });
+  });
+  lab.querySelector('[data-act=check]').addEventListener('click', function () {
+    var ok = 0, filled = 0;
+    drops.forEach(function (d) { var c = chipIn(d); d.classList.remove('ok', 'no'); if (!c) return; filled++; var good = c.dataset.key === d.dataset.ans; if (good) ok++; d.classList.add(good ? 'ok' : 'no'); });
+    score.textContent = ok + ' of ' + drops.length + ' correct' + (filled < drops.length ? ' (' + (drops.length - filled) + ' box' + (drops.length - filled === 1 ? '' : 'es') + ' still empty)' : '') + (ok === drops.length ? '. Excellent!' : ok < filled ? '. Move the red ones and check again.' : '. Fill the empty boxes.');
+  });
+  lab.querySelector('[data-act=show]').addEventListener('click', function () {
+    drops.forEach(function (d) { var c = lab.querySelector('.chip[data-key="' + d.dataset.ans + '"]'); if (c) place(c, d); });
+    lab.querySelector('[data-act=check]').click();
+  });
+  lab.querySelector('[data-act=reset]').addEventListener('click', function () { lab.querySelectorAll('.drop .chip').forEach(function (c) { bank.appendChild(c); }); place(bank.firstChild, null); bank.insertBefore(bank.lastChild, bank.firstChild); clearMarks(); });
+});
+
+document.querySelectorAll('.sim').forEach(function (box) {
+  var mode = box.dataset.mode, cv = box.querySelector('canvas'), ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height, MID = W / 2, P = [], run = false, t = 0, raf = null;
+  var playB = box.querySelector('[data-act=play]'), st = box.querySelector('.status');
+  var lvl = [H, H];            // osmo: liquid surface height (y of surface) on each side
+  var COL = { a: '#3b82f6', y: '#eab308', s: '#f97316', w: '#60a5fa' };
+  function add(n, x0, x1, kind, r) { for (var i = 0; i < n; i++) P.push({ x: x0 + Math.random() * (x1 - x0), y: 20 + Math.random() * (H - 40), vx: 0, vy: 0, k: kind, r: r }); }
+  function reset() {
+    P = []; t = 0;
+    if (mode === 'free') add(140, 8, 70, 'a', 4.5);
+    if (mode === 'two') { add(70, 8, MID - 8, 'y', 4.5); add(70, MID + 8, W - 8, 'a', 4.5); }
+    if (mode === 'osmo') { add(24, 8, MID - 10, 's', 8); add(6, MID + 10, W - 8, 's', 8); add(170, 8, MID - 8, 'w', 2.6); add(170, MID + 8, W - 8, 'w', 2.6); }
+    lvl = [70, 70];
+    draw(); readout();
+  }
+  function side(p) { return p.x < MID ? 0 : 1; }
+  function top(s) { return mode === 'osmo' ? lvl[s] + 6 : 6; }
+  function step() {
+    var sucr = [0, 0], wat = [0, 0];
+    if (mode === 'osmo') P.forEach(function (p) { if (p.k === 's') sucr[side(p)]++; else wat[side(p)]++; });
+    P.forEach(function (p) {
+      var sp = p.k === 's' ? 1.2 : 3;
+      p.vx = 0.86 * p.vx + (Math.random() - 0.5) * sp; p.vy = 0.86 * p.vy + (Math.random() - 0.5) * sp;
+      var s0 = side(p), nx = p.x + p.vx, ny = p.y + p.vy;
+      var crosses = (mode !== 'free') && ((p.x < MID) !== (nx < MID));
+      if (crosses) {
+        var pore = (ny % 36) > 12 && (ny % 36) < 30;   // gaps in the membrane
+        var ok = pore && (mode === 'two' || p.k === 'w');
+        if (ok && mode === 'osmo') {  // water held around sucrose molecules is not free to cross
+          var free = Math.max(0.08, 1 - 4 * sucr[s0] / Math.max(1, wat[s0]));
+          ok = Math.random() < free;
+        }
+        if (!ok) { p.vx = -p.vx; nx = p.x; }
+      }
+      p.x = nx; p.y = ny;
+      var s = side(p), lo = top(s) + p.r, hi = H - 6 - p.r;
+      var xl = (mode !== 'free' && s === 1) ? MID + 0.01 : 6 + p.r, xr = (mode !== 'free' && s === 0) ? MID - 0.01 : W - 6 - p.r;
+      if (mode !== 'free' && crosses) { xl = 6 + p.r; xr = W - 6 - p.r; }
+      if (p.x < xl) { p.x = xl; p.vx = Math.abs(p.vx); } if (p.x > xr) { p.x = xr; p.vx = -Math.abs(p.vx); }
+      if (p.y < lo) { p.y = lo; p.vy = Math.abs(p.vy); } if (p.y > hi) { p.y = hi; p.vy = -Math.abs(p.vy); }
+    });
+    if (mode === 'osmo') {   // liquid level follows the number of water molecules on each side
+      [0, 1].forEach(function (s) { var target = H - 6 - (H - 76) * wat[s] / 170 * 0.98; lvl[s] += (Math.max(16, target) - lvl[s]) * 0.05; });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    if (mode === 'osmo') {
+      ctx.fillStyle = '#e0f2fe'; ctx.fillRect(6, lvl[0], MID - 6, H - 6 - lvl[0]); ctx.fillRect(MID, lvl[1], W - 6 - MID, H - 6 - lvl[1]);
+      ctx.strokeStyle = '#0369a1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(6, lvl[0]); ctx.lineTo(MID, lvl[0]); ctx.moveTo(MID, lvl[1]); ctx.lineTo(W - 6, lvl[1]); ctx.stroke();
+      ctx.setLineDash([5, 4]); ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(6, 70); ctx.lineTo(W - 6, 70); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#475569'; ctx.font = 'bold 16px Source Sans 3, sans-serif'; ctx.fillText('A', 14, 24); ctx.fillText('B', W - 26, 24);
+      ctx.font = '13px Source Sans 3, sans-serif'; ctx.fillText('starting level', W / 2 + 10, 64);
+    } else { ctx.fillStyle = '#e0f2fe'; ctx.fillRect(6, 6, W - 12, H - 12); }
+    ctx.strokeStyle = '#3f3f46'; ctx.lineWidth = 3; ctx.strokeRect(4, 4, W - 8, H - 8);
+    if (mode !== 'free') {   // membrane with gaps
+      ctx.strokeStyle = mode === 'osmo' ? '#0f766e' : '#475569'; ctx.lineWidth = 4;
+      for (var y = 0; y < H; y += 36) { ctx.beginPath(); ctx.moveTo(MID, Math.max(6, y - 6)); ctx.lineTo(MID, Math.min(H - 6, y + 12)); ctx.stroke(); }
+    } else {
+      ctx.setLineDash([4, 6]); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(MID, 6); ctx.lineTo(MID, H - 6); ctx.stroke(); ctx.setLineDash([]);
+    }
+    P.forEach(function (p) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fillStyle = COL[p.k]; ctx.fill(); if (p.r > 3) { ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.stroke(); } });
+  }
+  function count(k) { var c = [0, 0]; P.forEach(function (p) { if (p.k === k) c[side(p)]++; }); return c; }
+  function setR(k, v) { var e = box.querySelector('[data-r="' + k + '"]'); if (e) e.textContent = v; }
+  function readout() {
+    setR('t', Math.round(t / 40));
+    var msg;
+    if (mode === 'free') {
+      var c = count('a'); setR('l0', c[0]); setR('r0', c[1]);
+      msg = c[0] - c[1] > 14 ? 'Net movement from left to right: down the concentration gradient.' : 'About the same on both sides. The particles still move, but there is no net movement now.';
+    } else if (mode === 'two') {
+      var y = count('y'), b = count('a'); setR('y', y[0] + ' | ' + y[1]); setR('b', b[0] + ' | ' + b[1]);
+      msg = (Math.abs(y[0] - y[1]) > 12 || Math.abs(b[0] - b[1]) > 12) ? 'Yellow particles move net to the right, blue ones net to the left. Each substance moves down its own concentration gradient.' : 'Both substances are now evenly spread on both sides: no net movement.';
+    } else {
+      var w = count('w'); setR('wl', w[0]); setR('wr', w[1]);
+      msg = t < 200 ? 'Only the small water molecules fit through the membrane. The big sucrose molecules cannot.' :
+        (lvl[0] < lvl[1] - 10 ? 'Net movement of water from B to A: the level in A rises and the level in B falls. This is osmosis.' : 'Water molecules are crossing in both directions...');
+    }
+    st.textContent = msg;
+  }
+  function loop() { if (!run) return; for (var i = 0; i < (mode === 'free' ? 10 : 6); i++) { step(); t++; } draw(); if (t % 40 === 0) readout(); raf = requestAnimationFrame(loop); }
+  playB.addEventListener('click', function () { run = !run; playB.innerHTML = run ? '&#10074;&#10074; Pause' : '&#9654; Start'; if (run) loop(); });
+  box.querySelector('[data-act=reset]').addEventListener('click', function () { reset(); st.textContent = run ? '' : 'Press Start.'; });
+  reset();
+});
+</script>
+</body>
+</html>

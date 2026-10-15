@@ -168,7 +168,7 @@ def mcq(n, q, opts, ans, expl, figure="", img=None, grid=False):
 
 def calc(n, q, ans, tol, unit, expl, figure="", img=None):
     """A question with a number as the answer. Answers within +/- tol count as correct."""
-    h = '<div class="checkpoint" data-type="calculation" data-answer="%s" data-tol="%s">\n  <p class="q">%d. %s</p>\n' % (ans, tol, n, q)
+    h = '<div class="checkpoint" data-type="calculation" data-answer="%s" data-tol="%s">\n  <p class="q">%s. %s</p>\n' % (ans, tol, n, q)
     if figure:
         h += '  <div class="q-fig">%s</div>\n' % figure
     if img:

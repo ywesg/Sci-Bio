@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="color-scheme" content="light">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2.2 What Is Osmosis?</title>
+<script>try { if (localStorage.getItem("bio-level") === "g2") document.documentElement.className += " g2"; } catch (e) {}</script>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; line-height: 1.6; color: #1a1a1a; }
+  h1 { border-bottom: 3px solid #0f766e; padding-bottom: 0.5rem; }
+  h2 { color: #134e4a; margin-top: 2rem; }
+  .meta { color: #666; font-size: 0.9rem; margin-bottom: 2rem; }
+  .site-nav { font-size: 0.85rem; margin-bottom: 1rem; }
+  .site-nav a { color: #0f766e; text-decoration: none; }
+  .pdf-btn { display: inline-block; background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  .pdf-btn:hover { background: #e2e8f0; }
+  .formula { background: #f0fdfa; border-left: 4px solid #0f766e; padding: 0.75rem 1rem; margin: 1rem 0; font-weight: 600; font-family: "Cambria Math", serif; }
+  blockquote { border-left: 4px solid #94a3b8; margin-left: 0; padding-left: 1rem; color: #475569; }
+  svg { display: block; margin: 1.5rem auto; max-width: 100%; height: auto; }
+  .fig-caption { text-align: center; font-size: 0.9rem; color: #555; }
+  .checkpoint { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1rem 0; }
+  .checkpoint p.q { font-weight: 600; margin-top: 0; }
+  .checkpoint label { display: block; padding: 0.4rem 0.6rem; margin: 0.3rem 0; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; }
+  .checkpoint label:hover { background: #f1f5f9; }
+  .checkpoint input[type=text] { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; width: 150px; }
+  .checkpoint button { display: block; margin-top: 0.75rem; background: #0f766e; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  .feedback { margin-top: 0.75rem; padding: 0.6rem 0.9rem; border-radius: 6px; display: none; }
+  .feedback.correct { background: #dcfce7; color: #166534; display: block; }
+  .feedback.incorrect { background: #fee2e2; color: #991b1b; display: block; }
+  .feedback.hint { background: #fef9c3; color: #854d0e; display: block; }
+</style>
+<style>
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.95rem; }
+  th, td { border: 1px solid #cbd5e1; padding: 0.45rem 0.7rem; text-align: left; }
+  th { background: #f0fdfa; color: #134e4a; }
+  .tool { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; margin: 1.25rem 0; }
+  .tool h3 { margin-top: 0; color: #134e4a; font-size: 1.05rem; }
+  .tool label { font-weight: 600; margin-right: 0.4rem; }
+  .tool input[type=number], .tool select { padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+  .tool input[type=number] { width: 7rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.75rem 1rem; align-items: center; margin-bottom: 0.75rem; }
+  .result { font-size: 1.2rem; font-weight: 700; color: #134e4a; font-family: "Cambria Math", serif; margin: 0.3rem 0; }
+  .working { color: #475569; font-size: 0.9rem; }
+  input[type=range] { width: 100%; }
+  .common { border-left: 4px solid #f59e0b; background: #fffbeb; padding: 0.6rem 1rem; margin: 1rem 0; }
+  .sort-item { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; padding: 0.5rem 0.75rem; margin: 0.4rem 0; background: white; border: 1px solid #cbd5e1; border-radius: 6px; }
+  .sort-item .name { flex: 1 1 10rem; font-weight: 600; }
+  .sort-item button { background: #f1f5f9; color: #134e4a; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0.3rem 0.8rem; cursor: pointer; font-weight: 600; }
+  .sort-item button:hover { background: #e2e8f0; }
+  .sort-item .fb { flex: 1 1 100%; font-size: 0.9rem; display: none; }
+  .sort-item.right { border-color: #86efac; background: #f0fdf4; }
+  .sort-item.wrong { border-color: #fca5a5; background: #fef2f2; }
+  .sort-item .fb.show { display: block; }
+  .score { font-weight: 700; color: #134e4a; margin-top: 0.5rem; }
+  .bar-wrap { background: #e2e8f0; border-radius: 6px; height: 1.1rem; margin: 0.3rem 0; overflow: hidden; }
+  .bar { background: #0f766e; height: 100%; width: 0; transition: width 0.15s; }
+  .print-only { display: none; }
+</style>
+<style>
+  @media print {
+    body { max-width: none; padding: 0; font-size: 11pt; }
+    .site-nav, .pdf-btn, .tool, .video-block, button, .feedback, .print-hide { display: none !important; }
+    .print-only { display: block; }
+    .checkpoint { background: none; border: 1px solid #888; break-inside: avoid; }
+    .checkpoint label { border: none; padding: 0.15rem 0; }
+    .checkpoint input[type=text] { border: none; border-bottom: 1px solid #000; border-radius: 0; width: 220px; }
+    h2 { break-after: avoid; }
+    svg, table, blockquote { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+<style>
+  .video-block { margin: 1.5rem 0; }
+  .video-block p { font-weight: 600; margin-bottom: 0.5rem; }
+  .video-block iframe { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 8px; }
+  .sim-block iframe { aspect-ratio: 16/10; border: 1px solid #cbd5e1; }
+  .vid-credit { font-weight: 400; color: #475569; font-size: 0.85rem; }
+  .vid-note { color: #475569; font-size: 0.9rem; margin: -0.25rem 0 0.5rem; }
+  .more-links { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem; margin: 1.25rem 0; font-size: 0.95rem; }
+  .more-links a { color: #0f766e; }
+</style>
+<style>
+  .illus { margin: 1.25rem 0; }
+  .illus svg { margin: 0.5rem auto; }
+  .q-fig { margin: 0.5rem 0 0.75rem; overflow-x: auto; }
+  .q-fig svg { margin: 0 auto; }
+  .checkpoint label.fig-opt { display: flex; align-items: center; gap: 0.75rem; }
+  .checkpoint label.fig-opt svg { margin: 0; flex: 0 0 auto; max-width: 150px; height: auto; display: inline-block; }
+  .checkpoint label svg { display: inline-block; margin: 0; }
+  .opt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.4rem 0.6rem; }
+  .opt-grid label { margin: 0; }
+  @media print { .q-fig { overflow: visible; } }
+</style>
+<style>
+  @media (max-width: 640px) { table { display: block; overflow-x: auto; } .tool select, select { max-width: 100%; } }
+</style>
+<style>
+  .photo { position: relative; margin: 1.25rem 0; border-radius: 10px; overflow: hidden; background: #111; }
+  .photo img { display: block; width: 100%; height: auto; }
+  .photo .chip { position: absolute; top: 3%; background: rgba(0,0,0,0.78); color: #fde047; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 8px; font-size: clamp(0.8rem, 2.4vw, 1.2rem); }
+  .photo .chip.l { left: 2%; } .photo .chip.r { left: 52%; color: #fff; }
+  .photo .capbar { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; background: #111; padding: 0.7rem 3% 0.8rem; color: #fff; font-size: clamp(0.75rem, 2vw, 1rem); line-height: 1.4; }
+  .photo .capbar strong { color: #fde047; } .photo .capbar .r strong { color: #7dd3fc; }
+  .photo-note { font-size: 0.85rem; color: #555; text-align: center; margin-top: 0.3rem; }
+</style>
+<style>
+  figure.pic { margin: 1.25rem 0; }
+  figure.pic img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  figure.pic figcaption { font-size: 0.9rem; color: #555; text-align: center; margin-top: 0.4rem; }
+  figure.pic figcaption em { color: #666; }
+</style>
+<style>
+  .back-bottom { margin: 2.5rem 0 1rem; text-align: center; }
+  .back-btn { display: inline-block; background: #0f766e; color: #fff; text-decoration: none; font-weight: 700; padding: 0.75rem 1.6rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(15,118,110,0.35); }
+  .back-btn:hover { background: #115e59; }
+  @media print { .back-bottom { display: none !important; } }
+</style>
+<style>
+  /* polish: touch targets, focus, contrast */
+  @media screen {
+    input[type=range] { height: 2rem; cursor: pointer; accent-color: #0f766e; }
+    .checkpoint input[type=text] { min-height: 2.75rem; }
+    .checkpoint label { padding-top: 0.55rem; padding-bottom: 0.55rem; }
+  }
+  :focus-visible { outline: 3px solid #0f766e; outline-offset: 2px; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Chakra+Petch:wght@500;600;700&display=swap">
+<style>
+  /* nav: contents, previous/next, heading touch */
+  h1, h2 { font-family: "Rajdhani", system-ui, sans-serif; }
+  h1 { font-size: 2.3rem; line-height: 1.25; letter-spacing: 0.01em; border-bottom: 3px solid; border-image: linear-gradient(90deg, #db2777 0, #db2777 72px, #0f766e 72px) 1; }
+  h2 { font-size: 1.65rem; letter-spacing: 0.01em; scroll-margin-top: 1rem; }
+  h2 .droid { width: 22px; height: 27px; margin: 0 0.5rem -3px 0; display: inline-block; vertical-align: baseline; }
+  .toc { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; margin: 1rem 0 1.5rem; font-size: 0.88rem; }
+  .toc strong { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-size: 1.05rem; color: #475569; margin-right: 0.3rem; }
+  .toc a { font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; display: inline-block; padding: 0.6rem 0.9rem; border: 1px solid #cbd5e1; border-radius: 999px; background: #f8fafc; color: #134e4a; text-decoration: none; line-height: 1.3; }
+  .toc a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav { display: flex; flex-wrap: wrap; gap: 1rem; margin: 2.5rem 0 1rem; }
+  .lesson-nav a { flex: 1 1 15rem; display: block; padding: 0.8rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; background: #f8fafc; color: #134e4a; text-decoration: none; }
+  .lesson-nav a:hover { background: #f0fdfa; border-color: #0f766e; }
+  .lesson-nav .dir { display: block; font-size: 0.8rem; font-weight: 600; color: #475569; }
+  .lesson-nav .t { display: block; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+  .lesson-nav .next { text-align: right; }
+  .lesson-nav .g3t { display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.5rem; border-radius: 999px; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-size: 0.75rem; font-weight: 800; vertical-align: middle; }
+  @media print { .toc, .lesson-nav { display: none !important; } }
+</style>
+<style>
+  /* alert: sound controls */
+  .alert-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0.75rem 0 1rem; font-size: 0.85rem; }
+  .alert-ctl button { min-height: 2.75rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-family: "Chakra Petch", "Rajdhani", system-ui, sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+  .alert-ctl button:hover { background: #f0fdfa; border-color: #0f766e; }
+  .alert-ctl button[aria-pressed="true"] { background: #134e4a; border-color: #134e4a; color: #fff; }
+  .alert-ctl .note { color: #475569; }
+  @media print { .alert-ctl { display: none !important; } }
+</style>
+<style>
+  .g3-badge { display: inline-block; background: linear-gradient(135deg, #c2185b, #c2410c); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 0.22rem 0.8rem; border-radius: 999px; letter-spacing: 0.02em; vertical-align: middle; margin-left: 0.5rem; }
+  h1 .g3-badge { font-size: 0.8rem; }
+  .photo .capbar.one { grid-template-columns: 1fr; }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+  /* biology site: body font, G2/G3 switch (set on the home page), shared boxes */
+  body { font-family: "Source Sans 3", system-ui, sans-serif; font-size: 1.08rem; }
+  .g2 .g3-only { display: none !important; }
+  .keyidea { border-left: 4px solid #94a3b8; padding: 0.2rem 0 0.2rem 1rem; margin: 1rem 0; color: #334155; }
+  .practical { border: 1px solid #a7f3d0; background: #f0fdf4; border-radius: 10px; padding: 0.9rem 1.2rem; margin: 1.2rem 0; }
+  .practical h3 { margin: 0.2rem 0 0.4rem; color: #166534; font-size: 1.1rem; }
+  .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 1rem 0; }
+  .flow span { padding: 0.45rem 0.9rem; border-radius: 999px; background: #f0fdfa; border: 1px solid #99f6e4; font-weight: 600; color: #134e4a; }
+  .flow b { color: #db2777; }
+  .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.5rem 1.2rem; align-items: start; }
+  .eg-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem 1.1rem; margin: 0.5rem 0; } .eg-box .q { font-weight: 700; margin-top: 0; }
+  .three-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem 1rem; align-items: start; }
+  .three-col svg { width: 100%; max-width: 240px; }
+  .tag-p { color: #15803d; font-weight: 700; } .tag-a { color: #be185d; font-weight: 700; } .tag-b { color: #1d4ed8; font-weight: 700; }
+  /* clickable diagram (explorer) */
+  .explorer { margin: 1.25rem 0; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem 0.6rem; background: #fff; }
+  .explorer svg { margin: 0.3rem auto; }
+  .explorer .part, .explorer .lbl { cursor: pointer; }
+  .explorer .part:hover, .explorer .lbl:hover { filter: brightness(1.06) saturate(1.2); }
+  .explorer .part.on { filter: drop-shadow(0 0 3px #f59e0b) drop-shadow(0 0 2px #f59e0b); }
+  .explorer .lbl.on text { fill: #b45309; }
+  .explorer .part:focus, .explorer .lbl:focus { outline: none; }
+  .explorer .part:focus-visible, .explorer .lbl:focus-visible { filter: drop-shadow(0 0 3px #0f766e) drop-shadow(0 0 2px #0f766e); }
+  .explorer.nolabels .lbl text { visibility: hidden; }
+  .ex-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .ex-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .ex-ctl button[aria-pressed="true"] { background: #134e4a; color: #fff; border-color: #134e4a; }
+  .ex-q { font-weight: 700; color: #134e4a; }
+  .ex-info { min-height: 3.2rem; padding: 0.6rem 0.9rem; border-radius: 8px; background: #f0fdfa; border: 1px solid #99f6e4; }
+  .ex-info.ok { background: #dcfce7; border-color: #86efac; } .ex-info.no { background: #fee2e2; border-color: #fca5a5; }
+  @media print { .explorer { border: none; padding: 0; } .ex-ctl, .ex-info { display: none !important; } .explorer.nolabels .lbl text { visibility: visible; } }
+</style>
+</head>
+<body>
+<p class="site-nav"><a href="index.html">&larr; Back to Biology lessons</a></p>
+<main>
+<h1>2.2 What Is Osmosis?</h1>
+<p class="meta">Biology &middot; Movement of Substances &middot; Syllabus refs (G2 &amp; G3): 2b</p>
+<p class="print-only">Name: ______________________ &nbsp; Class: ________ &nbsp; Date: ____________</p>
+<p class="print-hide"><a class="pdf-btn" href="movement-2-2-osmosis.pdf" target="_blank" rel="noopener">&#128196; Download printable version (PDF)</a></p>
+<nav class="toc print-hide" aria-label="On this page"><strong>On this page</strong><a href="#osmosis">Osmosis</a><a href="#what-is-water-potential">What is water potential?</a><a href="#what-happens-to-plant-cells-in-different">What happens to plant cells in different solutions?</a><a href="#what-happens-to-animal-cells-in-differen">What happens to animal cells in different solutions?</a><a href="#why-is-turgor-important-to-plants">Why is turgor important to plants?</a><a href="#factors-that-affect-the-rate-of-osmosis">Factors that affect the rate of osmosis</a><a href="#check-your-understanding">Check your understanding</a></nav>
+<style>
+  .sim { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.1rem; margin: 1.25rem 0; }
+  .sim h3 { margin-top: 0; color: #134e4a; font-size: 1.08rem; }
+  .sim canvas { display: block; width: 100%; height: auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; touch-action: pan-y; }
+  .sim .btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
+  .sim .btns button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font: 700 0.95rem "Source Sans 3", system-ui, sans-serif; cursor: pointer; }
+  .sim .btns button.go { background: #0f766e; border-color: #0f766e; color: #fff; }
+  .sim .read { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin-top: 0.4rem; }
+  .sim .read div { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.4rem 0.7rem; font-size: 0.92rem; color: #475569; }
+  .sim .read b { display: block; font-size: 1.2rem; color: #134e4a; }
+  .sim .status { margin: 0.6rem 0 0; padding: 0.5rem 0.8rem; border-radius: 8px; background: #f0fdfa; border: 1px solid #99f6e4; font-weight: 600; color: #134e4a; }
+  .sim .key { font-size: 0.9rem; color: #475569; margin: 0.4rem 0 0; }
+  .sim .key i { display: inline-block; width: 0.8em; height: 0.8em; border-radius: 50%; vertical-align: -0.05em; margin: 0 0.25em 0 0.6em; }
+  @media print { .sim { display: none !important; } }
+</style>
+<style>
+  .defn { border: 1px solid #fbcfe8; background: #fdf2f8; border-radius: 10px; padding: 0.8rem 1.1rem; margin: 1rem 0; }
+  .defn strong:first-child { color: #9d174d; }
+  details.ans { margin: 0.4rem 0 0.6rem; } details.ans summary { cursor: pointer; color: #0f766e; font-weight: 700; }
+  details.ans div { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.5rem 0.8rem; margin-top: 0.3rem; }
+  .figrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.8rem; align-items: end; }
+  .figrow .illus svg { width: 100%; height: auto; }
+  .cellcmp td svg { width: 100%; max-width: 220px; height: auto; display: block; margin: 0.3rem auto; }
+  .cellcmp td { vertical-align: top; }
+  .rbcrow { display: flex; align-items: center; justify-content: center; gap: 0.3rem; margin-top: 0.5rem; }
+  .cellcmp .rbcrow svg { width: 72px; height: auto; margin: 0; } .rbcrow b { color: #2563eb; font-size: 1.3rem; }
+  .sidebox { border-left: 4px solid #84cc16; background: #f7fee7; padding: 0.5rem 1rem; margin: 1rem 0; border-radius: 0 8px 8px 0; }
+  .sidebox h4 { margin: 0.2rem 0; color: #3f6212; }
+  @media print { details.ans div { display: block; } }
+</style>
+<style>
+  .labeller { margin: 1.25rem 0; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem; background: #fff; }
+  .lab-title { margin: 0 0 0.5rem; }
+  .bank { display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0.6rem; background: #f0fdfa; border: 1px dashed #5eead4; border-radius: 10px; min-height: 2.9rem; }
+  .chip { touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; min-height: 2.4rem; padding: 0 0.85rem; border: 1px solid #0f766e; border-radius: 999px; background: #fff; color: #134e4a; font: 700 0.95rem "Source Sans 3", system-ui, sans-serif; }
+  .chip.sel { background: #134e4a; color: #fff; }
+  .chip.dragging { position: fixed; z-index: 50; pointer-events: none; box-shadow: 0 6px 18px rgba(0,0,0,0.25); cursor: grabbing; }
+  .lab-stage { position: relative; margin: 0.8rem auto 0.3rem; }
+  .lab-stage svg { display: block; width: 100%; height: auto; margin: 0; }
+  .drop { position: absolute; transform: translate(-100%, -50%); min-width: 7.4em; max-width: 12em; min-height: 2em; padding: 0.15rem 0.45rem; border: 2px dashed #64748b; border-radius: 8px; background: rgba(255,255,255,0.94);
+    font: 700 clamp(0.6rem, 1.7vw, 0.92rem)/1.15 "Source Sans 3", system-ui, sans-serif; color: #134e4a; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 0.3rem; }
+  .drop.r { transform: translate(0, -50%); } .drop.c { transform: translate(-50%, -50%); }
+  .drop .n { flex: 0 0 auto; width: 1.3em; height: 1.3em; border-radius: 50%; background: #e2e8f0; color: #334155; font-size: 0.8em; display: inline-flex; align-items: center; justify-content: center; }
+  .drop.filled { border-style: solid; border-color: #0f766e; }
+  .drop .v { flex: 1 1 auto; min-width: 0; }
+  .drop .chip { min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; font: inherit; color: inherit; text-align: left; white-space: nowrap; }
+  .drop .chip.sel { background: #134e4a; color: #fff; border-radius: 4px; padding: 0 0.2rem; }
+  .drop.over, .drop.armed:hover { background: #ccfbf1; border-color: #0f766e; }
+  .drop.ok { border-color: #16a34a; background: #dcfce7; } .drop.no { border-color: #dc2626; background: #fee2e2; }
+  .lab-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.4rem; }
+  .lab-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .lab-ctl button[data-act=check] { background: #0f766e; border-color: #0f766e; color: #fff; }
+  .lab-score { font-weight: 700; color: #134e4a; }
+  .two-col figure.pic img { height: 340px; object-fit: contain; background: #f1f5f9; }
+  .cellcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.8rem; margin: 1rem 0 0.3rem; }
+  .cellcards figure { margin: 0; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 0.6rem; text-align: center; break-inside: avoid; }
+  .cellcards svg { width: 100%; height: 130px; margin: 0 0 0.4rem; }
+  .cellcards figcaption { font-size: 0.95rem; line-height: 1.35; }
+  ul.spot { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.7rem 1rem 0.7rem 2rem; }
+  .scopes img { height: 300px; object-fit: contain; background: #fff; }
+  .credit { font-size: 0.8rem; color: #64748b; text-align: center; margin: 0.2rem 0 0; }
+  .credit a { color: #64748b; }
+  .lab-swipe { display: none; font-size: 0.85rem; color: #475569; margin: 0.4rem 0 0; }
+  @media (max-width: 560px) { .labeller { padding: 0.7rem 0.5rem; } .lab-swipe { display: block; } .lab-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0.4rem; }
+    .lab-stage { width: 640px; max-width: none !important; } .drop { font-size: 0.8rem; min-width: 6.5em; } .drop .n { display: none; } }
+  @media print { .lab-swipe { display: none !important; } .lab-scroll { overflow: visible; } }
+  @media print { .labeller { border: none; padding: 0; break-inside: avoid; } .labeller .bank .chip { display: inline-block !important; min-height: 0; padding: 0.1rem 0.6rem; } .labeller .drop { display: flex !important; } .chip { cursor: default; } .drop .v { visibility: hidden; } .drop { border: 1.5px solid #000; background: #fff; } }
+</style>
+<div class="practical"><h3>Learning outcomes</h3><ul>
+<li>Define osmosis, investigate and describe the effects of osmosis on plant and animal tissues.</li>
+<li>Discuss the factors that affect the rate of osmosis.</li></ul></div>
+<h2 id="osmosis">Osmosis</h2>
+<p>The cell membrane is a <strong>partially permeable membrane</strong>: it lets some substances through but not others. In Fig. 2.5, a partially permeable membrane separates the two arms of a U-tube. The membrane lets <strong>water</strong> molecules through, but <strong>not sucrose</strong> molecules. (Sucrose is cane sugar, the sugar you use at home.)</p>
+<div class="figrow"><div class="illus"><svg viewBox="-110 0 520 410" role="img" aria-label="U-tube at the start: arm A holds 10% sucrose solution and arm B holds 5% sucrose solution at the same level, separated at the bottom by a partially permeable membrane" style="max-width:380px"><path d="M85 40 V250 A65 65 0 0 0 215 250 V40" fill="none" stroke="#3f3f46" stroke-width="58"/><path d="M85 40 V250 A65 65 0 0 0 215 250 V40" fill="none" stroke="#fff" stroke-width="52"/><path d="M85 110 V250 A65 65 0 0 0 215 250 V110" fill="none" stroke="#dbeafe" stroke-width="52"/><line x1="150" y1="287" x2="150" y2="343" stroke="#0f766e" stroke-width="3" stroke-dasharray="6 4"/><circle cx="65" cy="133" r="2.6" fill="#2563eb"/><circle cx="81" cy="221" r="2.6" fill="#2563eb"/><circle cx="71" cy="133" r="2.6" fill="#2563eb"/><circle cx="74" cy="233" r="2.6" fill="#2563eb"/><circle cx="71" cy="230" r="2.6" fill="#2563eb"/><circle cx="91" cy="137" r="2.6" fill="#2563eb"/><circle cx="86" cy="185" r="2.6" fill="#2563eb"/><circle cx="82" cy="269" r="2.6" fill="#2563eb"/><circle cx="69" cy="119" r="2.6" fill="#2563eb"/><circle cx="103" cy="178" r="2.6" fill="#2563eb"/><circle cx="73" cy="167" r="2.6" fill="#2563eb"/><circle cx="80" cy="263" r="2.6" fill="#2563eb"/><circle cx="73" cy="149" r="2.6" fill="#2563eb"/><circle cx="88" cy="200" r="2.6" fill="#2563eb"/><circle cx="103" cy="245" r="2.6" fill="#2563eb"/><circle cx="79" cy="147" r="2.6" fill="#2563eb"/><circle cx="98" cy="268" r="2.6" fill="#2563eb"/><circle cx="66" cy="229" r="2.6" fill="#2563eb"/><circle cx="100" cy="216" r="2.6" fill="#2563eb"/><circle cx="74" cy="239" r="2.6" fill="#2563eb"/><circle cx="94" cy="146" r="2.6" fill="#2563eb"/><circle cx="91" cy="150" r="2.6" fill="#2563eb"/><circle cx="67" cy="168" r="2.6" fill="#2563eb"/><circle cx="78" cy="177" r="2.6" fill="#2563eb"/><circle cx="91" cy="245" r="2.6" fill="#2563eb"/><circle cx="103" cy="266" r="2.6" fill="#2563eb"/><circle cx="105" cy="238" r="2.6" fill="#2563eb"/><circle cx="77" cy="143" r="2.6" fill="#2563eb"/><circle cx="90" cy="200" r="2.6" fill="#2563eb"/><circle cx="92" cy="130" r="2.6" fill="#2563eb"/><circle cx="73" cy="258" r="2.6" fill="#2563eb"/><circle cx="89" cy="223" r="2.6" fill="#2563eb"/><circle cx="69" cy="177" r="2.6" fill="#2563eb"/><circle cx="101" cy="216" r="2.6" fill="#2563eb"/><circle cx="105" cy="146" r="2.6" fill="#2563eb"/><circle cx="83" cy="239" r="2.6" fill="#2563eb"/><circle cx="83" cy="237" r="2.6" fill="#2563eb"/><circle cx="87" cy="134" r="2.6" fill="#2563eb"/><circle cx="71" cy="263" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="71" cy="148" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="79" cy="223" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="98" cy="189" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="85" cy="234" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="77" cy="174" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="89" cy="212" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="68" cy="136" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="72" cy="225" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="223" cy="266" r="2.6" fill="#2563eb"/><circle cx="226" cy="155" r="2.6" fill="#2563eb"/><circle cx="226" cy="268" r="2.6" fill="#2563eb"/><circle cx="209" cy="118" r="2.6" fill="#2563eb"/><circle cx="210" cy="160" r="2.6" fill="#2563eb"/><circle cx="202" cy="123" r="2.6" fill="#2563eb"/><circle cx="200" cy="249" r="2.6" fill="#2563eb"/><circle cx="197" cy="211" r="2.6" fill="#2563eb"/><circle cx="203" cy="146" r="2.6" fill="#2563eb"/><circle cx="228" cy="162" r="2.6" fill="#2563eb"/><circle cx="202" cy="186" r="2.6" fill="#2563eb"/><circle cx="223" cy="197" r="2.6" fill="#2563eb"/><circle cx="229" cy="178" r="2.6" fill="#2563eb"/><circle cx="216" cy="226" r="2.6" fill="#2563eb"/><circle cx="213" cy="226" r="2.6" fill="#2563eb"/><circle cx="214" cy="137" r="2.6" fill="#2563eb"/><circle cx="200" cy="237" r="2.6" fill="#2563eb"/><circle cx="225" cy="261" r="2.6" fill="#2563eb"/><circle cx="223" cy="205" r="2.6" fill="#2563eb"/><circle cx="202" cy="247" r="2.6" fill="#2563eb"/><circle cx="200" cy="181" r="2.6" fill="#2563eb"/><circle cx="201" cy="175" r="2.6" fill="#2563eb"/><circle cx="207" cy="182" r="2.6" fill="#2563eb"/><circle cx="223" cy="199" r="2.6" fill="#2563eb"/><circle cx="205" cy="236" r="2.6" fill="#2563eb"/><circle cx="224" cy="243" r="2.6" fill="#2563eb"/><circle cx="196" cy="211" r="2.6" fill="#2563eb"/><circle cx="231" cy="156" r="2.6" fill="#2563eb"/><circle cx="203" cy="241" r="2.6" fill="#2563eb"/><circle cx="210" cy="178" r="2.6" fill="#2563eb"/><circle cx="228" cy="175" r="2.6" fill="#2563eb"/><circle cx="203" cy="149" r="2.6" fill="#2563eb"/><circle cx="209" cy="223" r="2.6" fill="#2563eb"/><circle cx="210" cy="235" r="2.6" fill="#2563eb"/><circle cx="198" cy="154" r="2.6" fill="#2563eb"/><circle cx="220" cy="190" r="2.6" fill="#2563eb"/><circle cx="215" cy="260" r="2.6" fill="#2563eb"/><circle cx="206" cy="144" r="2.6" fill="#2563eb"/><circle cx="196" cy="190" r="2.6" fill="#2563eb"/><circle cx="207" cy="189" r="2.6" fill="#2563eb"/><circle cx="195" cy="116" r="2.6" fill="#2563eb"/><circle cx="210" cy="233" r="2.6" fill="#2563eb"/><circle cx="207" cy="257" r="2.6" fill="#2563eb"/><circle cx="218" cy="178" r="2.6" fill="#2563eb"/><circle cx="226" cy="152" r="2.6" fill="#2563eb"/><circle cx="219" cy="246" r="2.6" fill="#2563eb"/><circle cx="217" cy="165" r="2.6" fill="#2563eb"/><circle cx="200" cy="203" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="204" cy="174" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="217" cy="256" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="221" cy="195" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="85" cy="267" r="2.6" fill="#2563eb"/><circle cx="89" cy="266" r="2.6" fill="#2563eb"/><circle cx="95" cy="281" r="2.6" fill="#2563eb"/><circle cx="104" cy="301" r="2.6" fill="#2563eb"/><circle cx="115" cy="307" r="2.6" fill="#2563eb"/><circle cx="129" cy="304" r="2.6" fill="#2563eb"/><circle cx="143" cy="312" r="2.6" fill="#2563eb"/><circle cx="157" cy="324" r="2.6" fill="#2563eb"/><circle cx="171" cy="304" r="2.6" fill="#2563eb"/><circle cx="185" cy="311" r="2.6" fill="#2563eb"/><circle cx="196" cy="283" r="2.6" fill="#2563eb"/><circle cx="205" cy="297" r="2.6" fill="#2563eb"/><circle cx="211" cy="277" r="2.6" fill="#2563eb"/><circle cx="215" cy="252" r="2.6" fill="#2563eb"/><text x="85" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">A</text><text x="215" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">B</text><g font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155"><line x1="52" y1="135" x2="70" y2="140" stroke="#334155" stroke-width="1.3"/><circle cx="70" cy="140" r="2.3" fill="#334155"/><text x="46" y="140" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">10% sucrose solution</text><line x1="248" y1="135" x2="230" y2="140" stroke="#334155" stroke-width="1.3"/><circle cx="230" cy="140" r="2.3" fill="#334155"/><text x="254" y="140" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">5% sucrose solution</text><line x1="52" y1="195" x2="79" y2="205" stroke="#334155" stroke-width="1.3"/><circle cx="79" cy="205" r="2.3" fill="#334155"/><text x="46" y="200" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">sucrose molecule</text><line x1="248" y1="195" x2="223" y2="205" stroke="#334155" stroke-width="1.3"/><circle cx="223" cy="205" r="2.3" fill="#334155"/><text x="254" y="200" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">water molecule</text><line x1="144" y1="370" x2="150" y2="330" stroke="#334155" stroke-width="1.3"/><circle cx="150" cy="330" r="2.3" fill="#334155"/><text x="150" y="375" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">partially permeable membrane</text></g><text x="150" y="400" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">(a) At the start</text></svg></div><div class="illus"><svg viewBox="-110 0 520 410" role="img" aria-label="U-tube after osmosis: the level in arm A (10% sucrose) has risen and the level in arm B has fallen" style="max-width:380px"><path d="M85 40 V250 A65 65 0 0 0 215 250 V40" fill="none" stroke="#3f3f46" stroke-width="58"/><path d="M85 40 V250 A65 65 0 0 0 215 250 V40" fill="none" stroke="#fff" stroke-width="52"/><path d="M85 70 V250 A65 65 0 0 0 215 250 V160" fill="none" stroke="#dbeafe" stroke-width="52"/><line x1="150" y1="287" x2="150" y2="343" stroke="#0f766e" stroke-width="3" stroke-dasharray="6 4"/><circle cx="68" cy="117" r="2.6" fill="#2563eb"/><circle cx="77" cy="251" r="2.6" fill="#2563eb"/><circle cx="85" cy="216" r="2.6" fill="#2563eb"/><circle cx="69" cy="175" r="2.6" fill="#2563eb"/><circle cx="99" cy="177" r="2.6" fill="#2563eb"/><circle cx="103" cy="247" r="2.6" fill="#2563eb"/><circle cx="80" cy="76" r="2.6" fill="#2563eb"/><circle cx="95" cy="101" r="2.6" fill="#2563eb"/><circle cx="65" cy="218" r="2.6" fill="#2563eb"/><circle cx="99" cy="238" r="2.6" fill="#2563eb"/><circle cx="103" cy="115" r="2.6" fill="#2563eb"/><circle cx="68" cy="99" r="2.6" fill="#2563eb"/><circle cx="104" cy="98" r="2.6" fill="#2563eb"/><circle cx="71" cy="80" r="2.6" fill="#2563eb"/><circle cx="67" cy="83" r="2.6" fill="#2563eb"/><circle cx="79" cy="108" r="2.6" fill="#2563eb"/><circle cx="77" cy="256" r="2.6" fill="#2563eb"/><circle cx="72" cy="234" r="2.6" fill="#2563eb"/><circle cx="95" cy="186" r="2.6" fill="#2563eb"/><circle cx="88" cy="225" r="2.6" fill="#2563eb"/><circle cx="88" cy="120" r="2.6" fill="#2563eb"/><circle cx="78" cy="123" r="2.6" fill="#2563eb"/><circle cx="81" cy="268" r="2.6" fill="#2563eb"/><circle cx="82" cy="90" r="2.6" fill="#2563eb"/><circle cx="84" cy="234" r="2.6" fill="#2563eb"/><circle cx="83" cy="212" r="2.6" fill="#2563eb"/><circle cx="69" cy="88" r="2.6" fill="#2563eb"/><circle cx="91" cy="85" r="2.6" fill="#2563eb"/><circle cx="77" cy="151" r="2.6" fill="#2563eb"/><circle cx="73" cy="83" r="2.6" fill="#2563eb"/><circle cx="65" cy="261" r="2.6" fill="#2563eb"/><circle cx="93" cy="261" r="2.6" fill="#2563eb"/><circle cx="85" cy="261" r="2.6" fill="#2563eb"/><circle cx="100" cy="196" r="2.6" fill="#2563eb"/><circle cx="86" cy="175" r="2.6" fill="#2563eb"/><circle cx="74" cy="149" r="2.6" fill="#2563eb"/><circle cx="94" cy="114" r="2.6" fill="#2563eb"/><circle cx="99" cy="175" r="2.6" fill="#2563eb"/><circle cx="89" cy="235" r="2.6" fill="#2563eb"/><circle cx="91" cy="103" r="2.6" fill="#2563eb"/><circle cx="75" cy="76" r="2.6" fill="#2563eb"/><circle cx="66" cy="261" r="2.6" fill="#2563eb"/><circle cx="89" cy="264" r="2.6" fill="#2563eb"/><circle cx="96" cy="137" r="2.6" fill="#2563eb"/><circle cx="104" cy="255" r="2.6" fill="#2563eb"/><circle cx="83" cy="92" r="2.6" fill="#2563eb"/><circle cx="78" cy="108" r="2.6" fill="#2563eb"/><circle cx="80" cy="92" r="2.6" fill="#2563eb"/><circle cx="94" cy="266" r="2.6" fill="#2563eb"/><circle cx="73" cy="227" r="2.6" fill="#2563eb"/><circle cx="88" cy="170" r="2.6" fill="#2563eb"/><circle cx="101" cy="149" r="2.6" fill="#2563eb"/><circle cx="98" cy="83" r="2.6" fill="#2563eb"/><circle cx="104" cy="111" r="2.6" fill="#2563eb"/><circle cx="65" cy="247" r="2.6" fill="#2563eb"/><circle cx="93" cy="205" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="95" cy="150" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="71" cy="139" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="101" cy="262" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="75" cy="162" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="83" cy="247" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="67" cy="233" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="76" cy="182" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="72" cy="96" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="230" cy="218" r="2.6" fill="#2563eb"/><circle cx="234" cy="256" r="2.6" fill="#2563eb"/><circle cx="225" cy="174" r="2.6" fill="#2563eb"/><circle cx="219" cy="269" r="2.6" fill="#2563eb"/><circle cx="215" cy="173" r="2.6" fill="#2563eb"/><circle cx="202" cy="269" r="2.6" fill="#2563eb"/><circle cx="234" cy="192" r="2.6" fill="#2563eb"/><circle cx="208" cy="240" r="2.6" fill="#2563eb"/><circle cx="215" cy="185" r="2.6" fill="#2563eb"/><circle cx="234" cy="231" r="2.6" fill="#2563eb"/><circle cx="210" cy="168" r="2.6" fill="#2563eb"/><circle cx="215" cy="244" r="2.6" fill="#2563eb"/><circle cx="202" cy="175" r="2.6" fill="#2563eb"/><circle cx="224" cy="262" r="2.6" fill="#2563eb"/><circle cx="210" cy="215" r="2.6" fill="#2563eb"/><circle cx="220" cy="220" r="2.6" fill="#2563eb"/><circle cx="200" cy="195" r="2.6" fill="#2563eb"/><circle cx="203" cy="187" r="2.6" fill="#2563eb"/><circle cx="199" cy="207" r="2.6" fill="#2563eb"/><circle cx="204" cy="254" r="2.6" fill="#2563eb"/><circle cx="208" cy="266" r="2.6" fill="#2563eb"/><circle cx="227" cy="194" r="2.6" fill="#2563eb"/><circle cx="201" cy="225" r="2.6" fill="#2563eb"/><circle cx="214" cy="222" r="2.6" fill="#2563eb"/><circle cx="200" cy="221" r="2.6" fill="#2563eb"/><circle cx="225" cy="212" r="2.6" fill="#2563eb"/><circle cx="205" cy="262" r="2.6" fill="#2563eb"/><circle cx="207" cy="270" r="2.6" fill="#2563eb"/><circle cx="223" cy="166" r="2.6" fill="#2563eb"/><circle cx="213" cy="182" r="2.6" fill="#2563eb"/><circle cx="225" cy="210" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="200" cy="260" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="226" cy="228" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="217" cy="177" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="85" cy="271" r="2.6" fill="#2563eb"/><circle cx="89" cy="266" r="2.6" fill="#2563eb"/><circle cx="95" cy="285" r="2.6" fill="#2563eb"/><circle cx="104" cy="296" r="2.6" fill="#2563eb"/><circle cx="115" cy="304" r="2.6" fill="#2563eb"/><circle cx="129" cy="298" r="2.6" fill="#2563eb"/><circle cx="143" cy="326" r="2.6" fill="#2563eb"/><circle cx="157" cy="314" r="2.6" fill="#2563eb"/><circle cx="171" cy="308" r="2.6" fill="#2563eb"/><circle cx="185" cy="315" r="2.6" fill="#2563eb"/><circle cx="196" cy="306" r="2.6" fill="#2563eb"/><circle cx="205" cy="291" r="2.6" fill="#2563eb"/><circle cx="211" cy="283" r="2.6" fill="#2563eb"/><circle cx="215" cy="253" r="2.6" fill="#2563eb"/><text x="85" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">A</text><text x="215" y="22" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">B</text><g font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155"><line x1="52" y1="65" x2="70" y2="70" stroke="#334155" stroke-width="1.3"/><circle cx="70" cy="70" r="2.3" fill="#334155"/><text x="46" y="70" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">level rises</text><line x1="248" y1="155" x2="230" y2="160" stroke="#334155" stroke-width="1.3"/><circle cx="230" cy="160" r="2.3" fill="#334155"/><text x="254" y="160" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">level falls</text><line x1="144" y1="370" x2="150" y2="330" stroke="#334155" stroke-width="1.3"/><circle cx="150" cy="330" r="2.3" fill="#334155"/><text x="150" y="375" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">partially permeable membrane</text></g><text x="150" y="400" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" font-weight="700">(b) After some time</text></svg></div></div>
+<p class="fig-caption"><strong>Fig. 2.5</strong> &mdash; Experiment to show osmosis.</p>
+<p>Compared with arm B, arm A has:</p><ul><li><strong>more</strong> sucrose molecules per unit volume;</li><li><strong>fewer</strong> water molecules per unit volume.</li></ul>
+<p>After some time, the level in arm A <strong>rises</strong> and the level in arm B <strong>falls</strong>. Why?</p>
+<ul><li>Sucrose molecules are too large to pass through the tiny pores of the membrane, so they cannot move from A to B.</li><li>Water molecules move from B to A, because solution B has more water molecules per unit volume than solution A. (A <strong>dilute</strong> solution has more water molecules per unit volume than a <strong>concentrated</strong> solution.)</li></ul>
+<p>Water keeps moving until both arms have the same solute concentration (the same number of solute molecules per unit volume).</p>
+<p class="keyidea">The diffusion of <strong>water molecules</strong> across a <strong>partially permeable membrane</strong> is called <strong>osmosis</strong>.</p>
+<div class="sidebox"><h4>Link to Chemistry</h4><p>The <strong>concentration</strong> of a solution is the amount of solute dissolved in a unit volume of the solution.</p></div>
+<div class="sim print-hide" id="sim-osmo" data-mode="osmo">
+  <h3>See it happen: osmosis</h3>
+  <p>Arm A has more sucrose than arm B. The green line is a partially permeable membrane: its gaps let the small water molecules through but not the big sucrose molecules. Water molecules close to a sucrose molecule are held by it and are not free to move across.</p>
+  <canvas width="720" height="300" aria-label="Animation of moving particles"></canvas>
+  <p class="key"><i style="background:#f97316"></i>sucrose molecule <i style="background:#60a5fa"></i>water molecule</p>
+  <div class="btns"><button type="button" class="go" data-act="play">&#9654; Start</button><button type="button" data-act="reset">&#8634; Start again</button></div>
+  <div class="read"><div>Water molecules in A<b data-r="wl">-</b></div><div>Water molecules in B<b data-r="wr">-</b></div><div>Time (steps)<b data-r="t">0</b></div></div>
+  <p class="status" aria-live="polite">Press Start.</p>
+</div>
+<div class="practical"><h3>Practical: demonstrating osmosis</h3><p><strong>Aim:</strong> to show osmosis using dialysis tubing (Visking tubing), which is a partially permeable membrane.</p><p><strong>Procedure</strong></p><ol><li>Tie a knot in one end of a piece of dialysis tubing.</li><li>Fill a boiling tube halfway with distilled water.</li><li>Use a pipette to fill the dialysis tubing halfway with sucrose solution. If any spills, rinse the outside of the tubing with distilled water.</li><li>Set up the apparatus as in Fig. 2.6. The liquid levels inside and outside the tubing must be the same. Hold the tubing in place with a paper clip and mark the level on the outside of the boiling tube.</li><li>Set up a second boiling tube in the same way, but with distilled water both inside the tubing and in the boiling tube.</li><li>After 20 minutes, observe the liquid levels inside and outside the tubing in each set-up.</li></ol><div class="figrow"><div class="illus"><svg viewBox="-70 0 440 440" role="img" aria-label="Dialysis tubing tied in a knot at the bottom, filled with sucrose solution and held by a paper clip in a boiling tube of distilled water. The liquid levels inside and outside the tubing are the same, at the marked starting level." style="max-width:340px"><path d="M122 120 V386 a38 38 0 0 0 76 0 V120 Z" fill="#dbeafe"/><path d="M116 40 V386 a44 44 0 0 0 88 0 V40" fill="none" stroke="#3f3f46" stroke-width="3"/><path d="M150 30 V170 C136 196 136 300 160 338 C184 300 184 196 170 170 V30 Z" fill="#e0f2fe" stroke="#0369a1" stroke-width="2.5"/><clipPath id="bagclip0"><path d="M150 30 V170 C136 196 136 300 160 338 C184 300 184 196 170 170 V30 Z"/></clipPath><rect x="120" y="120" width="80" height="220" fill="#38bdf8" clip-path="url(#bagclip0)"/><path d="M150 30 V170 C136 196 136 300 160 338 C184 300 184 196 170 170 V30 Z" fill="none" stroke="#0369a1" stroke-width="2.5"/><path d="M153 340 l7 14 l7 -14 M150 348 l10 6 l10 -6" fill="none" stroke="#0369a1" stroke-width="2.5"/><path d="M146 22 h28 v18 h-28 z" fill="#e2e8f0" stroke="#475569" stroke-width="2"/><path d="M150 22 v-8 a6 6 0 0 1 12 0 v20" fill="none" stroke="#475569" stroke-width="2"/><line x1="102" y1="120" x2="116" y2="120" stroke="#dc2626" stroke-width="3"/><g font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155"><line x1="224" y1="21" x2="174" y2="26" stroke="#334155" stroke-width="1.3"/><circle cx="174" cy="26" r="2.3" fill="#334155"/><text x="230" y="26" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">paper clip</text><line x1="224" y1="225" x2="186" y2="230" stroke="#334155" stroke-width="1.3"/><circle cx="186" cy="230" r="2.3" fill="#334155"/><text x="230" y="230" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">dialysis tubing</text><line x1="96" y1="255" x2="158" y2="260" stroke="#334155" stroke-width="1.3"/><circle cx="158" cy="260" r="2.3" fill="#334155"/><text x="90" y="260" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">sucrose solution</text><line x1="224" y1="347" x2="168" y2="350" stroke="#334155" stroke-width="1.3"/><circle cx="168" cy="350" r="2.3" fill="#334155"/><text x="230" y="352" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">knot</text><line x1="96" y1="325" x2="116" y2="330" stroke="#334155" stroke-width="1.3"/><circle cx="116" cy="330" r="2.3" fill="#334155"/><text x="90" y="330" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">boiling tube</text><line x1="224" y1="395" x2="186" y2="395" stroke="#334155" stroke-width="1.3"/><circle cx="186" cy="395" r="2.3" fill="#334155"/><text x="230" y="400" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">distilled water</text><line x1="96" y1="95" x2="104" y2="120" stroke="#334155" stroke-width="1.3"/><circle cx="104" cy="120" r="2.3" fill="#334155"/><text x="90" y="100" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">mark: starting level</text></g></svg><p class="fig-caption">At the start</p></div><div class="illus"><svg viewBox="-70 0 440 440" role="img" aria-label="Dialysis tubing tied in a knot at the bottom, filled with sucrose solution and held by a paper clip in a boiling tube of distilled water. After 20 minutes the level inside the tubing has risen well above the starting mark and the tubing has swollen." style="max-width:340px"><path d="M122 126 V386 a38 38 0 0 0 76 0 V126 Z" fill="#dbeafe"/><path d="M116 40 V386 a44 44 0 0 0 88 0 V40" fill="none" stroke="#3f3f46" stroke-width="3"/><path d="M150 30 V170 C130 196 130 300 160 338 C190 300 190 196 170 170 V30 Z" fill="#e0f2fe" stroke="#0369a1" stroke-width="2.5"/><clipPath id="bagclip1"><path d="M150 30 V170 C130 196 130 300 160 338 C190 300 190 196 170 170 V30 Z"/></clipPath><rect x="120" y="64" width="80" height="276" fill="#38bdf8" clip-path="url(#bagclip1)"/><path d="M150 30 V170 C130 196 130 300 160 338 C190 300 190 196 170 170 V30 Z" fill="none" stroke="#0369a1" stroke-width="2.5"/><path d="M153 340 l7 14 l7 -14 M150 348 l10 6 l10 -6" fill="none" stroke="#0369a1" stroke-width="2.5"/><path d="M146 22 h28 v18 h-28 z" fill="#e2e8f0" stroke="#475569" stroke-width="2"/><path d="M150 22 v-8 a6 6 0 0 1 12 0 v20" fill="none" stroke="#475569" stroke-width="2"/><line x1="102" y1="120" x2="116" y2="120" stroke="#dc2626" stroke-width="3"/><g font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155"><line x1="224" y1="21" x2="174" y2="26" stroke="#334155" stroke-width="1.3"/><circle cx="174" cy="26" r="2.3" fill="#334155"/><text x="230" y="26" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">paper clip</text><line x1="224" y1="225" x2="186" y2="230" stroke="#334155" stroke-width="1.3"/><circle cx="186" cy="230" r="2.3" fill="#334155"/><text x="230" y="230" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">dialysis tubing</text><line x1="96" y1="255" x2="158" y2="260" stroke="#334155" stroke-width="1.3"/><circle cx="158" cy="260" r="2.3" fill="#334155"/><text x="90" y="260" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">sucrose solution</text><line x1="224" y1="347" x2="168" y2="350" stroke="#334155" stroke-width="1.3"/><circle cx="168" cy="350" r="2.3" fill="#334155"/><text x="230" y="352" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">knot</text><line x1="96" y1="325" x2="116" y2="330" stroke="#334155" stroke-width="1.3"/><circle cx="116" cy="330" r="2.3" fill="#334155"/><text x="90" y="330" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">boiling tube</text><line x1="224" y1="395" x2="186" y2="395" stroke="#334155" stroke-width="1.3"/><circle cx="186" cy="395" r="2.3" fill="#334155"/><text x="230" y="400" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">distilled water</text><line x1="96" y1="95" x2="104" y2="120" stroke="#334155" stroke-width="1.3"/><circle cx="104" cy="120" r="2.3" fill="#334155"/><text x="90" y="100" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">mark: starting level</text><line x1="224" y1="59" x2="170" y2="64" stroke="#334155" stroke-width="1.3"/><circle cx="170" cy="64" r="2.3" fill="#334155"/><text x="230" y="64" text-anchor="start" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937">level inside has risen</text></g></svg><p class="fig-caption">After 20 minutes</p></div></div>
+<p class="fig-caption"><strong>Fig. 2.6</strong> &mdash; Set-up to demonstrate osmosis.</p>
+<p><strong>Observation and discussion</strong></p><ol><li>What do you notice about the dialysis tubing after 20 minutes? Explain your observation.<details class="ans print-hide"><summary>Show answer</summary><div>The tubing swells and becomes firm, and the liquid level inside it rises. The distilled water outside has a higher water potential than the sucrose solution inside. Water molecules move into the tubing by osmosis, through the partially permeable tubing. Sucrose molecules are too large to move out.</div></details></li><li>What is the purpose of the second set-up (distilled water inside and outside)?<details class="ans print-hide"><summary>Show answer</summary><div>It is a <strong>control</strong>. With no difference in water potential, the level does not change. This shows that the rise in the first set-up is caused by the sucrose solution (the water potential gradient), not by the tubing itself.</div></details></li></ol></div>
+<h2 id="what-is-water-potential">What is water potential?</h2>
+<p>When we talk about osmosis we use the term <strong>water potential</strong>. Water potential is a measure of how likely water molecules are to move from one place to another.</p>
+<ul><li>Water molecules tend to move from a <strong>dilute</strong> solution (less solute) to a <strong>more concentrated</strong> solution.</li><li>So a <strong>dilute</strong> solution has a <strong>higher</strong> water potential than a concentrated solution. Pure (distilled) water has the highest water potential of all.</li><li>When a partially permeable membrane separates two solutions with different water potentials, a <strong>water potential gradient</strong> is set up. Water molecules move from the region of higher water potential to the region of lower water potential: <strong>down</strong> the water potential gradient.</li></ul>
+<div class="illus"><svg viewBox="0 0 480 284" role="img" aria-label="A container divided by a partially permeable membrane. The left side has more solute and a lower water potential; the right side has less solute and a higher water potential. An arrow shows water molecules moving from right to left" style="max-width:520px"><defs><marker id="aw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs><rect x="40" y="40" width="200" height="150" fill="#93c5fd"/><rect x="240" y="40" width="200" height="150" fill="#dbeafe"/><path d="M30 20 V186 q0 14 14 14 H436 q14 0 14 -14 V20" fill="none" stroke="#3f3f46" stroke-width="3"/><line x1="240" y1="14" x2="240" y2="198" stroke="#0f766e" stroke-width="3" stroke-dasharray="7 5"/><circle cx="152.0" cy="134.0" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="193.9" cy="89.7" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="165.8" cy="166.4" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="209.5" cy="78.3" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="165.8" cy="132.1" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="140.6" cy="175.8" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="144.8" cy="110.7" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="215.4" cy="134.5" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="106.2" cy="93.7" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="139.3" cy="61.6" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="158.3" cy="147.0" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="127.4" cy="160.8" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="212.8" cy="124.5" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="170.8" cy="69.7" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="264.5" cy="177.5" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="303.4" cy="81.7" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="407.4" cy="148.7" r="6" fill="#f97316" stroke="#9a3412"/><circle cx="275.9" cy="95.2" r="6" fill="#f97316" stroke="#9a3412"/><line x1="400" y1="230" x2="90" y2="230" stroke="#dc2626" stroke-width="4" marker-end="url(#aw)"/><text x="245" y="254" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155"><tspan x="245" dy="0">water molecules move down a water potential gradient,</tspan><tspan x="245" dy="1.15em">through the partially permeable membrane</tspan></text><text x="140" y="64" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round" font-weight="700"><tspan x="140" dy="0">more solute</tspan><tspan x="140" dy="1.15em">LOWER water potential</tspan></text><text x="340" y="64" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" paint-order="stroke" stroke="#fff" stroke-width="4" stroke-linejoin="round" font-weight="700"><tspan x="340" dy="0">less solute</tspan><tspan x="340" dy="1.15em">HIGHER water potential</tspan></text></svg><p class="fig-caption"><strong>Fig. 2.7</strong> &mdash; A water potential gradient across a partially permeable membrane.</p></div>
+<div class="illus"><svg viewBox="0 0 470 300" role="img" aria-label="Graph: the dilute solution has a high water potential (tall bar) and the concentrated solution a low water potential (short bar). Water moves from the dilute to the concentrated solution, down the water potential gradient" style="max-width:470px"><defs><marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0f172a"/></marker></defs><defs><marker id="ad" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#dc2626"/></marker></defs><line x1="60" y1="270" x2="60" y2="30" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ag)"/><line x1="60" y1="270" x2="440" y2="270" stroke="#0f172a" stroke-width="2.5" marker-end="url(#ag)"/><rect x="110" y="70" width="34" height="200" fill="#0ea5e9"/><rect x="340" y="190" width="34" height="80" fill="#0ea5e9"/><line x1="146" y1="72" x2="336" y2="188" stroke="#dc2626" stroke-width="4" stroke-dasharray="8 5" marker-end="url(#ad)"/><text x="40" y="160" font-family="Source Sans 3, system-ui, sans-serif" font-size="15" fill="#1f2937" text-anchor="middle" transform="rotate(-90 40 160)">water potential</text><text x="127" y="292" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">dilute solution</text><text x="357" y="292" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">concentrated solution</text><text x="250" y="116" font-family="Source Sans 3, system-ui, sans-serif" font-size="13"  fill="#b91c1c" transform="rotate(31 250 116)" text-anchor="middle">water moves down the water potential gradient</text><line x1="110" y1="18" x2="380" y2="18" stroke="#0f172a" stroke-width="2" marker-end="url(#ag)"/><text x="245" y="12" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155">direction of movement of water molecules</text></svg><p class="fig-caption"><strong>Fig. 2.8</strong> &mdash; Water moves from a dilute solution (higher water potential) to a concentrated solution (lower water potential).</p></div>
+<p class="defn"><strong>Osmosis</strong> is the net movement of water molecules from a region of higher water potential to a region of lower water potential, through a partially permeable membrane.</p>
+<p class="common"><strong>Common mistakes:</strong> in osmosis it is the <em>water</em> that moves, not the solute. More solute means <em>lower</em> water potential. Always mention the <em>partially permeable membrane</em> in your answer.</p>
+<div class="video-block">
+  <p>Video: Osmosis <span class="vid-credit">(YouTube: Cognito)</span></p>
+  <p class="vid-note">This video talks about &ldquo;water concentration&rdquo;. In our course we say <strong>water potential</strong>: a higher water concentration means a higher water potential.</p>
+  <iframe src="https://www.youtube-nocookie.com/embed/vCJVXYmXkzM" title="Video: Osmosis" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <p class="vid-note print-hide"><a href="https://www.youtube.com/watch?v=vCJVXYmXkzM" target="_blank" rel="noopener">&#9654; Video not playing? Watch on YouTube</a></p>
+</div>
+<h2 id="what-happens-to-plant-cells-in-different">What happens to plant cells in different solutions?</h2>
+<p>The cell sap in the vacuole of a plant cell is a solution. Whether water goes in or out depends on the water potential of the solution outside the cell.</p>
+<table class="cellcmp"><tr><th></th><th>Plant cell in a solution of <strong>higher</strong> water potential (e.g. distilled water)</th><th>Plant cell in a solution of <strong>lower</strong> water potential (e.g. concentrated sugar solution)</th></tr><tr><th>Water potential of cell sap compared with the solution outside</th><td>Lower than the solution outside.</td><td>Higher than the solution outside.</td></tr><tr><th>Movement of water by osmosis</th><td>Water molecules <strong>enter</strong> the cell through the partially permeable cell membrane.</td><td>Water molecules <strong>leave</strong> the vacuole and cytoplasm through the partially permeable cell membrane.</td></tr><tr><th>What happens to the cell</th><td>The vacuole gets bigger and pushes the cytoplasm against the cell wall. The cell does <strong>not burst</strong>, because the strong, inelastic cell wall protects it. The pressure of the water in the vacuole is the <strong>turgor pressure</strong>.<svg viewBox="0 0 300 200" role="img" aria-label="A turgid plant cell: water has entered by osmosis, the vacuole is large and the cytoplasm is pressed against the cell wall"><defs><marker id="pwturgid" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2563eb"/></marker></defs><rect x="30" y="30" width="240" height="140" rx="16" fill="#fff" stroke="#a16207" stroke-width="7"/><rect x="38" y="38" width="224" height="124" rx="11" fill="#fbf3c6" stroke="#15803d" stroke-width="2.5"/><rect x="58" y="44" width="198" height="112" rx="9" fill="#cffafe" stroke="#0e7490" stroke-width="1.5"/><ellipse cx="49" cy="100" rx="6" ry="13" fill="#ebe3f6" stroke="#3f3f46" stroke-width="1.5"/><line x1="150" y1="2" x2="150" y2="70" stroke="#2563eb" stroke-width="3" marker-end="url(#pwturgid)"/><line x1="150" y1="198" x2="150" y2="130" stroke="#2563eb" stroke-width="3" marker-end="url(#pwturgid)"/><line x1="300" y1="100" x2="236" y2="100" stroke="#2563eb" stroke-width="3" marker-end="url(#pwturgid)"/></svg></td><td>The vacuole gets smaller. The cytoplasm shrinks and the cell membrane pulls away from the cell wall. This is called <strong>plasmolysis</strong>; the cell is <strong>plasmolysed</strong>.<svg viewBox="0 0 300 200" role="img" aria-label="A plasmolysed plant cell: water has left by osmosis, the vacuole has shrunk and the cytoplasm and cell membrane have pulled away from the cell wall"><defs><marker id="pwplasmolysed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2563eb"/></marker></defs><rect x="30" y="30" width="240" height="140" rx="16" fill="#fff" stroke="#a16207" stroke-width="7"/><rect x="34" y="34" width="232" height="132" rx="12" fill="#e0f2fe"/><path d="M78 62 C110 50 190 52 222 64 C240 80 238 124 220 138 C186 150 110 150 80 138 C62 124 60 76 78 62 Z" fill="#fbf3c6" stroke="#15803d" stroke-width="2.5"/><ellipse cx="150" cy="100" rx="52" ry="22" fill="#cffafe" stroke="#0e7490" stroke-width="1.5"/><circle cx="96" cy="100" r="11" fill="#ebe3f6" stroke="#3f3f46" stroke-width="1.5"/><line x1="150" y1="78" x2="150" y2="8" stroke="#2563eb" stroke-width="3" marker-end="url(#pwplasmolysed)"/><line x1="150" y1="122" x2="150" y2="194" stroke="#2563eb" stroke-width="3" marker-end="url(#pwplasmolysed)"/><line x1="204" y1="100" x2="300" y2="100" stroke="#2563eb" stroke-width="3" marker-end="url(#pwplasmolysed)"/></svg></td></tr><tr><th>Result</th><td>The cell swells and becomes <strong>turgid</strong> (its firmness is called <strong>turgor</strong>).</td><td>The cell shrinks and becomes <strong>flaccid</strong> (limp).</td></tr></table>
+<p class="fig-caption">Blue arrows: the direction water moves by osmosis. Cell drawings not to scale.</p>
+<p>A plasmolysed cell can recover. If it is put back into water (or a solution of higher water potential) soon enough, water enters by osmosis and the cell becomes turgid again.</p>
+<div class="two-col"><figure class="pic"><img src="img/red-onion-plasmolysis-lm.jpg" alt="Red onion epidermis cells under a microscope; in many cells the purple contents have shrunk away from the cell wall" loading="lazy"><figcaption>Red onion cells in a concentrated salt solution. Look for cells where the coloured contents have shrunk away from the cell wall: these cells are <strong>plasmolysed</strong>.</figcaption></figure><figure class="pic"><img src="img/rhoeo-plasmolysis-lm.jpg" alt="Close-up of four plant cells; in each one the pink vacuole and cytoplasm have shrunk into a rounded shape, leaving clear space next to the cell wall" loading="lazy"><figcaption>Close-up of plasmolysed cells. The pink vacuole has shrunk and the cell membrane has pulled away from the cell wall. The clear gaps are filled with the outside solution.</figcaption></figure></div>
+<p class="credit">Images: <a href="https://commons.wikimedia.org/wiki/File:Plasmolysis_of_red_onion_(Allium_cepa)_cells.jpg">Tr&#432;&#417;ng Minh Kh&#7843;i</a>, CC BY 4.0; <a href="https://commons.wikimedia.org/wiki/File:Rhoeo_Discolor_-_Plasmolysis.jpg">Mnolf</a>, CC BY-SA 3.0; via Wikimedia Commons.</p>
+<div class="labeller" id="lab-plasmo">
+  <p class="lab-title"><strong>Label a plasmolysed plant cell.</strong> <span class="print-hide">Drag each label into a box (or tap a label, then tap a box).</span></p>
+  <div class="bank" aria-label="Labels"><button type="button" class="chip" data-key="nuc">nucleus</button><button type="button" class="chip" data-key="cyto">cytoplasm</button><button type="button" class="chip" data-key="sol">outside solution</button><button type="button" class="chip" data-key="vac">vacuole</button><button type="button" class="chip" data-key="mem">cell membrane</button><button type="button" class="chip" data-key="wall">cell wall</button></div>
+  <p class="lab-swipe">&#8596; Swipe sideways to see the whole diagram.</p>
+  <div class="lab-scroll"><div class="lab-stage" style="max-width:520px"><svg viewBox="0 0 560 200" role="img" aria-label="A plasmolysed plant cell."><g transform="translate(130 0)"><defs><marker id="pwplasmolysed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2563eb"/></marker></defs><rect x="30" y="30" width="240" height="140" rx="16" fill="#fff" stroke="#a16207" stroke-width="7"/><rect x="34" y="34" width="232" height="132" rx="12" fill="#e0f2fe"/><path d="M78 62 C110 50 190 52 222 64 C240 80 238 124 220 138 C186 150 110 150 80 138 C62 124 60 76 78 62 Z" fill="#fbf3c6" stroke="#15803d" stroke-width="2.5"/><ellipse cx="150" cy="100" rx="52" ry="22" fill="#cffafe" stroke="#0e7490" stroke-width="1.5"/><circle cx="96" cy="100" r="11" fill="#ebe3f6" stroke="#3f3f46" stroke-width="1.5"/></g><line x1="450" y1="30" x2="398" y2="50" stroke="#334155" stroke-width="1.5"/><circle cx="398" cy="50" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="450" y1="75" x2="352" y2="64" stroke="#334155" stroke-width="1.5"/><circle cx="352" cy="64" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="450" y1="120" x2="300" y2="104" stroke="#334155" stroke-width="1.5"/><circle cx="300" cy="104" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="450" y1="165" x2="378" y2="150" stroke="#334155" stroke-width="1.5"/><circle cx="378" cy="150" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="110" y1="60" x2="210" y2="80" stroke="#334155" stroke-width="1.5"/><circle cx="210" cy="80" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/><line x1="110" y1="130" x2="226" y2="100" stroke="#334155" stroke-width="1.5"/><circle cx="226" cy="100" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/></svg><button type="button" class="drop r" data-ans="wall" style="left:80.36%;top:15.00%" aria-label="Empty label box 1"><span class="n">1</span><span class="v"></span></button><button type="button" class="drop r" data-ans="mem" style="left:80.36%;top:37.50%" aria-label="Empty label box 2"><span class="n">2</span><span class="v"></span></button><button type="button" class="drop r" data-ans="vac" style="left:80.36%;top:60.00%" aria-label="Empty label box 3"><span class="n">3</span><span class="v"></span></button><button type="button" class="drop r" data-ans="sol" style="left:80.36%;top:82.50%" aria-label="Empty label box 4"><span class="n">4</span><span class="v"></span></button><button type="button" class="drop l" data-ans="cyto" style="left:19.64%;top:30.00%" aria-label="Empty label box 5"><span class="n">5</span><span class="v"></span></button><button type="button" class="drop l" data-ans="nuc" style="left:19.64%;top:65.00%" aria-label="Empty label box 6"><span class="n">6</span><span class="v"></span></button></div></div>
+  <div class="lab-ctl print-hide"><button type="button" data-act="check">Check my labels</button><button type="button" data-act="show">Show answers</button><button type="button" data-act="reset">Start again</button><span class="lab-score" aria-live="polite"></span></div>
+  <p class="fig-caption">A plasmolysed plant cell.</p>
+</div>
+<h2 id="what-happens-to-animal-cells-in-differen">What happens to animal cells in different solutions?</h2>
+<table class="cellcmp"><tr><th></th><th>Animal cell in a solution of <strong>higher</strong> water potential</th><th>Animal cell in a solution of <strong>lower</strong> water potential</th></tr><tr><th>Water potential of cytoplasm compared with the solution outside</th><td>Lower than the solution outside.</td><td>Higher than the solution outside.</td></tr><tr><th>Movement of water by osmosis</th><td>Water molecules move <strong>into</strong> the cell.</td><td>Water molecules move <strong>out of</strong> the cell.</td></tr><tr><th>What happens to the cell</th><td>The cell swells and may <strong>burst</strong>. Unlike a plant cell, it has no cell wall to protect it.<div class="rbcrow"><svg viewBox="0 0 200 180" role="img" aria-label="A normal red blood cell: a red disc, paler in the middle"><circle cx="100" cy="90" r="50" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.5"/><circle cx="100" cy="90" r="22" fill="#ef4444"/></svg><b>&rarr;</b><svg viewBox="0 0 200 180" role="img" aria-label="A swollen red blood cell: larger and rounder"><circle cx="100" cy="90" r="64" fill="#ef4444" stroke="#7f1d1d" stroke-width="2.5"/></svg><b>&rarr;</b><svg viewBox="0 0 200 180" role="img" aria-label="A burst red blood cell: its membrane has split open"><path d="M100 26 A64 64 0 1 1 52 46 L66 58 L58 40 L74 48 Z" fill="#fca5a5" stroke="#7f1d1d" stroke-width="2.5"/><circle cx="54" cy="30" r="4" fill="#ef4444"/><circle cx="40" cy="44" r="3" fill="#ef4444"/><circle cx="66" cy="20" r="3" fill="#ef4444"/></svg></div><p class="fig-caption">normal &rarr; swells &rarr; bursts</p></td><td>The cell shrinks and spikes appear on its surface. This is called <strong>crenation</strong>. The cell becomes dehydrated and will die if it stays there.<div class="rbcrow"><svg viewBox="0 0 200 180" role="img" aria-label="A normal red blood cell: a red disc, paler in the middle"><circle cx="100" cy="90" r="50" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.5"/><circle cx="100" cy="90" r="22" fill="#ef4444"/></svg><b>&rarr;</b><svg viewBox="0 0 200 180" role="img" aria-label="A crenated red blood cell: shrunken with spikes on its surface"><path d="M150.0 90.0 L139.5 96.3 L147.6 105.5 L135.6 108.2 L140.5 119.4 L128.3 118.3 L129.4 130.5 L118.2 125.6 L115.5 137.6 L106.3 129.5 L100.0 140.0 L93.7 129.5 L84.5 137.6 L81.8 125.6 L70.6 130.5 L71.7 118.3 L59.5 119.4 L64.4 108.2 L52.4 105.5 L60.5 96.3 L50.0 90.0 L60.5 83.7 L52.4 74.5 L64.4 71.8 L59.5 60.6 L71.7 61.7 L70.6 49.5 L81.8 54.4 L84.5 42.4 L93.7 50.5 L100.0 40.0 L106.3 50.5 L115.5 42.4 L118.2 54.4 L129.4 49.5 L128.3 61.7 L140.5 60.6 L135.6 71.8 L147.6 74.5 L139.5 83.7 Z" fill="#b91c1c" stroke="#7f1d1d" stroke-width="2" stroke-linejoin="round"/></svg></div><p class="fig-caption">normal &rarr; crenated (shrunken, with spikes)</p></td></tr></table>
+<p><strong>In a solution with the same water potential</strong> as its cytoplasm, a cell does not change size or shape. Water molecules move in and out at the same rate, so there is <strong>no net movement</strong> of water. This is why medical drips and eye drops are made with the same water potential as body fluids.</p>
+<figure class="pic"><img src="img/rbc-osmosis-lm.jpg" alt="Three microscope photos of red blood cells side by side: left, shrunken cells with spiky edges; middle, normal disc-shaped cells; right, swollen round cells" loading="lazy"><figcaption>Real red blood cells (light micrographs). <strong>Left:</strong> in a solution of lower water potential: crenated, with spikes. <strong>Middle:</strong> in a solution of the same water potential: normal discs. <strong>Right:</strong> in a solution of higher water potential: swollen and round.</figcaption></figure>
+<p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Human_Erythrocytes_OsmoticPressure_PhaseContrast_Plain.svg">Zephyris</a>, CC BY-SA 3.0, via Wikimedia Commons.</p>
+<div class="tool sorter" id="sort-cells">
+  <h3>Try it: what happens to the cell?</h3>
+  <p>Choose what happens in each case.</p>
+  <div class="sort-item" data-ans="0"><span class="name">Onion cell placed in distilled water</span><button type="button" data-c="0">Becomes turgid</button><button type="button" data-c="1">Plasmolysed</button><button type="button" data-c="2">Bursts</button><button type="button" data-c="3">Crenated</button><button type="button" data-c="4">No change</button><span class="fb" data-expl="Water enters by osmosis; the cell wall stops it bursting, so it becomes turgid."></span></div>
+  <div class="sort-item" data-ans="1"><span class="name">Onion cell placed in concentrated salt solution</span><button type="button" data-c="0">Becomes turgid</button><button type="button" data-c="1">Plasmolysed</button><button type="button" data-c="2">Bursts</button><button type="button" data-c="3">Crenated</button><button type="button" data-c="4">No change</button><span class="fb" data-expl="Water leaves by osmosis and the cell membrane pulls away from the cell wall."></span></div>
+  <div class="sort-item" data-ans="2"><span class="name">Red blood cell placed in distilled water</span><button type="button" data-c="0">Becomes turgid</button><button type="button" data-c="1">Plasmolysed</button><button type="button" data-c="2">Bursts</button><button type="button" data-c="3">Crenated</button><button type="button" data-c="4">No change</button><span class="fb" data-expl="Water enters by osmosis and there is no cell wall, so the cell bursts."></span></div>
+  <div class="sort-item" data-ans="3"><span class="name">Red blood cell placed in concentrated salt solution</span><button type="button" data-c="0">Becomes turgid</button><button type="button" data-c="1">Plasmolysed</button><button type="button" data-c="2">Bursts</button><button type="button" data-c="3">Crenated</button><button type="button" data-c="4">No change</button><span class="fb" data-expl="Water leaves by osmosis; the cell shrinks and grows spikes."></span></div>
+  <div class="sort-item" data-ans="4"><span class="name">Red blood cell placed in a solution with the same water potential as its cytoplasm</span><button type="button" data-c="0">Becomes turgid</button><button type="button" data-c="1">Plasmolysed</button><button type="button" data-c="2">Bursts</button><button type="button" data-c="3">Crenated</button><button type="button" data-c="4">No change</button><span class="fb" data-expl="No net movement of water, so the cell keeps its shape."></span></div>
+  <p class="score" aria-live="polite"></p>
+</div>
+<h2 id="why-is-turgor-important-to-plants">Why is turgor important to plants?</h2>
+<p><strong>Support.</strong> Turgor keeps soft plant parts firm. Young stems and the leaves of non-woody plants stay firm and upright because of the turgor pressure in their cells. If the cells lose too much water, they lose turgor, become flaccid, and the plant <strong>wilts</strong>.</p>
+<div class="illus"><svg viewBox="0 0 420 295" role="img" aria-label="Two seedlings in jars of soil. (a) Its cells are turgid, so the stem and leaves are firm and upright. (b) Its cells have lost turgor, so the stem bends over and the leaves droop" style="max-width:480px"><rect x="20" y="150" width="140" height="110" rx="12" fill="#e2e8f0" stroke="#3f3f46" stroke-width="2.5"/><rect x="24" y="170" width="132" height="86" rx="8" fill="#d6b98c"/><path d="M90 172 C88 130 92 90 90 50" fill="none" stroke="#65a30d" stroke-width="5"/><path d="M90 70 C60 40 30 40 30 60 C50 80 70 80 90 70 Z" fill="#84cc16" stroke="#3f6212" stroke-width="2"/><path d="M90 60 C120 30 150 30 150 48 C130 68 110 68 90 60 Z" fill="#84cc16" stroke="#3f6212" stroke-width="2"/><path d="M90 50 C80 30 86 22 90 18 C96 30 96 42 90 50 Z" fill="#a3e635" stroke="#3f6212" stroke-width="2"/><text x="90" y="285" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" font-weight="700">(a) Turgid: firm and upright</text><rect x="270" y="150" width="140" height="110" rx="12" fill="#e2e8f0" stroke="#3f3f46" stroke-width="2.5"/><rect x="274" y="170" width="132" height="86" rx="8" fill="#d6b98c"/><path d="M340 172 C338 130 344 100 354 90 C364 80 374 90 378 110" fill="none" stroke="#a16207" stroke-width="5"/><path d="M378 110 C364 130 370 150 380 160 C390 150 390 130 378 110 Z" fill="#a3a33a" stroke="#713f12" stroke-width="2"/><path d="M378 110 C392 128 402 140 406 146 C410 136 398 122 378 110 Z" fill="#b5a642" stroke="#713f12" stroke-width="2"/><text x="340" y="285" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#334155" font-weight="700">(b) Lost turgor: wilting</text></svg><p class="fig-caption"><strong>Fig. 2.9</strong> &mdash; Turgor pressure keeps a young plant upright; losing turgor makes it wilt.</p></div>
+<p><strong>Movement.</strong> Changes in turgor make some plant parts move. For example, a stoma (a tiny pore in a leaf) opens and closes when its two <strong>guard cells</strong> gain or lose turgor.</p>
+<figure class="pic cellphoto"><img src="img/stoma-sem.jpg" alt="Electron micrograph of a leaf surface showing one stoma: an oval pore between two curved guard cells" loading="lazy"><figcaption>A stoma on a tomato leaf (scanning electron micrograph, colour added). When the two guard cells around the pore become turgid, the stoma opens.</figcaption></figure>
+<p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Tomato_leaf_stomate_1-color.jpg">Photohound</a>, public domain, via Wikimedia Commons.</p>
+<p><strong>Too much fertiliser.</strong> Plasmolysed cells die if they stay plasmolysed for too long. If too much fertiliser is added around a plant, the <strong>soil solution</strong> (the thin layer of water around soil particles, with dissolved mineral salts) becomes very concentrated. Its water potential becomes lower than that of the root cells, so water moves <strong>out</strong> of the roots by osmosis. The roots cannot absorb water while the leaves keep losing water by evaporation, so the plant wilts and will die unless the soil solution is diluted with water.</p>
+<h2 id="factors-that-affect-the-rate-of-osmosis">Factors that affect the rate of osmosis</h2>
+<p>Osmosis is the diffusion of water, so it is affected by the same kinds of factors as diffusion:</p>
+<ul><li><strong>Water potential gradient:</strong> the bigger the difference in water potential across the membrane, the faster the rate of osmosis.</li><li><strong>Distance:</strong> the shorter the distance the water molecules must travel, the faster the rate.</li><li><strong>Surface area to volume ratio:</strong> the larger the SA&nbsp;:&nbsp;V of the cell or tissue, the faster water moves in or out.</li></ul>
+<div class="practical"><h3>Practical: effect of osmosis on plant tissue</h3><ol><li>Cut potato strips of the same size (for example 5 cm long), without skin. Measure the length (or mass) of each strip.</li><li>Put one strip into each of: distilled water, a dilute sucrose solution and a concentrated sucrose solution.</li><li>After 30 minutes, take the strips out, blot them dry and measure them again. Feel how firm or soft they are.</li></ol><p><strong>Results:</strong> in distilled water the strip gets <strong>longer</strong> and firm (water enters the cells by osmosis; the cells become turgid). In the concentrated solution it gets <strong>shorter</strong> and soft (water leaves the cells by osmosis; the cells become flaccid or plasmolysed). Work out the <strong>percentage change</strong> so strips of different starting sizes can be compared.</p><p class="formula">percentage change = (final length &minus; starting length) &divide; starting length &times; 100%</p></div>
+<div class="checkpoint" data-type="calculation" data-answer="-8" data-tol="0.05">
+  <p class="q">A. A potato strip was 5.0 cm long. After 30 minutes in a concentrated sucrose solution it was 4.6 cm long. Work out the percentage change in length (use a minus sign for a decrease).</p>
+  <input type="text" inputmode="decimal" placeholder="Your answer (%)" aria-label="Your answer in %">
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="(4.6 &amp;minus; 5.0) &amp;divide; 5.0 &amp;times; 100 = &amp;minus;8%. The strip lost water by osmosis because the solution had a lower water potential than the potato cells."></div>
+</div>
+<h2 id="check-your-understanding">Check your understanding</h2>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">1. Which is the correct definition of osmosis?</p>
+  <label><input type="radio" name="q1" value="0"> The net movement of solute molecules from a region of higher water potential to a region of lower water potential</label>
+  <label><input type="radio" name="q1" value="1"> The net movement of water molecules from a region of higher water potential to a region of lower water potential, through a partially permeable membrane</label>
+  <label><input type="radio" name="q1" value="2"> The net movement of water molecules from a region of lower water potential to a region of higher water potential, through a partially permeable membrane</label>
+  <label><input type="radio" name="q1" value="3"> The movement of any particles through a fully permeable membrane</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Osmosis: water molecules, from higher to lower water potential, through a partially permeable membrane."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="0">
+  <p class="q">2. Which solution has the highest water potential?</p>
+  <label><input type="radio" name="q2" value="0"> Distilled water</label>
+  <label><input type="radio" name="q2" value="1"> 5% sucrose solution</label>
+  <label><input type="radio" name="q2" value="2"> 10% sucrose solution</label>
+  <label><input type="radio" name="q2" value="3"> 20% sucrose solution</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Pure water has the highest water potential. The more solute, the lower the water potential."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="2">
+  <p class="q">3. In the U-tube experiment (Fig. 2.5), why does the level in arm A rise?</p>
+  <label><input type="radio" name="q3" value="0"> Sucrose moves from B to A.</label>
+  <label><input type="radio" name="q3" value="1"> Water moves from A to B.</label>
+  <label><input type="radio" name="q3" value="2"> Water moves from B to A by osmosis.</label>
+  <label><input type="radio" name="q3" value="3"> Sucrose molecules grow bigger.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="B has the higher water potential. Water moves from B to A through the partially permeable membrane; sucrose is too big to cross."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">4. A plant cell is placed in distilled water. Why does it not burst?</p>
+  <label><input type="radio" name="q4" value="0"> Its vacuole shrinks.</label>
+  <label><input type="radio" name="q4" value="1"> Its strong, inelastic cell wall stops it from bursting.</label>
+  <label><input type="radio" name="q4" value="2"> Water cannot enter a plant cell.</label>
+  <label><input type="radio" name="q4" value="3"> Its cell membrane is fully permeable.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Water enters by osmosis and the cell becomes turgid, but the cell wall withstands the turgor pressure."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">5. What is plasmolysis?</p>
+  <label><input type="radio" name="q5" value="0"> When a red blood cell bursts</label>
+  <label><input type="radio" name="q5" value="1"> When the cytoplasm shrinks and the cell membrane pulls away from the cell wall</label>
+  <label><input type="radio" name="q5" value="2"> When a plant cell swells and becomes turgid</label>
+  <label><input type="radio" name="q5" value="3"> When spikes form on a red blood cell</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="Plasmolysis happens to plant cells that lose water by osmosis in a solution of lower water potential."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="2">
+  <p class="q">6. Red blood cells are put into a concentrated salt solution. What will happen?</p>
+  <label><input type="radio" name="q6" value="0"> They swell and burst.</label>
+  <label><input type="radio" name="q6" value="1"> They become turgid.</label>
+  <label><input type="radio" name="q6" value="2"> They shrink and become crenated.</label>
+  <label><input type="radio" name="q6" value="3"> Nothing.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="The solution has a lower water potential than the cytoplasm, so water leaves by osmosis and the cells shrink with spikes (crenation)."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="0">
+  <p class="q">7. A farmer adds far too much fertiliser to the soil. Why might the crop wilt?</p>
+  <label><input type="radio" name="q7" value="0"> The soil solution has a lower water potential than the root cells, so water leaves the roots by osmosis.</label>
+  <label><input type="radio" name="q7" value="1"> The fertiliser blocks the stomata.</label>
+  <label><input type="radio" name="q7" value="2"> The soil solution has a higher water potential than the root cells.</label>
+  <label><input type="radio" name="q7" value="3"> The roots take in too much water.</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="A concentrated soil solution has a low water potential, so water moves out of the roots by osmosis and the plant cannot replace the water lost from its leaves."></div>
+</div>
+<div class="checkpoint" data-type="mcq" data-answer="1">
+  <p class="q">8. In the dialysis tubing practical, why is a second set-up with distilled water inside and outside the tubing used?</p>
+  <label><input type="radio" name="q8" value="0"> To make the experiment faster</label>
+  <label><input type="radio" name="q8" value="1"> As a control, to show that the change is caused by the sucrose solution</label>
+  <label><input type="radio" name="q8" value="2"> To kill bacteria</label>
+  <label><input type="radio" name="q8" value="3"> To measure the temperature</label>
+  <button type="button" onclick="checkAnswer(this)">Check answer</button>
+  <div class="feedback" aria-live="polite" data-explanation="With no water potential gradient, the level does not change. This shows the sucrose solution causes the change."></div>
+</div>
+</main>
+<nav class="lesson-nav print-hide" aria-label="Lesson navigation"><a class="prev" href="movement-2-1-diffusion.html"><span class="dir">← Previous</span><span class="t">What Is Diffusion?</span></a></nav>
+<p class="back-bottom print-hide"><a class="back-btn" href="index.html">&larr; Back to Biology lessons</a></p>
+<script>
+function checkAnswer(btn) {
+  const block = btn.closest('.checkpoint');
+  const feedback = block.querySelector('.feedback');
+  const correctAns = block.dataset.answer;
+  const tol = parseFloat(block.dataset.tol || '0.05');
+  let isCorrect;
+
+  if (block.dataset.type === 'mcq') {
+    const checked = block.querySelector('input[type=radio]:checked');
+    if (!checked) { showHint(feedback, 'Pick an answer first.'); return; }
+    isCorrect = checked.value === correctAns;
+  } else {
+    const val = parseFloat(block.querySelector('input[type=text]').value);
+    if (isNaN(val)) { showHint(feedback, 'Enter a number first.'); return; }
+    isCorrect = Math.abs(val - parseFloat(correctAns)) <= tol;
+  }
+
+  feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+  feedback.textContent = (isCorrect ? '\u2713 Correct. ' : '\u2717 Not quite. ') + feedback.dataset.explanation;
+}
+
+function showHint(feedback, text) {
+  feedback.className = 'feedback hint';
+  feedback.textContent = text;
+}
+
+document.querySelectorAll('.sorter').forEach(function (s) {
+  var items = s.querySelectorAll('.sort-item'), sc = s.querySelector('.score');
+  function tally() { var n = s.querySelectorAll('.sort-item.right').length; sc.textContent = n + ' of ' + items.length + ' sorted correctly' + (n === items.length ? '. Well done!' : '.'); }
+  items.forEach(function (it) {
+    var fb = it.querySelector('.fb');
+    it.querySelectorAll('button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var ok = b.dataset.c === it.dataset.ans;
+        it.classList.toggle('right', ok); it.classList.toggle('wrong', !ok); fb.classList.add('show');
+        fb.textContent = ok ? '✓ Correct. ' + fb.dataset.expl : '✗ Not quite. Try another button.';
+        tally();
+      });
+    });
+  });
+  tally();
+});
+
+document.querySelectorAll('.labeller').forEach(function (lab) {
+  var bank = lab.querySelector('.bank'), drops = lab.querySelectorAll('.drop'), score = lab.querySelector('.lab-score'), sel = null;
+  function clearMarks() { drops.forEach(function (d) { d.classList.remove('ok', 'no'); }); score.textContent = ''; }
+  function chipIn(d) { return d.querySelector('.chip'); }
+  function place(chip, d) {
+    clearMarks();
+    if (!d) { bank.appendChild(chip); }
+    else { var old = chipIn(d); if (old && old !== chip) bank.appendChild(old); d.querySelector('.v').appendChild(chip); }
+    drops.forEach(function (x) { x.classList.toggle('filled', !!chipIn(x)); x.setAttribute('aria-label', chipIn(x) ? 'Label box: ' + chipIn(x).textContent : 'Empty label box'); });
+    select(null);
+  }
+  function select(c) { if (sel) sel.classList.remove('sel'); sel = c; if (c) c.classList.add('sel'); drops.forEach(function (d) { d.classList.toggle('armed', !!c); }); }
+  lab.addEventListener('click', function (e) {
+    var chip = e.target.closest('.chip'), d = e.target.closest('.drop');
+    if (chip && !lab.dataset.dragged) {
+      if (chip.parentNode.classList.contains('v') && !sel) { place(chip, null); return; }   // tap a placed label to send it back
+      if (sel === chip) { select(null); return; }
+      if (sel && d) { place(sel, d); return; }
+      select(chip); e.stopPropagation(); return;
+    }
+    if (d && sel) place(sel, d);
+    else if (e.target.closest('.bank') && sel && sel.parentNode.classList.contains('v')) place(sel, null);
+  });
+  // drag with mouse or finger
+  lab.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('pointerdown', function (e) {
+      if (e.button) return;
+      var sx = e.clientX, sy = e.clientY, moving = false, ghost = null, over = null;
+      function move(ev) {
+        if (!moving && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 6) return;
+        if (!moving) { moving = true; ghost = chip.cloneNode(true); ghost.classList.add('dragging'); document.body.appendChild(ghost); chip.style.opacity = '0.35'; }
+        ghost.style.left = (ev.clientX - ghost.offsetWidth / 2) + 'px'; ghost.style.top = (ev.clientY - ghost.offsetHeight / 2) + 'px';
+        var el = document.elementFromPoint(ev.clientX, ev.clientY), d = el && el.closest('.drop');
+        if (d && !lab.contains(d)) d = null;
+        if (over !== d) { if (over) over.classList.remove('over'); over = d; if (d) d.classList.add('over'); }
+        ev.preventDefault();
+      }
+      function up(ev) {
+        document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
+        if (!moving) return;
+        ghost.remove(); chip.style.opacity = ''; if (over) over.classList.remove('over');
+        var el = document.elementFromPoint(ev.clientX, ev.clientY), inBank = el && el.closest('.bank') === bank;
+        if (over) place(chip, over); else if (inBank) place(chip, null);
+        lab.dataset.dragged = '1'; setTimeout(function () { delete lab.dataset.dragged; }, 50);
+      }
+      document.addEventListener('pointermove', move, { passive: false }); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+    });
+  });
+  lab.querySelector('[data-act=check]').addEventListener('click', function () {
+    var ok = 0, filled = 0;
+    drops.forEach(function (d) { var c = chipIn(d); d.classList.remove('ok', 'no'); if (!c) return; filled++; var good = c.dataset.key === d.dataset.ans; if (good) ok++; d.classList.add(good ? 'ok' : 'no'); });
+    score.textContent = ok + ' of ' + drops.length + ' correct' + (filled < drops.length ? ' (' + (drops.length - filled) + ' box' + (drops.length - filled === 1 ? '' : 'es') + ' still empty)' : '') + (ok === drops.length ? '. Excellent!' : ok < filled ? '. Move the red ones and check again.' : '. Fill the empty boxes.');
+  });
+  lab.querySelector('[data-act=show]').addEventListener('click', function () {
+    drops.forEach(function (d) { var c = lab.querySelector('.chip[data-key="' + d.dataset.ans + '"]'); if (c) place(c, d); });
+    lab.querySelector('[data-act=check]').click();
+  });
+  lab.querySelector('[data-act=reset]').addEventListener('click', function () { lab.querySelectorAll('.drop .chip').forEach(function (c) { bank.appendChild(c); }); place(bank.firstChild, null); bank.insertBefore(bank.lastChild, bank.firstChild); clearMarks(); });
+});
+
+document.querySelectorAll('.sim').forEach(function (box) {
+  var mode = box.dataset.mode, cv = box.querySelector('canvas'), ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height, MID = W / 2, P = [], run = false, t = 0, raf = null;
+  var playB = box.querySelector('[data-act=play]'), st = box.querySelector('.status');
+  var lvl = [H, H];            // osmo: liquid surface height (y of surface) on each side
+  var COL = { a: '#3b82f6', y: '#eab308', s: '#f97316', w: '#60a5fa' };
+  function add(n, x0, x1, kind, r) { for (var i = 0; i < n; i++) P.push({ x: x0 + Math.random() * (x1 - x0), y: 20 + Math.random() * (H - 40), vx: 0, vy: 0, k: kind, r: r }); }
+  function reset() {
+    P = []; t = 0;
+    if (mode === 'free') add(140, 8, 70, 'a', 4.5);
+    if (mode === 'two') { add(70, 8, MID - 8, 'y', 4.5); add(70, MID + 8, W - 8, 'a', 4.5); }
+    if (mode === 'osmo') { add(24, 8, MID - 10, 's', 8); add(6, MID + 10, W - 8, 's', 8); add(170, 8, MID - 8, 'w', 2.6); add(170, MID + 8, W - 8, 'w', 2.6); }
+    lvl = [70, 70];
+    draw(); readout();
+  }
+  function side(p) { return p.x < MID ? 0 : 1; }
+  function top(s) { return mode === 'osmo' ? lvl[s] + 6 : 6; }
+  function step() {
+    var sucr = [0, 0], wat = [0, 0];
+    if (mode === 'osmo') P.forEach(function (p) { if (p.k === 's') sucr[side(p)]++; else wat[side(p)]++; });
+    P.forEach(function (p) {
+      var sp = p.k === 's' ? 1.2 : 3;
+      p.vx = 0.86 * p.vx + (Math.random() - 0.5) * sp; p.vy = 0.86 * p.vy + (Math.random() - 0.5) * sp;
+      var s0 = side(p), nx = p.x + p.vx, ny = p.y + p.vy;
+      var crosses = (mode !== 'free') && ((p.x < MID) !== (nx < MID));
+      if (crosses) {
+        var pore = (ny % 36) > 12 && (ny % 36) < 30;   // gaps in the membrane
+        var ok = pore && (mode === 'two' || p.k === 'w');
+        if (ok && mode === 'osmo') {  // water held around sucrose molecules is not free to cross
+          var free = Math.max(0.08, 1 - 4 * sucr[s0] / Math.max(1, wat[s0]));
+          ok = Math.random() < free;
+        }
+        if (!ok) { p.vx = -p.vx; nx = p.x; }
+      }
+      p.x = nx; p.y = ny;
+      var s = side(p), lo = top(s) + p.r, hi = H - 6 - p.r;
+      var xl = (mode !== 'free' && s === 1) ? MID + 0.01 : 6 + p.r, xr = (mode !== 'free' && s === 0) ? MID - 0.01 : W - 6 - p.r;
+      if (mode !== 'free' && crosses) { xl = 6 + p.r; xr = W - 6 - p.r; }
+      if (p.x < xl) { p.x = xl; p.vx = Math.abs(p.vx); } if (p.x > xr) { p.x = xr; p.vx = -Math.abs(p.vx); }
+      if (p.y < lo) { p.y = lo; p.vy = Math.abs(p.vy); } if (p.y > hi) { p.y = hi; p.vy = -Math.abs(p.vy); }
+    });
+    if (mode === 'osmo') {   // liquid level follows the number of water molecules on each side
+      [0, 1].forEach(function (s) { var target = H - 6 - (H - 76) * wat[s] / 170 * 0.98; lvl[s] += (Math.max(16, target) - lvl[s]) * 0.05; });
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    if (mode === 'osmo') {
+      ctx.fillStyle = '#e0f2fe'; ctx.fillRect(6, lvl[0], MID - 6, H - 6 - lvl[0]); ctx.fillRect(MID, lvl[1], W - 6 - MID, H - 6 - lvl[1]);
+      ctx.strokeStyle = '#0369a1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(6, lvl[0]); ctx.lineTo(MID, lvl[0]); ctx.moveTo(MID, lvl[1]); ctx.lineTo(W - 6, lvl[1]); ctx.stroke();
+      ctx.setLineDash([5, 4]); ctx.strokeStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(6, 70); ctx.lineTo(W - 6, 70); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = '#475569'; ctx.font = 'bold 16px Source Sans 3, sans-serif'; ctx.fillText('A', 14, 24); ctx.fillText('B', W - 26, 24);
+      ctx.font = '13px Source Sans 3, sans-serif'; ctx.fillText('starting level', W / 2 + 10, 64);
+    } else { ctx.fillStyle = '#e0f2fe'; ctx.fillRect(6, 6, W - 12, H - 12); }
+    ctx.strokeStyle = '#3f3f46'; ctx.lineWidth = 3; ctx.strokeRect(4, 4, W - 8, H - 8);
+    if (mode !== 'free') {   // membrane with gaps
+      ctx.strokeStyle = mode === 'osmo' ? '#0f766e' : '#475569'; ctx.lineWidth = 4;
+      for (var y = 0; y < H; y += 36) { ctx.beginPath(); ctx.moveTo(MID, Math.max(6, y - 6)); ctx.lineTo(MID, Math.min(H - 6, y + 12)); ctx.stroke(); }
+    } else {
+      ctx.setLineDash([4, 6]); ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(MID, 6); ctx.lineTo(MID, H - 6); ctx.stroke(); ctx.setLineDash([]);
+    }
+    P.forEach(function (p) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.2832); ctx.fillStyle = COL[p.k]; ctx.fill(); if (p.r > 3) { ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.stroke(); } });
+  }
+  function count(k) { var c = [0, 0]; P.forEach(function (p) { if (p.k === k) c[side(p)]++; }); return c; }
+  function setR(k, v) { var e = box.querySelector('[data-r="' + k + '"]'); if (e) e.textContent = v; }
+  function readout() {
+    setR('t', Math.round(t / 40));
+    var msg;
+    if (mode === 'free') {
+      var c = count('a'); setR('l0', c[0]); setR('r0', c[1]);
+      msg = c[0] - c[1] > 14 ? 'Net movement from left to right: down the concentration gradient.' : 'About the same on both sides. The particles still move, but there is no net movement now.';
+    } else if (mode === 'two') {
+      var y = count('y'), b = count('a'); setR('y', y[0] + ' | ' + y[1]); setR('b', b[0] + ' | ' + b[1]);
+      msg = (Math.abs(y[0] - y[1]) > 12 || Math.abs(b[0] - b[1]) > 12) ? 'Yellow particles move net to the right, blue ones net to the left. Each substance moves down its own concentration gradient.' : 'Both substances are now evenly spread on both sides: no net movement.';
+    } else {
+      var w = count('w'); setR('wl', w[0]); setR('wr', w[1]);
+      msg = t < 200 ? 'Only the small water molecules fit through the membrane. The big sucrose molecules cannot.' :
+        (lvl[0] < lvl[1] - 10 ? 'Net movement of water from B to A: the level in A rises and the level in B falls. This is osmosis.' : 'Water molecules are crossing in both directions...');
+    }
+    st.textContent = msg;
+  }
+  function loop() { if (!run) return; for (var i = 0; i < (mode === 'free' ? 10 : 6); i++) { step(); t++; } draw(); if (t % 40 === 0) readout(); raf = requestAnimationFrame(loop); }
+  playB.addEventListener('click', function () { run = !run; playB.innerHTML = run ? '&#10074;&#10074; Pause' : '&#9654; Start'; if (run) loop(); });
+  box.querySelector('[data-act=reset]').addEventListener('click', function () { reset(); st.textContent = run ? '' : 'Press Start.'; });
+  reset();
+});
+</script>
+</body>
+</html>

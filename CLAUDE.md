@@ -27,4 +27,4 @@ Lesson numbering follows her textbook (e.g. 1.1, 1.2). Put the textbook learning
 - Topic 1 (Cell Structure and Organisation) done and live: 1.1 What Are Cells?, 1.2 How Are Cells Adapted to Their Functions?, Revision Questions (Q1–7).
 - Open item: cell labelling diagrams are cramped on small phones (a sideways-scroll fix was proposed, not done).
 - AI intro videos (BytePlus Seedance) on hold — her account approval was pending. Key would go in env var `ARK_API_KEY`, never in chat.
-- Next: Topic 2 (Movement of Substances) when she sends notes + learning outcomes.
+- Topic 2 (Movement of Substances): G2 and G3 syllabus outcomes are identical (2a diffusion, 2b osmosis). Draft on branch `draft/topic-2-movement`, NOT live yet: 2.1 What Is Diffusion?, 2.2 What Is Osmosis? (`build_topic02.py`, figures `topic02_figs.py`, particle animations `topic02_sim.py`). Her textbook pages for the SA:V investigations and "factors affecting osmosis" were not seen; those sections in 2.2 are written from the syllabus. No Topic 2 revision page yet.
