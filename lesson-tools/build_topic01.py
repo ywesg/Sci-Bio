@@ -112,11 +112,21 @@ def lesson1():
     b += ('<p>Every living thing is made of <strong>cells</strong>, just as a building is made of bricks. Cells are the <strong>building blocks of life</strong>: the simplest structural and functional units of life. '
           'Some organisms, such as bacteria, are a single cell. You are made of about 30 trillion cells.</p>\n'
           '<p>Inside a cell there are smaller structures with special jobs, called <strong>organelles</strong> (&ldquo;little organs&rdquo;). The nucleus, mitochondria and chloroplasts are organelles.</p>\n')
+    b += ('<p>All the living material of a cell is called <strong>protoplasm</strong>. It is made up of three key parts:</p>\n'
+          '<div class="flow" aria-label="Parts of protoplasm"><span>cell membrane</span><b>+</b><span>cytoplasm</span><b>+</b><span>nucleus</span></div>\n')
     b += '<p class="keyidea"><strong>Key idea:</strong> structure is linked to function. Each part of a cell has a shape and make-up that suits its job.</p>\n'
     b += ('<p>In a large organism, cells are organised in levels. Similar cells work together as a <strong>tissue</strong>, tissues form an <strong>organ</strong>, '
           'organs work together in an <strong>organ system</strong>, and the systems make up the whole <strong>organism</strong>.</p>\n'
           '<div class="flow" aria-label="Levels of organisation"><span>cell</span><b>&rarr;</b><span>tissue</span><b>&rarr;</b><span>organ</span><b>&rarr;</b><span>organ system</span><b>&rarr;</b><span>organism</span></div>\n'
           '<p>For example: a muscle cell &rarr; muscle tissue &rarr; the heart &rarr; the circulatory system &rarr; you.</p>\n')
+    b += ('<p class="keyidea"><strong>Differentiation:</strong> as an organism grows, its cells change to become <strong>specialised</strong>: '
+          'each type of cell develops a structure that suits one particular job.</p>\n'
+          '<p>Your body has many kinds of specialised cells, each with its own job. For example:</p>\n'
+          '<ul><li><strong>red blood cells</strong> carry oxygen around the body;</li>'
+          '<li><strong>nerve cells</strong> carry messages between parts of the body;</li>'
+          '<li><strong>intestinal cells</strong> lining the gut absorb digested food;</li>'
+          '<li><strong>root hair cells</strong> in plants absorb water and mineral salts from the soil.</li></ul>\n'
+          '<p>You will see how their structures suit their jobs in <a href="cells-1-2-cell-adaptations.html">lesson 1.2</a>.</p>\n')
 
     b += '<h2>Seeing cells: light and electron microscopes</h2>\n'
     b += ('<p>Cells are too small to see with the naked eye, so we use microscopes. A photo taken through a microscope is called a <strong>micrograph</strong>.</p>\n'
