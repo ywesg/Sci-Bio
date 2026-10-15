@@ -261,6 +261,8 @@ def lesson3():
           '.cellcards figcaption { font-size: 0.95rem; line-height: 1.35; }</style>\n')
     b += '<div class="cellcards">' + "".join('<figure>%s<figcaption><strong>%s</strong><br>%s</figcaption></figure>' % c for c in cards) + '</div>\n'
     b += '<p class="photo-note">Drawings, not to scale.</p>\n'
+    b += L.video("Wo4bz6hxjrA", "Video: Specialised cells explained", "YouTube: Biospeaks",
+                 "Watch to see more examples of specialised cells and how their structures suit their jobs.")
 
     b += '<h2>Surface area to volume ratio</h2>\n'
     b += ('<p>Substances such as oxygen, water and mineral salts enter a cell through its <strong>surface</strong> (the cell membrane). '
