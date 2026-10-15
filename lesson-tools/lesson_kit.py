@@ -141,7 +141,9 @@ def video(vid, title, credit, note=None):
     if note:
         h += '  <p class="vid-note">%s</p>\n' % note
     h += ('  <iframe src="https://www.youtube-nocookie.com/embed/%s" title="%s" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture; web-share" '
-          'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>\n</div>\n' % (vid, html.escape(title, quote=True)))
+          'referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>\n'
+          '  <p class="vid-note print-hide"><a href="https://www.youtube.com/watch?v=%s" target="_blank" rel="noopener">&#9654; Video not playing? Watch on YouTube</a></p>\n</div>\n'
+          % (vid, html.escape(title, quote=True), vid))
     return h
 
 
