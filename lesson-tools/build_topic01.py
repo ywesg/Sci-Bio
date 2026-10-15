@@ -174,11 +174,15 @@ def lesson1():
 
     # ---- comparing plant and animal cells (1c)
     b += '<h2>Comparing plant and animal cells</h2>\n'
-    big = lambda svg: svg.replace('font-size="16"', 'font-size="21"').replace('font-size="14"', 'font-size="18"')
-    b += ('<div class="illus bigcell">%s<p class="fig-caption"><strong>Animal cell</strong></p></div>'
-          '<div class="illus bigcell">%s<p class="fig-caption"><strong>Plant cell</strong></p></div>\n'
-          '<style>.bigcell svg { width: 100%%; max-width: 860px; height: auto; } .bigcell .fig-caption { font-size: 1.05rem; }</style>\n'
-          % (big(F.animal_cell(w=860)), big(F.plant_cell(w=860)).replace('viewBox="0 0 780 330"', 'viewBox="0 0 860 330"')))
+    big = lambda svg: svg.replace('font-size="16"', 'font-size="19"').replace('font-size="14"', 'font-size="16"')
+    b += ('<div class="cellpair"><div class="illus">%s<p class="fig-caption"><strong>Animal cell</strong></p></div>'
+          '<div class="illus">%s<p class="fig-caption"><strong>Plant cell</strong></p></div></div>\n'
+          '<style>.cellpair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: min(1240px, 96vw); position: relative; left: 50%%; transform: translateX(-50%%); }'
+          '.cellpair svg { width: 100%%; height: auto; margin: 0; } .cellpair .fig-caption { font-size: 1.05rem; }'
+          '@media (max-width: 900px) { .cellpair { grid-template-columns: 1fr; width: 100%%; left: 0; transform: none; } }'
+          '@media print { .cellpair { width: 100%%; left: 0; transform: none; } }</style>\n'
+          % (big(F.animal_cell(w=620)).replace('viewBox="0 0 780 340"', 'viewBox="60 0 640 340"'),
+             F.plant_cell(w=620).replace('font-size="16"', 'font-size="22"').replace('font-size="14"', 'font-size="18"').replace('viewBox="0 0 780 330"', 'viewBox="10 0 830 330"')))
     b += '<h3>What they have in common</h3>\n'
     b += ('<p>Both plant and animal cells have a <strong>cell membrane</strong>, <strong>cytoplasm</strong>, a <strong>nucleus</strong>, '
           '<strong>mitochondria</strong>, <strong>ribosomes</strong> and <strong>vacuoles</strong>. These structures do the same jobs in both kinds of cell.</p>\n')

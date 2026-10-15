@@ -101,7 +101,6 @@ def animal_cell(labels=True, w=640):
         s.append(lbl("nucleus", "nucleus", 548, 146, 416, 146, "start"))
         s.append(lbl("ribosomes", "ribosome", 548, 216, 478, 218, "start") + '<circle cx="470" cy="218" r="8" fill="none" stroke="#334155" stroke-width="1.5"/>')
         s.append(lbl("vacuole-a", "vacuole", 548, 256, 497, 248, "start"))
-        s.append(bracket(650, 62, 270, "organelles"))
     s.append("</svg>")
     return "".join(s)
 
