@@ -280,8 +280,15 @@ def labeller(lid, svg_inner, vw, vh, targets, caption, extra=(), title="Label th
     boxes = ""
     for i, t in enumerate(targets):
         (px, py), (bx, by), side = t["pt"], t["box"], t.get("side", "l")
-        lines += ('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="#334155" stroke-width="1.5"/><circle cx="%s" cy="%s" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/>'
-                  % (bx, by, px, py, px, py))
+        if t.get("ring"):   # a ring around a tiny part (e.g. a ribosome dot) so the pointer cannot be read as the space around it
+            import math
+            d = math.hypot(px - bx, py - by) or 1
+            ex, ey = px - (px - bx) * 8 / d, py - (py - by) * 8 / d
+            lines += ('<line x1="%s" y1="%s" x2="%.1f" y2="%.1f" stroke="#334155" stroke-width="1.5"/><circle cx="%s" cy="%s" r="8" fill="none" stroke="#0f172a" stroke-width="1.6"/>'
+                      % (bx, by, ex, ey, px, py))
+        else:
+            lines += ('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="#334155" stroke-width="1.5"/><circle cx="%s" cy="%s" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/>'
+                      % (bx, by, px, py, px, py))
         pos = "left:%.2f%%;top:%.2f%%" % (100.0 * bx / vw, 100.0 * by / vh)
         boxes += ('<button type="button" class="drop %s" data-ans="%s" style="%s" aria-label="Empty label box %d"><span class="n">%d</span><span class="v"></span></button>'
                   % (side, t["key"], pos, i + 1, i + 1))

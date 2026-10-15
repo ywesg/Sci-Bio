@@ -38,7 +38,7 @@ def chloro(x, y, rot):
 
 
 def ribos(pts):
-    return "".join('<circle cx="%d" cy="%d" r="2.2" fill="#e11d48"/>' % p for p in pts)
+    return "".join('<circle cx="%d" cy="%d" r="2.8" fill="#e11d48"/>' % p for p in pts)
 
 
 def nucleus_round(cx, cy, r):
@@ -96,11 +96,10 @@ def animal_cell(labels=True, w=640):
     if labels:
         s.append(lbl("cell-membrane", "cell membrane", 196, 42, 280, 42))
         s.append(lbl("chromosome", "chromosome", 196, 140, 356, 140))
-        s.append(lbl("nuclear-membrane", "nuclear membrane", 196, 178, 327, 178))
         s.append(lbl("cytoplasm", "cytoplasm", 196, 232, 248, 232))
         s.append(lbl("mitochondrion", "mitochondrion", 548, 90, 476, 86, "start"))
         s.append(lbl("nucleus", "nucleus", 548, 146, 416, 146, "start"))
-        s.append(lbl("ribosomes", "ribosome", 548, 216, 470, 218, "start"))
+        s.append(lbl("ribosomes", "ribosome", 548, 216, 478, 218, "start") + '<circle cx="470" cy="218" r="8" fill="none" stroke="#334155" stroke-width="1.5"/>')
         s.append(lbl("vacuole-a", "vacuole", 548, 256, 497, 248, "start"))
         s.append(bracket(650, 62, 270, "organelles"))
     s.append("</svg>")
@@ -131,19 +130,17 @@ def plant_cell(labels=True, w=640, sap_text=False):
         s.append('<g class="part" data-part="chloroplast"><ellipse cx="%d" cy="%d" rx="%d" ry="11" transform="rotate(%d %d %d)" fill="#cfe6bd" stroke="%s" stroke-width="2"/></g>' % (x, y, rx, r, x, y, LINE))
     for x, y, r in ((222, 132, 75), (556, 196, 80), (434, 276, 0)):
         s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(x, y, r, 14, 8))
-    s.append('<g class="part" data-part="ribosomes">%s</g>' % ribos([(250, 72), (330, 74), (346, 86), (440, 72), (466, 86), (230, 100), (216, 172), (222, 248),
+    s.append('<g class="part" data-part="ribosomes">%s</g>' % ribos([(250, 72), (330, 74), (346, 86), (440, 72), (466, 86), (230, 100), (222, 248),
                                                                        (262, 272), (300, 276), (318, 266), (412, 284), (526, 260), (556, 238), (560, 150),
                                                                        (550, 134), (536, 140), (466, 120)]))
     if labels:
         s.append(lbl("cell-membrane", "cell membrane", 170, 118, 206, 118))
-        s.append(lbl("cytoplasm", "cytoplasm", 170, 170, 222, 170))
+        s.append(lbl("cytoplasm", "cytoplasm", 170, 158, 214, 158))
         s.append(lbl("cell-wall", "cell wall", 170, 226, 192, 226))
-        s.append('<g class="lbl" data-part="nuclear-membrane"><line x1="440" y1="30" x2="497" y2="88" stroke="#334155" stroke-width="1.4"/><circle cx="497" cy="88" r="2.4" fill="#334155"/>'
-                 '<text x="440" y="22" text-anchor="middle" %s>nuclear membrane</text></g>' % FONT)
-        s.append('<g class="lbl" data-part="chromosome"><line x1="574" y1="30" x2="530" y2="94" stroke="#334155" stroke-width="1.4"/><circle cx="530" cy="94" r="2.4" fill="#334155"/>'
-                 '<text x="574" y="22" text-anchor="middle" %s>chromosome</text></g>' % FONT)
+        s.append('<g class="lbl" data-part="chromosome"><line x1="540" y1="30" x2="530" y2="94" stroke="#334155" stroke-width="1.4"/><circle cx="530" cy="94" r="2.4" fill="#334155"/>'
+                 '<text x="540" y="22" text-anchor="middle" %s>chromosome</text></g>' % FONT)
         s.append(lbl("nucleus", "nucleus", 616, 100, 552, 100, "start"))
-        s.append(lbl("ribosomes", "ribosome", 616, 138, 562, 136, "start"))
+        s.append(lbl("ribosomes", "ribosome", 616, 138, 558, 135, "start") + '<circle cx="550" cy="134" r="8" fill="none" stroke="#334155" stroke-width="1.5"/>')
         s.append(lbl("mitochondrion", "mitochondrion", 616, 198, 566, 196, "start"))
         s.append(lbl("vacuole-p", "vacuole", 616, 232, 470, 230, "start"))
         s.append(lbl("chloroplast", "chloroplast", 616, 272, 498, 276, "start"))
@@ -267,21 +264,19 @@ def inner(svg):
 ANIMAL_TARGETS = [
     dict(key="cell-membrane", label="cell membrane", pt=(280, 42), box=(196, 37), side="l"),
     dict(key="chromosome", label="chromosome", pt=(356, 140), box=(196, 135), side="l"),
-    dict(key="nuclear-membrane", label="nuclear membrane", pt=(327, 178), box=(196, 173), side="l"),
-    dict(key="cytoplasm", label="cytoplasm", pt=(248, 232), box=(196, 227), side="l"),
+    dict(key="cytoplasm", label="cytoplasm", pt=(240, 200), box=(196, 214), side="l"),
     dict(key="mitochondrion", label="mitochondrion", pt=(476, 86), box=(548, 85), side="r"),
     dict(key="nucleus", label="nucleus", pt=(416, 146), box=(548, 141), side="r"),
-    dict(key="ribosomes", label="ribosome", pt=(470, 218), box=(548, 205), side="r"),
+    dict(key="ribosomes", label="ribosome", pt=(470, 218), box=(548, 205), side="r", ring=True),
     dict(key="vacuole", label="vacuole", pt=(497, 248), box=(548, 252), side="r"),
 ]
 PLANT_TARGETS = [
     dict(key="cell-membrane", label="cell membrane", pt=(206, 118), box=(170, 113), side="l"),
-    dict(key="cytoplasm", label="cytoplasm", pt=(222, 170), box=(170, 165), side="l"),
+    dict(key="cytoplasm", label="cytoplasm", pt=(214, 158), box=(170, 165), side="l"),
     dict(key="cell-wall", label="cell wall", pt=(192, 226), box=(170, 221), side="l"),
-    dict(key="nuclear-membrane", label="nuclear membrane", pt=(497, 88), box=(420, 22), side="c"),
-    dict(key="chromosome", label="chromosome", pt=(530, 94), box=(600, 22), side="c"),
+    dict(key="chromosome", label="chromosome", pt=(530, 94), box=(520, 22), side="c"),
     dict(key="nucleus", label="nucleus", pt=(552, 100), box=(616, 98), side="r"),
-    dict(key="ribosomes", label="ribosome", pt=(562, 136), box=(616, 140), side="r"),
+    dict(key="ribosomes", label="ribosome", pt=(550, 134), box=(616, 140), side="r", ring=True),
     dict(key="mitochondrion", label="mitochondrion", pt=(566, 196), box=(616, 194), side="r"),
     dict(key="vacuole", label="vacuole", pt=(470, 230), box=(616, 234), side="r"),
     dict(key="chloroplast", label="chloroplast", pt=(498, 276), box=(616, 276), side="r"),
