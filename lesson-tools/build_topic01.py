@@ -119,14 +119,6 @@ def lesson1():
           'organs work together in an <strong>organ system</strong>, and the systems make up the whole <strong>organism</strong>.</p>\n'
           '<div class="flow" aria-label="Levels of organisation"><span>cell</span><b>&rarr;</b><span>tissue</span><b>&rarr;</b><span>organ</span><b>&rarr;</b><span>organ system</span><b>&rarr;</b><span>organism</span></div>\n'
           '<p>For example: a muscle cell &rarr; muscle tissue &rarr; the heart &rarr; the circulatory system &rarr; you.</p>\n')
-    b += ('<p class="keyidea"><strong>Differentiation:</strong> as an organism grows, its cells change to become <strong>specialised</strong>: '
-          'each type of cell develops a structure that suits one particular job.</p>\n'
-          '<p>Your body has many kinds of specialised cells, each with its own job. For example:</p>\n'
-          '<ul><li><strong>red blood cells</strong> carry oxygen around the body;</li>'
-          '<li><strong>nerve cells</strong> carry messages between parts of the body;</li>'
-          '<li><strong>intestinal cells</strong> lining the gut absorb digested food;</li>'
-          '<li><strong>root hair cells</strong> in plants absorb water and mineral salts from the soil.</li></ul>\n'
-          '<p>You will see how their structures suit their jobs in <a href="cells-1-2-cell-adaptations.html">lesson 1.2</a>.</p>\n')
 
     b += '<h2>Seeing cells: light and electron microscopes</h2>\n'
     b += ('<p>Cells are too small to see with the naked eye, so we use microscopes. A photo taken through a microscope is called a <strong>micrograph</strong>.</p>\n'
