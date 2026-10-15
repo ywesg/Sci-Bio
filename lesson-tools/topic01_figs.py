@@ -12,20 +12,47 @@ def lbl(key, text, tx, ty, x2, y2, anchor="end"):
             % (key, x1, ty - 5, x2, y2, x2, y2, tx, ty, anchor, FONT, text))
 
 
-def mito(x, y, rot, rx=24, ry=11):
-    s = rx / 24.0
-    return ('<g transform="translate(%s %s) rotate(%s)"><ellipse rx="%s" ry="%s" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/>'
-            '<path d="M%s 0 l%s -%s l%s %s l%s -%s l%s %s l%s -%s l%s %s" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g>'
-            % (x, y, rot, rx, ry, -15 * s, 5 * s, ry * 0.55, 5 * s, ry * 1.1, 5 * s, ry * 1.1, 5 * s, ry * 1.1, 5 * s, ry * 1.1, 5 * s, ry * 0.55))
+# colours follow the textbook slides: cream cytoplasm, lilac nucleus with pink chromosomes, blue mitochondria, red ribosomes, brown cell wall
+CYTO = "#fbf3c6"
+LINE = "#3f3f46"
+
+
+def mito(x, y, rot, rx=22, ry=11):
+    """A bean-shaped mitochondrion (light blue, with folded inner membrane)."""
+    n = 6
+    xs = [-0.62 * rx + i * (1.24 * rx / (n - 1)) for i in range(n)]
+    zig = " ".join("%s %s" % (round(xx, 1), round((0.42 if i % 2 else -0.42) * ry, 1)) for i, xx in enumerate(xs))
+    return ('<g transform="translate(%s %s) rotate(%s)"><path d="M%s 0 C%s %s %s %s 0 %s C%s %s %s %s %s 0 C%s %s %s %s 0 %s C%s %s %s %s %s 0 Z" '
+            'fill="#b9d8f2" stroke="#2563a8" stroke-width="%s"/>'
+            '<polyline points="%s" fill="none" stroke="#2563a8" stroke-width="%s" stroke-linejoin="round"/></g>'
+            % (x, y, rot,
+               -rx, -rx, -ry * 1.25, -rx * 0.35, -ry * 1.1, -ry * 0.85, rx * 0.35, -ry * 0.6, rx, -ry * 1.3, rx,
+               rx, ry * 1.3, rx * 0.35, ry * 1.1, ry * 0.95, -rx * 0.35, ry * 0.7, -rx, ry * 1.25, -rx,
+               2.2 if rx > 15 else 1.6, zig, 1.5 if rx > 15 else 1.1))
 
 
 def chloro(x, y, rot):
-    return ('<g transform="translate(%s %s) rotate(%s)"><ellipse rx="15" ry="7.5" fill="#4ade80" stroke="#15803d" stroke-width="2"/>'
-            '<path d="M-8 -3v6M-3 -4v8M2 -4v8M7 -3v6" stroke="#166534" stroke-width="1.6"/></g>' % (x, y, rot))
+    """A chloroplast: green oval with dark stacks inside."""
+    return ('<g transform="translate(%s %s) rotate(%s)"><ellipse rx="16" ry="8.5" fill="#cfe6bd" stroke="#3f7d32" stroke-width="2"/>'
+            '<path d="M-9 -2h5M-3 2h6M4 -3h5M-6 4h4M2 -6h4" stroke="#1f2937" stroke-width="2"/></g>' % (x, y, rot))
 
 
 def ribos(pts):
-    return "".join('<circle cx="%d" cy="%d" r="2.3" fill="#1e293b"/>' % p for p in pts)
+    return "".join('<circle cx="%d" cy="%d" r="2.2" fill="#e11d48"/>' % p for p in pts)
+
+
+def nucleus_round(cx, cy, r):
+    """Lilac nucleus with pink chromosome threads and a dark blue nucleolus."""
+    k = r / 44.0
+    return ('<circle cx="%s" cy="%s" r="%s" fill="#ebe3f6" stroke="%s" stroke-width="2.2"/>'
+            '<path d="M%s %s q%s %s %s 0 t%s 0 t%s 0 M%s %s q%s %s %s 0 t%s 0 M%s %s q%s %s %s %s t%s %s M%s %s q%s %s %s 0 t%s 0" fill="none" stroke="#db2777" stroke-width="1.5"/>'
+            '<ellipse cx="%s" cy="%s" rx="%s" ry="%s" fill="#1f5fa8"/>'
+            % (cx, cy, r, LINE,
+               cx - 28 * k, cy - 14 * k, 6 * k, -9 * k, 12 * k, 12 * k, 12 * k,
+               cx - 24 * k, cy + 6 * k, 6 * k, 8 * k, 12 * k, 12 * k,
+               cx + 4 * k, cy - 30 * k, 5 * k, 8 * k, 2 * k, 14 * k, 2 * k, 14 * k,
+               cx - 14 * k, cy + 22 * k, 5 * k, -8 * k, 10 * k, 10 * k,
+               cx + 14 * k, cy + 10 * k, 9 * k, 7 * k))
 
 
 # ------------------------------------------------------------------ typical animal cell
@@ -34,46 +61,50 @@ ANIMAL_OUTLINE = "M122 160 C114 98 178 52 255 56 C330 60 382 100 386 160 C390 22
 
 def animal_cell(labels=True, w=560):
     s = ['<svg viewBox="0 0 560 320" width="%d" role="img" aria-label="Diagram of a typical animal cell">' % w]
-    s.append('<g class="part" data-part="cytoplasm"><path d="%s" fill="#fde7ef"/></g>' % ANIMAL_OUTLINE)
-    s.append('<g class="part" data-part="cell-membrane"><path d="%s" fill="none" stroke="#be185d" stroke-width="4"/>'
-             '<path d="%s" fill="none" stroke="transparent" stroke-width="14"/></g>' % (ANIMAL_OUTLINE, ANIMAL_OUTLINE))
-    s.append('<g class="part" data-part="nucleus"><circle cx="238" cy="165" r="44" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>'
-             '<path d="M210 150 q8 -10 16 0 t16 0M214 182 q8 8 16 0 t16 2M256 176 q6 -8 10 2" fill="none" stroke="#a78bfa" stroke-width="2"/>'
-             '<circle cx="250" cy="155" r="11" fill="#8b5cf6"/></g>')
+    s.append('<g class="part" data-part="cytoplasm"><path d="%s" fill="%s"/></g>' % (ANIMAL_OUTLINE, CYTO))
+    s.append('<g class="part" data-part="cell-membrane"><path d="%s" fill="none" stroke="%s" stroke-width="2.6"/>'
+             '<path d="%s" fill="none" stroke="transparent" stroke-width="14"/></g>' % (ANIMAL_OUTLINE, LINE, ANIMAL_OUTLINE))
+    s.append('<g class="part" data-part="nucleus">%s</g>' % nucleus_round(238, 165, 44))
     s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(318, 112, -20))
     s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(330, 210, 25))
     s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(182, 234, -30))
-    for cx, cy, r in ((168, 118, 11), (362, 130, 8), (300, 252, 9)):
-        s.append('<g class="part" data-part="vacuole-a"><circle cx="%d" cy="%d" r="%d" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/></g>' % (cx, cy, r))
-    s.append('<g class="part" data-part="ribosomes">%s</g>' % ribos([(290, 88), (299, 94), (200, 92), (190, 86), (150, 175), (158, 186), (280, 238), (270, 248),
+    for cx, cy, r in ((166, 120, 7), (362, 130, 6), (300, 252, 6), (205, 90, 5), (150, 205, 5)):
+        s.append('<g class="part" data-part="vacuole-a"><circle cx="%d" cy="%d" r="%d" fill="#fff" stroke="%s" stroke-width="1.8"/></g>' % (cx, cy, r, LINE))
+    s.append('<g class="part" data-part="ribosomes">%s</g>' % ribos([(290, 88), (299, 94), (200, 112), (190, 106), (150, 175), (158, 186), (280, 238), (270, 248),
                                                                        (349, 160), (343, 168), (215, 252), (226, 258), (322, 244), (330, 250), (290, 150)]))
     if labels:
         s.append(lbl("cell-membrane", "cell membrane", 100, 104, 131, 109))
-        s.append(lbl("vacuole-a", "small vacuole", 100, 146, 158, 123))
+        s.append(lbl("vacuole-a", "vacuole", 100, 146, 160, 123))
         s.append(lbl("cytoplasm", "cytoplasm", 100, 205, 165, 196))
-        s.append(lbl("mitochondrion", "mitochondrion", 412, 96, 340, 104, "start"))
+        s.append(lbl("mitochondrion", "mitochondrion", 412, 96, 338, 104, "start"))
         s.append(lbl("nucleus", "nucleus", 412, 172, 282, 167, "start"))
-        s.append(lbl("ribosomes", "ribosomes", 412, 244, 326, 247, "start"))
+        s.append(lbl("ribosomes", "ribosome", 412, 244, 326, 247, "start"))
     s.append("</svg>")
     return "".join(s)
 
 
 # ------------------------------------------------------------------ typical plant cell
+VACUOLE_P = ("M196 92 C230 84 262 98 300 90 C326 86 352 92 356 108 C362 132 350 150 358 178 C364 206 354 236 330 240 "
+             "C300 246 270 232 240 240 C212 246 190 236 188 212 C186 186 196 170 190 146 C184 120 176 98 196 92 Z")
+
+
 def plant_cell(labels=True, w=560, sap_text=True):
     s = ['<svg viewBox="0 0 560 320" width="%d" role="img" aria-label="Diagram of a typical plant cell">' % w]
     s.append('<g class="part" data-part="cell-wall"><path fill-rule="evenodd" d="M144 30 h252 a14 14 0 0 1 14 14 v232 a14 14 0 0 1 -14 14 h-252 a14 14 0 0 1 -14 -14 v-232 a14 14 0 0 1 14 -14 Z '
-             'M150 42 h240 a8 8 0 0 1 8 8 v220 a8 8 0 0 1 -8 8 h-240 a8 8 0 0 1 -8 -8 v-220 a8 8 0 0 1 8 -8 Z" fill="#d9f99d" stroke="#3f6212" stroke-width="2"/></g>')
-    s.append('<g class="part" data-part="cytoplasm"><rect x="142" y="42" width="256" height="236" rx="8" fill="#f7fee7"/></g>')
-    s.append('<g class="part" data-part="cell-membrane"><rect x="143.5" y="43.5" width="253" height="233" rx="7" fill="none" stroke="#be185d" stroke-width="2.6"/>'
-             '<rect x="143.5" y="43.5" width="253" height="233" rx="7" fill="none" stroke="transparent" stroke-width="9"/></g>')
-    s.append('<g class="part" data-part="vacuole-p"><rect x="186" y="86" width="174" height="158" rx="30" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>'
-             + ('<text x="273" y="170" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-style="italic" fill="#1e40af">cell sap</text>' if sap_text else '') + '</g>')
-    s.append('<g class="part" data-part="nucleus"><ellipse cx="164" cy="165" rx="16" ry="30" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.6"/><circle cx="166" cy="160" r="6" fill="#8b5cf6"/></g>')
+             'M150 42 h240 a8 8 0 0 1 8 8 v220 a8 8 0 0 1 -8 8 h-240 a8 8 0 0 1 -8 -8 v-220 a8 8 0 0 1 8 -8 Z" fill="#b8693f" stroke="%s" stroke-width="2"/></g>' % LINE)
+    s.append('<g class="part" data-part="cytoplasm"><rect x="142" y="42" width="256" height="236" rx="8" fill="%s"/></g>' % CYTO)
+    s.append('<g class="part" data-part="cell-membrane"><rect x="143.5" y="43.5" width="253" height="233" rx="7" fill="none" stroke="%s" stroke-width="2"/>'
+             '<rect x="143.5" y="43.5" width="253" height="233" rx="7" fill="none" stroke="transparent" stroke-width="9"/></g>' % LINE)
+    s.append('<g class="part" data-part="vacuole-p"><path d="%s" fill="#fff" stroke="%s" stroke-width="2"/>' % (VACUOLE_P, LINE)
+             + ('<text x="273" y="170" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-style="italic" fill="#64748b">cell sap</text>' if sap_text else '') + '</g>')
+    s.append('<g class="part" data-part="nucleus"><ellipse cx="164" cy="165" rx="17" ry="30" fill="#ebe3f6" stroke="%s" stroke-width="2.2"/>'
+             '<path d="M156 150 q4 -6 8 0 t8 0 M154 168 q4 6 8 0 t8 0 M160 182 q3 -5 6 0" fill="none" stroke="#db2777" stroke-width="1.4"/>'
+             '<ellipse cx="166" cy="160" rx="5" ry="4" fill="#1f5fa8"/></g>' % LINE)
     for x, y, r in ((210, 63, 0), (268, 61, 0), (326, 63, 0), (379, 120, 90), (379, 215, 90), (232, 262, 0), (300, 262, 0), (164, 98, 90), (164, 232, 90)):
         s.append('<g class="part" data-part="chloroplast">%s</g>' % chloro(x, y, r))
-    s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(378, 260, -40, 11, 5.5))
-    s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(199, 261, 10, 11, 5.5))
-    s.append('<g class="part" data-part="ribosomes">%s</g>' % ribos([(240, 74), (247, 79), (297, 76), (366, 88), (372, 92), (265, 250), (156, 124), (153, 204),
+    s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(378, 260, -40, 11, 6))
+    s.append('<g class="part" data-part="mitochondrion">%s</g>' % mito(199, 261, 10, 11, 6))
+    s.append('<g class="part" data-part="ribosomes">%s</g>' % ribos([(240, 76), (247, 80), (297, 77), (366, 88), (372, 92), (265, 252), (156, 124), (153, 204),
                                                                        (345, 252), (368, 238), (375, 242), (180, 60)]))
     if labels:
         s.append(lbl("cell-wall", "cell wall", 108, 64, 136, 70))
@@ -81,8 +112,8 @@ def plant_cell(labels=True, w=560, sap_text=True):
         s.append(lbl("cell-membrane", "cell membrane", 108, 270, 143, 262))
         s.append(lbl("cytoplasm", "cytoplasm", 428, 72, 352, 74, "start"))
         s.append(lbl("chloroplast", "chloroplast", 428, 124, 387, 120, "start"))
-        s.append(lbl("vacuole-p", "vacuole (cell sap)", 428, 170, 345, 165, "start"))
-        s.append(lbl("ribosomes", "ribosomes", 428, 238, 375, 240, "start"))
+        s.append(lbl("vacuole-p", "vacuole", 428, 170, 345, 165, "start"))
+        s.append(lbl("ribosomes", "ribosome", 428, 238, 375, 240, "start"))
         s.append(lbl("mitochondrion", "mitochondrion", 428, 280, 386, 263, "start"))
     s.append("</svg>")
     return "".join(s)
@@ -140,53 +171,56 @@ def field(kind):
 
 # ------------------------------------------------------------------ specialised cells
 def red_blood_cell():
-    return ('<svg viewBox="0 0 560 250" width="560" role="img" aria-label="Red blood cell: surface view showing a disc with a paler centre, and side view showing a biconcave shape that is thinner in the middle">'
-            '<defs><radialGradient id="rbc" cx="50%%" cy="50%%" r="50%%"><stop offset="0" stop-color="#fca5a5"/><stop offset="0.45" stop-color="#f87171"/><stop offset="1" stop-color="#b91c1c"/></radialGradient></defs>'
-            '<circle cx="130" cy="125" r="72" fill="url(#rbc)" stroke="#991b1b" stroke-width="2.5"/>'
-            '<line x1="130" y1="38" x2="130" y2="105" stroke="#334155" stroke-width="1.4"/><text x="130" y="30" text-anchor="middle" %s>no nucleus; full of haemoglobin</text>'
-            '<text x="130" y="232" text-anchor="middle" %s font-weight="700">surface view</text>'
-            '<g transform="translate(400 125)"><path d="M-95 0 C-95 -38 -58 -34 -32 -16 C-14 -5 14 -5 32 -16 C58 -34 95 -38 95 0 C95 38 58 34 32 16 C14 5 -14 5 -32 16 C-58 34 -95 38 -95 0 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.5"/></g>'
-            '<line x1="400" y1="62" x2="400" y2="118" stroke="#334155" stroke-width="1.4"/><text x="400" y="54" text-anchor="middle" %s>thin centre</text>'
-            '<line x1="318" y1="178" x2="330" y2="150" stroke="#334155" stroke-width="1.4"/><text x="318" y="194" text-anchor="middle" %s>thicker edge</text>'
-            '<text x="400" y="232" text-anchor="middle" %s font-weight="700">side view (cut through): biconcave disc</text>'
-            '</svg>') % ((FONT,) * 5)
+    """Surface view and side view, laid out and labelled as in the textbook."""
+    F2 = FONT
+    return ('<svg viewBox="0 0 560 330" width="520" role="img" aria-label="Red blood cell. Surface view: a round red disc with a darker, thinner centre. Side view: a biconcave shape, thinner in the centre, with cytoplasm containing haemoglobin">'
+            '<defs><radialGradient id="rbc" cx="50%%" cy="50%%" r="50%%"><stop offset="0" stop-color="#b91c1c"/><stop offset="0.45" stop-color="#d42a1e"/><stop offset="0.75" stop-color="#ee4b2b"/><stop offset="1" stop-color="#f15a2e"/></radialGradient></defs>'
+            '<path d="M220 70 C222 34 262 22 300 26 C342 30 368 50 364 82 C360 112 330 126 292 124 C250 122 218 104 220 70 Z" fill="url(#rbc)" stroke="#7f1d1d" stroke-width="2"/>'
+            '<line x1="190" y1="72" x2="286" y2="72" stroke="#1f2937" stroke-width="1.4"/><text x="184" y="56" text-anchor="end" %s>thinner</text><text x="184" y="76" text-anchor="end" %s>central</text><text x="184" y="96" text-anchor="end" %s>portion</text>'
+            '<text x="292" y="152" text-anchor="middle" %s>Surface view</text>'
+            '<path d="M222 222 C222 204 250 202 270 212 C282 218 290 220 298 220 C306 220 314 218 326 212 C346 202 372 204 372 222 C372 240 346 242 326 232 C314 226 306 224 298 224 C290 224 282 226 270 232 C250 242 222 240 222 222 Z" fill="#e3342f" stroke="#7f1d1d" stroke-width="2"/>'
+            '<line x1="190" y1="222" x2="298" y2="222" stroke="#1f2937" stroke-width="1.4"/><text x="184" y="206" text-anchor="end" %s>thinner</text><text x="184" y="226" text-anchor="end" %s>central</text><text x="184" y="246" text-anchor="end" %s>portion</text>'
+            '<line x1="352" y1="222" x2="398" y2="222" stroke="#1f2937" stroke-width="1.4"/><text x="404" y="206" %s>cytoplasm</text><text x="404" y="226" %s>containing</text><text x="404" y="246" %s>haemoglobin</text>'
+            '<text x="298" y="290" text-anchor="middle" %s>Side view to show</text><text x="298" y="310" text-anchor="middle" %s>its biconcave shape</text>'
+            '</svg>') % ((F2,) * 12)
 
 
 def muscle_cell():
-    s = ['<svg viewBox="0 0 580 210" width="580" role="img" aria-label="Muscle cell: a long cell with many nuclei, many mitochondria and long protein fibres">']
-    s.append('<rect x="30" y="60" width="520" height="90" rx="40" fill="#fecdd3" stroke="#be123c" stroke-width="2.5"/>')
-    for y in range(72, 142, 9):
-        s.append('<line x1="62" y1="%d" x2="518" y2="%d" stroke="#fb7185" stroke-width="2"/>' % (y, y))
-    for x in (110, 250, 390, 500):
-        s.append('<ellipse cx="%d" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/>' % x)
-    for i, x in enumerate(range(80, 520, 42)):
-        s.append(mito(x, 128 if i % 2 else 100, 0, 12, 5.5))
-    s.append('<line x1="250" y1="30" x2="250" y2="63" stroke="#334155" stroke-width="1.4"/><text x="250" y="24" text-anchor="middle" %s>many nuclei</text>' % FONT)
-    s.append('<line x1="416" y1="185" x2="376" y2="131" stroke="#334155" stroke-width="1.4"/><circle cx="376" cy="131" r="2.4" fill="#334155"/>'
-             '<line x1="424" y1="185" x2="456" y2="131" stroke="#334155" stroke-width="1.4"/><circle cx="456" cy="131" r="2.4" fill="#334155"/>'
-             '<text x="420" y="202" text-anchor="middle" %s>many mitochondria</text>' % FONT)
-    s.append('<line x1="150" y1="185" x2="160" y2="117" stroke="#334155" stroke-width="1.4"/><text x="150" y="202" text-anchor="middle" %s>protein fibres (contract)</text>' % FONT)
+    """A bundle of striated muscle cells with many nuclei and many mitochondria, as drawn in the textbook."""
+    s = ['<svg viewBox="0 0 580 250" width="580" role="img" aria-label="Muscle cells: long striped cylinders with many nuclei, many mitochondria and contractile protein fibres">']
+    fibres = [(70, 30), (50, 72), (70, 114)]           # (left x, top y) of three overlapping cylinders, back to front
+    nuclei = [[(150, 50), (300, 46), (440, 52)], [(120, 92), (250, 96), (400, 90)], [(170, 132), (320, 138), (460, 134)]]
+    mitos = [[(220, 44, 20), (370, 50, -15)], [(180, 96, -10), (330, 90, 25), (470, 96, 0)], [(110, 140, 10), (250, 132, -20), (400, 140, 15)]]
+    for k, (x0, y0) in enumerate(fibres):
+        x1, h = 510, 44
+        s.append('<path d="M%d %d H%d a14 %d 0 0 1 0 %d H%d Z" fill="#f4a493" stroke="#7f1d1d" stroke-width="2"/>' % (x0, y0, x1, h / 2, h, x0))
+        for x in range(x0 + 16, x1 + 6, 11):
+            s.append('<path d="M%d %d q4 %d 0 %d" fill="none" stroke="#b4473a" stroke-width="1.3"/>' % (x, y0 + 2, h / 2, h - 4))
+        s.append('<ellipse cx="%d" cy="%d" rx="9" ry="%d" fill="#d9574a" stroke="#7f1d1d" stroke-width="2"/>' % (x0, y0 + h / 2, h / 2))
+        for (nx, ny) in nuclei[k]:
+            s.append('<ellipse cx="%d" cy="%d" rx="17" ry="6" fill="#e07a68" stroke="#9f3a2c" stroke-width="1.5"/>' % (nx, ny))
+        for (mx, my, r) in mitos[k]:
+            s.append('<g transform="translate(%d %d) rotate(%d)"><path d="M-8 2 q8 -8 16 -2" fill="none" stroke="#7e3f98" stroke-width="6" stroke-linecap="round"/></g>' % (mx, my, r))
+    lab = lambda t, x, pts: (''.join('<line x1="%d" y1="212" x2="%d" y2="%d" stroke="#1f2937" stroke-width="1.4"/><circle cx="%d" cy="%d" r="2.3" fill="#1f2937"/>' % (x, px, py, px, py) for px, py in pts)
+                             + '<text x="%d" y="232" text-anchor="middle" %s>%s</text>' % (x, FONT, t))
+    s.append(lab("nucleus", 120, [(170, 136)]))
+    s.append(lab("mitochondrion", 280, [(250, 134)]))
+    s.append(lab("protein fibres", 450, [(422, 150), (478, 152)]))
     s.append("</svg>")
     return "".join(s)
 
 
 def root_hair_cell():
-    s = ['<svg viewBox="0 -6 580 286" width="580" role="img" aria-label="Root hair cell: a cell with a long, narrow extension growing out between soil particles; water and mineral salts enter the root hair">']
-    s.append('<defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0284c7"/></marker></defs>')
-    s.append('<rect x="0" y="-6" width="242" height="286" fill="#f1f5f9"/><rect x="242" y="-6" width="338" height="286" fill="#fefce8"/>')
-    for x, y, r in ((300, 34, 16), (380, 34, 18), (470, 32, 18), (560, 74, 17), (330, 125, 22), (430, 130, 24), (520, 130, 20), (270, 235, 18), (380, 200, 22), (560, 205, 16)):
-        s.append('<circle cx="%d" cy="%d" r="%d" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/>' % (x, y, r))
-    s.append('<path d="M50 105 H195 Q205 62 262 58 H520 a16 16 0 0 1 0 32 H268 Q236 92 236 125 V178 a12 12 0 0 1 -12 12 H50 a12 12 0 0 1 -12 -12 V117 a12 12 0 0 1 12 -12 Z" '
-             'fill="#fef3c7" stroke="#a16207" stroke-width="2.5"/>')
-    s.append('<rect x="58" y="120" width="160" height="56" rx="16" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>')
-    s.append('<ellipse cx="300" cy="74" rx="15" ry="8" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/>')
-    for x in (340, 425, 515):
-        s.append('<path d="M%d 22 V48" stroke="#0284c7" stroke-width="3" marker-end="url(#ar)"/>' % x)
-    s.append('<text x="425" y="8" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0369a1">water and mineral salts</text>')
-    s.append('<line x1="138" y1="160" x2="138" y2="226" stroke="#334155" stroke-width="1.4"/><text x="138" y="242" text-anchor="middle" %s>vacuole (cell sap)</text>' % FONT)
-    s.append('<line x1="300" y1="82" x2="300" y2="168" stroke="#334155" stroke-width="1.4"/><text x="300" y="184" text-anchor="middle" %s>nucleus</text>' % FONT)
-    s.append('<line x1="470" y1="90" x2="470" y2="236" stroke="#334155" stroke-width="1.4"/><text x="575" y="252" text-anchor="end" %s>long, narrow extension (root hair)</text>' % FONT)
-    s.append('<text x="16" y="30" %s font-weight="700">inside the root</text><text x="252" y="272" %s font-weight="700">soil</text>' % (FONT, FONT))
+    """Root hair cell drawn as in the textbook: a cell with a long, narrow extension; the vacuole runs into the extension."""
+    outer = "M150 30 Q150 18 162 18 H186 Q198 18 198 30 V96 C290 104 380 76 450 74 C500 72 530 66 556 58 C530 82 492 92 452 98 C380 106 300 124 198 126 V190 Q198 202 186 202 H162 Q150 202 150 190 Z"
+    inner = "M162 30 H186 V104 C290 112 380 86 450 84 C486 82 510 78 530 72 C506 84 484 88 452 90 C380 96 300 116 186 118 V190 H162 Z"
+    s = ['<svg viewBox="0 0 580 250" width="580" role="img" aria-label="Root hair cell: a cell with a long, narrow extension; the vacuole extends into it and the nucleus is near the base">']
+    s.append('<path d="%s" fill="#d6a07a" stroke="#7c4a2a" stroke-width="2"/>' % outer)
+    s.append('<path d="%s" fill="#fbe8cc" stroke="#7c4a2a" stroke-width="1.2"/>' % inner)
+    s.append('<ellipse cx="156" cy="132" rx="3.5" ry="8" fill="#e11d74"/>')
+    s.append('<line x1="176" y1="60" x2="226" y2="34" stroke="#1f2937" stroke-width="1.4"/><circle cx="176" cy="60" r="2.3" fill="#1f2937"/><text x="232" y="38" %s>vacuole</text>' % FONT)
+    s.append('<line x1="96" y1="132" x2="154" y2="132" stroke="#1f2937" stroke-width="1.4"/><text x="90" y="137" text-anchor="end" %s>nucleus</text>' % FONT)
+    s.append('<path d="M206 150 V158 H556 V150 M381 158 V172" fill="none" stroke="#1f2937" stroke-width="1.4"/><text x="381" y="192" text-anchor="middle" %s>long and narrow extension</text>' % FONT)
     s.append("</svg>")
     return "".join(s)
 
@@ -199,9 +233,9 @@ def inner(svg):
 
 ANIMAL_TARGETS = [
     dict(key="cell-membrane", label="cell membrane", pt=(131, 109), box=(100, 96), side="l"),
-    dict(key="vacuole", label="vacuole", pt=(158, 123), box=(100, 150), side="l"),
+    dict(key="vacuole", label="vacuole", pt=(160, 123), box=(100, 150), side="l"),
     dict(key="cytoplasm", label="cytoplasm", pt=(165, 196), box=(100, 205), side="l"),
-    dict(key="mitochondrion", label="mitochondrion", pt=(340, 104), box=(412, 96), side="r"),
+    dict(key="mitochondrion", label="mitochondrion", pt=(338, 104), box=(412, 96), side="r"),
     dict(key="nucleus", label="nucleus", pt=(282, 167), box=(412, 168), side="r"),
     dict(key="ribosomes", label="ribosomes", pt=(326, 247), box=(412, 244), side="r"),
 ]
@@ -240,18 +274,17 @@ def liver_and_root_hair():
     """Fig. for the structured question: A = liver cell, B = root hair cell (not to scale)."""
     s = ['<svg viewBox="0 0 640 250" width="640" role="img" aria-label="A: a liver cell, roughly six-sided, with a central nucleus, many mitochondria and small vacuoles. '
          'B: a root hair cell with a cell wall, a large vacuole and a long, narrow extension.">']
-    s.append('<path d="M60 70 L150 40 L240 70 L250 165 L160 205 L70 175 Z" fill="#fde7ef" stroke="#be185d" stroke-width="3"/>')
-    s.append('<circle cx="155" cy="122" r="27" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.5"/><circle cx="160" cy="116" r="7" fill="#8b5cf6"/>')
+    s.append('<path d="M60 70 L150 40 L240 70 L250 165 L160 205 L70 175 Z" fill="%s" stroke="%s" stroke-width="2.6"/>' % (CYTO, LINE))
+    s.append(nucleus_round(155, 122, 27))
     for x, y, r in ((100, 85, 20), (200, 80, -25), (215, 150, 30), (100, 160, -15), (130, 70, 5), (190, 180, 10), (85, 125, 80), (232, 115, 85)):
         s.append(mito(x, y, r, 12, 5.5))
     for x, y in ((120, 100), (195, 125)):
-        s.append('<circle cx="%d" cy="%d" r="5" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>' % (x, y))
+        s.append('<circle cx="%d" cy="%d" r="5" fill="#fff" stroke="%s" stroke-width="1.5"/>' % (x, y, LINE))
     s.append('<text x="155" y="238" text-anchor="middle" %s font-weight="700">A</text>' % FONT)
-    s.append('<g transform="translate(300 40)">'
-             '<path d="M10 60 H130 Q140 30 180 28 H320 a12 12 0 0 1 0 24 H184 Q160 54 160 80 V140 a10 10 0 0 1 -10 10 H10 a10 10 0 0 1 -10 -10 V70 a10 10 0 0 1 10 -10 Z" fill="#fef3c7" stroke="#a16207" stroke-width="5"/>'
-             '<path d="M10 60 H130 Q140 30 180 28 H320 a12 12 0 0 1 0 24 H184 Q160 54 160 80 V140 a10 10 0 0 1 -10 10 H10 a10 10 0 0 1 -10 -10 V70 a10 10 0 0 1 10 -10 Z" fill="none" stroke="#fde68a" stroke-width="1.5"/>'
-             '<rect x="18" y="74" width="126" height="62" rx="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>'
-             '<ellipse cx="200" cy="40" rx="12" ry="7" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/></g>')
+    s.append('<g transform="translate(196 40) scale(0.72)">'
+             '<path d="M150 30 Q150 18 162 18 H186 Q198 18 198 30 V96 C290 104 380 76 450 74 C500 72 530 66 556 58 C530 82 492 92 452 98 C380 106 300 124 198 126 V190 Q198 202 186 202 H162 Q150 202 150 190 Z" fill="#d6a07a" stroke="#7c4a2a" stroke-width="2.5"/>'
+             '<path d="M162 30 H186 V104 C290 112 380 86 450 84 C486 82 510 78 530 72 C506 84 484 88 452 90 C380 96 300 116 186 118 V190 H162 Z" fill="#fbe8cc" stroke="#7c4a2a" stroke-width="1.5"/>'
+             '<ellipse cx="156" cy="132" rx="3.5" ry="8" fill="#e11d74"/></g>')
     s.append('<text x="460" y="238" text-anchor="middle" %s font-weight="700">B</text>' % FONT)
     s.append("</svg>")
     return "".join(s)
