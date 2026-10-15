@@ -67,9 +67,9 @@ def lesson1():
           'the <strong>faster</strong> the rate of diffusion.</p>\n')
     b += ('<p><strong>Why &ldquo;net&rdquo;?</strong> Each particle moves at random, in any direction. Some particles even move back towards the crowded region. '
           'The <em>net</em> movement is the overall result: more particles go one way than the other.</p>\n')
-    b += S.sim("sim-free", "free", "See it happen: diffusion in water",
-               "Blue particles of a substance start crowded on the left. Press <strong>Start</strong> and watch the numbers on each side.",
-               '<i style="background:#3b82f6"></i>particles of a dissolved substance')
+    b += S.sim("sim-mix", "mix", "Example 1: two substances diffusing in water",
+               "Red particles start on the left and blue particles start on the right. There is no membrane. Press <strong>Start</strong> and watch the numbers on each side.",
+               '<i style="background:#ef4444"></i>red particles <i style="background:#3b82f6"></i>blue particles')
 
     b += ('<div class="practical"><h3>Practical: diffusion of a dissolved substance in water</h3>'
           '<p><strong>Aim:</strong> to investigate how a dissolved substance spreads through water.</p>'
@@ -105,6 +105,11 @@ def lesson1():
     b += S.sim("sim-two", "two", "See it happen: two substances, one membrane",
                "The grey line is a permeable membrane with gaps. Both kinds of particle can pass through the gaps.",
                '<i style="background:#eab308"></i>potassium nitrate <i style="background:#3b82f6"></i>copper(II) sulfate')
+    b += S.sim("sim-starch", "starch", 'Example 4: starch and iodine in Visking tubing <span class="g3-badge">G3 only</span>',
+               "Visking tubing is a <strong>partially permeable membrane</strong>. The tubing holds <strong>starch solution</strong> and stands in brown <strong>iodine solution</strong>. "
+               "Iodine turns <strong>blue-black</strong> when it meets starch.",
+               '<i style="background:#e5e7eb;border:1px solid #64748b"></i>starch molecule (large) <i style="background:#92400e"></i>iodine molecule (small)',
+               only="Only the small iodine molecules can pass through the tubing. Starch molecules are too large to pass through.", extra_class=" g3-only")
 
     b += '<h2>Factors that affect the rate of diffusion</h2>\n'
     b += ('<p>How fast a substance diffuses depends on:</p>\n'
@@ -209,10 +214,12 @@ def lesson2():
           '<p>Water keeps moving until both arms have the same solute concentration (the same number of solute molecules per unit volume).</p>\n'
           '<p class="keyidea">The diffusion of <strong>water molecules</strong> across a <strong>partially permeable membrane</strong> is called <strong>osmosis</strong>.</p>\n'
           '<div class="sidebox"><h4>Link to Chemistry</h4><p>The <strong>concentration</strong> of a solution is the amount of solute dissolved in a unit volume of the solution.</p></div>\n')
-    b += S.sim("sim-osmo", "osmo", "See it happen: osmosis",
-               "Arm A has more sucrose than arm B. The green line is a partially permeable membrane: its gaps let the small water molecules through but not the big sucrose molecules. "
-               "Water molecules close to a sucrose molecule are held by it and are not free to move across.",
-               '<i style="background:#f97316"></i>sucrose molecule <i style="background:#60a5fa"></i>water molecule')
+    b += S.sim("sim-utube", "utube", "Example 2: osmosis in a U-tube",
+               "The two arms hold sucrose solutions. The green dashed line at the bottom is a <strong>partially permeable membrane</strong>. "
+               "Choose the concentrations, press <strong>Start</strong> and watch the water levels.",
+               '<i style="background:#f97316"></i>sucrose molecule <i style="background:#60a5fa"></i>water molecule',
+               presets=["A: 10% &middot; B: 5%", "A: 5% &middot; B: 10%", "A: 5% &middot; B: 5%"],
+               only="Only water molecules can pass through the membrane. Sucrose molecules are too large to pass through.", height=325)
 
     b += ('<div class="practical"><h3>Practical: demonstrating osmosis</h3>'
           '<p><strong>Aim:</strong> to show osmosis using dialysis tubing (Visking tubing), which is a partially permeable membrane.</p>'
@@ -234,6 +241,11 @@ def lesson2():
          "It is a <strong>control</strong>. With no difference in water potential, the level does not change. "
          "This shows that the rise in the first set-up is caused by the sucrose solution (the water potential gradient), not by the tubing itself."))
     b += '</div>\n'
+    b += S.sim("sim-bag", "bag", "Example 3: Visking tubing becomes turgid or flaccid",
+               "The Visking tubing holds a sucrose solution. Choose what the tubing stands in, then press <strong>Start</strong>.",
+               '<i style="background:#f97316"></i>sucrose molecule <i style="background:#60a5fa"></i>water molecule',
+               presets=["Outside: distilled water", "Outside: concentrated sucrose solution"],
+               only="Only water molecules can pass through the tubing. Sucrose molecules are too large to pass through.")
 
     b += '<h2>What is water potential?</h2>\n'
     b += ('<p>When we talk about osmosis we use the term <strong>water potential</strong>. Water potential is a measure of how likely water molecules are to move from one place to another.</p>\n'
