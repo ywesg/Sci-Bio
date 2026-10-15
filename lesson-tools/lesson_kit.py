@@ -146,8 +146,9 @@ def video(vid, title, credit, note=None):
 
 
 def mcq(n, q, opts, ans, expl, figure="", img=None, grid=False):
-    """Multiple choice. ans = index (from 0) of the correct option. img = (file name without .jpg, alt text)."""
-    h = '<div class="checkpoint" data-type="mcq" data-answer="%d">\n  <p class="q">%d. %s</p>\n' % (ans, n, q)
+    """Multiple choice. ans = index (from 0) of the correct option. img = (file name without .jpg, alt text).
+    n is shown as the question number; it can also be text such as "A" (keep it unique on the page)."""
+    h = '<div class="checkpoint" data-type="mcq" data-answer="%d">\n  <p class="q">%s. %s</p>\n' % (ans, n, q)
     if figure:
         h += '  <div class="q-fig">%s</div>\n' % figure
     if img:
@@ -155,7 +156,7 @@ def mcq(n, q, opts, ans, expl, figure="", img=None, grid=False):
     if grid:
         h += '  <div class="opt-grid">\n'
     for i, o in enumerate(opts):
-        h += '  <label><input type="radio" name="q%d" value="%d"> %s</label>\n' % (n, i, o)
+        h += '  <label><input type="radio" name="q%s" value="%d"> %s</label>\n' % (n, i, o)
     if grid:
         h += '  </div>\n'
     h += ('  <button type="button" onclick="checkAnswer(this)">Check answer</button>\n  <div class="feedback" aria-live="polite" data-explanation="%s"></div>\n</div>\n'
@@ -317,6 +318,7 @@ LABEL_CSS = """<style>
   .lab-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
   .lab-ctl button[data-act=check] { background: #0f766e; border-color: #0f766e; color: #fff; }
   .lab-score { font-weight: 700; color: #134e4a; }
+  ul.spot { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.7rem 1rem 0.7rem 2rem; }
   .scopes img { height: 300px; object-fit: contain; background: #fff; }
   .credit { font-size: 0.8rem; color: #64748b; text-align: center; margin: 0.2rem 0 0; }
   .credit a { color: #64748b; }

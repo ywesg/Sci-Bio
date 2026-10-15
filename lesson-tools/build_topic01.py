@@ -64,6 +64,40 @@ def MICROGRAPHS():
         dict(key="vacuole", label="vacuole", pt=(583, 500), side="r")],
         "Part of a leaf cell (plant cell)", "Part of a leaf cell, electron micrograph (about 12 000 times bigger than life). The lines inside the chloroplast are where light is absorbed.",
         'Image: <a href="%sChloroplast_in_leaf_of_Anemone_sp_TEM_12000x.png">and3k and caper437</a>, CC BY-SA 3.0, via Wikimedia Commons.' % C)
+
+    b += '<h2>Spotting mitochondria and chloroplasts</h2>\n'
+    b += ('<p>In the exam you may be shown an electron micrograph and asked to name the organelle. These two are the ones to know well. '
+          'They look quite different once you know what to look for.</p>\n')
+    pic = lambda f, alt, cap: '<figure class="pic"><img src="img/%s" alt="%s" loading="lazy"><figcaption>%s</figcaption></figure>' % (f, alt, cap)
+    b += ('<h3>Mitochondria</h3>\n<div class="two-col">%s%s</div>\n'
+          % (pic("mitochondria-em.jpg", "Two round mitochondria, each with a dark outer edge and wavy lines inside", "Two mitochondria cut across."),
+             pic("mitochondrion-long-em.jpg", "A long, sausage-shaped mitochondrion with many folds running across it", "One mitochondrion cut along its length.")))
+    b += ('<ul class="spot"><li><strong>Shape:</strong> small ovals or sausages (often round when cut across).</li>'
+          '<li><strong>Edge:</strong> a smooth double membrane.</li>'
+          '<li><strong>Inside:</strong> many folds of the inner membrane, like shelves or fingers. The folds give a large surface for aerobic respiration.</li>'
+          '<li><strong>Where:</strong> in the cytoplasm of almost every plant and animal cell. Very active cells (muscle, liver) have lots.</li></ul>\n')
+    b += '<p class="credit">Images: Louisa Howard, Dartmouth Electron Microscope Facility (public domain), via Wikimedia Commons: <a href="%sMitochondria,_mammalian_lung_-_TEM.jpg">1</a>, <a href="%sMitochondria_-_TEM.jpg">2</a>.</p>\n' % (C, C)
+    b += ('<h3>Chloroplasts</h3>\n<div class="two-col">%s%s</div>\n'
+          % (pic("leaf-cell-em.jpg", "A large, lens-shaped chloroplast lying against the cell wall, with dark stacks of membranes inside", "A whole chloroplast in a leaf cell."),
+             pic("chloroplast-grana-em.jpg", "Close-up of a chloroplast: long parallel membranes with darker stacks like piles of coins", "Close-up: stacks of membranes inside a chloroplast.")))
+    b += ('<ul class="spot"><li><strong>Shape:</strong> a large lens or oval, much bigger than a mitochondrion.</li>'
+          '<li><strong>Inside:</strong> long, parallel membranes with dark <strong>stacks</strong> (like piles of coins). Chlorophyll is in these membranes, where light is absorbed.</li>'
+          '<li><strong>Where:</strong> only in some plant cells (e.g. leaf cells), usually near the cell wall.</li></ul>\n')
+    b += ('<p class="credit">Images: <a href="%sChloroplast_in_leaf_of_Anemone_sp_TEM_12000x.png">1</a> and <a href="%sChloroplast_in_leaf_of_Anemone_sp_TEM_30000x.png">2</a>: and3k and caper437, CC BY-SA 3.0, via Wikimedia Commons.</p>\n' % (C, C))
+    b += ('<table><tr><th>Look for&hellip;</th><th>Mitochondrion</th><th>Chloroplast</th></tr>'
+          '<tr><td>Size</td><td>small</td><td>large (several times longer)</td></tr>'
+          '<tr><td>Membranes inside</td><td>folds that stick in from the edge</td><td>long parallel membranes with dark stacks</td></tr>'
+          '<tr><td>Found in</td><td>plant and animal cells</td><td>some plant cells only</td></tr>'
+          '<tr><td>Job</td><td>aerobic respiration</td><td>photosynthesis</td></tr></table>\n')
+    b += '<h3>Spot the organelle</h3>\n'
+    b += L.mcq("A", "Name the organelle in this electron micrograph.", ["Nucleus", "Mitochondrion", "Chloroplast", "Ribosome"], 1,
+               "It is small and oval, with a double membrane and folds inside: a mitochondrion.", img=("q-mito-em", "An electron micrograph of a small oval organelle with folds inside"))
+    b += L.mcq("B", "Name the organelle in this electron micrograph.", ["Mitochondrion", "Vacuole", "Nucleus", "Chloroplast"], 3,
+               "Long parallel membranes with dark stacks: this is part of a chloroplast.", img=("q-chloro-em", "An electron micrograph showing long parallel membranes with dark stacks"))
+    b += L.mcq("C", "A student finds an organelle with stacks of membranes in an electron micrograph of a cell. What can the student conclude?", [
+        "The cell is an animal cell.", "The cell is a plant cell, such as a leaf cell.", "The cell has no nucleus.", "The cell is a red blood cell."], 1,
+        "Stacks of membranes mean a chloroplast, and only (some) plant cells have chloroplasts.")
+    b += '<p class="credit">Question images are cropped from the micrographs above.</p>\n'
     return b
 
 
