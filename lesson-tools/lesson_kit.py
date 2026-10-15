@@ -288,7 +288,8 @@ def labeller(lid, svg_inner, vw, vh, targets, caption, extra=(), title="Label th
     bank = "".join('<button type="button" class="chip" data-key="%s">%s</button>' % (k, w) for k, w in words)
     return ('<div class="labeller" id="%s">\n  <p class="lab-title"><strong>%s</strong> <span class="print-hide">Drag each label into a box (or tap a label, then tap a box).</span></p>\n'
             '  <div class="bank" aria-label="Labels">%s</div>\n'
-            '  <div class="lab-stage" style="max-width:%dpx"><svg viewBox="0 0 %d %d" role="img" aria-label="%s">%s%s</svg>%s</div>\n'
+            '  <p class="lab-swipe">&#8596; Swipe sideways to see the whole diagram.</p>\n'
+            '  <div class="lab-scroll"><div class="lab-stage" style="max-width:%dpx"><svg viewBox="0 0 %d %d" role="img" aria-label="%s">%s%s</svg>%s</div></div>\n'
             '  <div class="lab-ctl print-hide"><button type="button" data-act="check">Check my labels</button><button type="button" data-act="show">Show answers</button>'
             '<button type="button" data-act="reset">Start again</button><span class="lab-score" aria-live="polite"></span></div>\n'
             '  <p class="fig-caption">%s</p>\n</div>\n'
@@ -323,7 +324,10 @@ LABEL_CSS = """<style>
   .scopes img { height: 300px; object-fit: contain; background: #fff; }
   .credit { font-size: 0.8rem; color: #64748b; text-align: center; margin: 0.2rem 0 0; }
   .credit a { color: #64748b; }
-  @media (max-width: 560px) { .labeller { padding: 0.7rem 0.4rem; } .lab-stage { width: 74%; } .drop { min-width: 0; width: max-content; max-width: none; padding: 0.1rem 0.25rem; font-size: 0.62rem; } .drop .n { display: none; } .drop:empty, .drop:not(.filled) { min-width: 4.6em; } }
+  .lab-swipe { display: none; font-size: 0.85rem; color: #475569; margin: 0.4rem 0 0; }
+  @media (max-width: 560px) { .labeller { padding: 0.7rem 0.5rem; } .lab-swipe { display: block; } .lab-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0.4rem; }
+    .lab-stage { width: 640px; max-width: none !important; } .drop { font-size: 0.8rem; min-width: 6.5em; } .drop .n { display: none; } }
+  @media print { .lab-swipe { display: none !important; } .lab-scroll { overflow: visible; } }
   @media print { .labeller { border: none; padding: 0; break-inside: avoid; } .labeller .bank .chip { display: inline-block !important; min-height: 0; padding: 0.1rem 0.6rem; } .labeller .drop { display: flex !important; } .chip { cursor: default; } .drop .v { visibility: hidden; } .drop { border: 1.5px solid #000; background: #fff; } }
 </style>
 """

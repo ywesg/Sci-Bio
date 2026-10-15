@@ -143,10 +143,10 @@ def lesson1():
 
     b += '<h2>Label the cells</h2>\n'
     b += '<p>Drag each label to the right box. Then press <strong>Check my labels</strong>. Wrong labels turn red: move them and check again.</p>\n'
-    b += L.labeller("lab-animal", F.inner(F.animal_cell(labels=False)), 560, 320, F.ANIMAL_TARGETS, "A typical animal cell (not to scale).",
-                    extra=["cell wall", "chloroplast"], title="Label a typical animal cell.")
-    b += L.labeller("lab-plant", F.inner(F.plant_cell(labels=False, sap_text=False)), 560, 320, F.PLANT_TARGETS, "A typical plant cell, e.g. a leaf cell (not to scale).",
-                    title="Label a typical plant cell.")
+    b += L.labeller("lab-animal", F.inner(F.animal_cell(labels=False)), F.ANIMAL_VB[0], F.ANIMAL_VB[1], F.ANIMAL_TARGETS, "A typical animal cell (not to scale).",
+                    extra=["cell wall", "chloroplast"], title="Label a typical animal cell.", width=760)
+    b += L.labeller("lab-plant", F.inner(F.plant_cell(labels=False, sap_text=False)), F.PLANT_VB[0], F.PLANT_VB[1], F.PLANT_TARGETS, "A typical plant cell, e.g. a leaf cell (not to scale).",
+                    title="Label a typical plant cell.", width=760)
 
     b += '<h2>Cell structures and their functions</h2>\n'
     b += ('<table><tr><th>Structure</th><th>Function</th><th>Found in</th></tr>'
