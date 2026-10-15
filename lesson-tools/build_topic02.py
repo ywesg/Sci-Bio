@@ -67,9 +67,9 @@ def lesson1():
           'the <strong>faster</strong> the rate of diffusion.</p>\n')
     b += ('<p><strong>Why &ldquo;net&rdquo;?</strong> Each particle moves at random, in any direction. Some particles even move back towards the crowded region. '
           'The <em>net</em> movement is the overall result: more particles go one way than the other.</p>\n')
-    b += S.sim("sim-mix", "mix", "Example 1: two substances diffusing in water",
-               "Red particles start on the left and blue particles start on the right. There is no membrane. Press <strong>Start</strong> and watch the numbers on each side.",
-               '<i style="background:#ef4444"></i>red particles <i style="background:#3b82f6"></i>blue particles')
+    b += S.sim("sim-free", "free", "Example 1: diffusion in water",
+               "Blue particles of a substance start crowded on the left. Press <strong>Start</strong> and watch the numbers on each side.",
+               '<i style="background:#3b82f6"></i>particles of a dissolved substance')
 
     b += ('<div class="practical"><h3>Practical: diffusion of a dissolved substance in water</h3>'
           '<p><strong>Aim:</strong> to investigate how a dissolved substance spreads through water.</p>'
@@ -109,7 +109,7 @@ def lesson1():
                "Visking tubing is a <strong>partially permeable membrane</strong>. The tubing holds <strong>starch solution</strong> and stands in brown <strong>iodine solution</strong>. "
                "Iodine turns <strong>blue-black</strong> when it meets starch.",
                '<i style="background:#e5e7eb;border:1px solid #64748b"></i>starch molecule (large) <i style="background:#92400e"></i>iodine molecule (small)',
-               only="Only the small iodine molecules can pass through the tubing. Starch molecules are too large to pass through.", extra_class=" g3-only")
+               only="Only the small iodine molecules can pass through the tubing. Starch molecules are too large to pass through.", extra_class=" g3-only", height=380)
 
     b += '<h2>Factors that affect the rate of diffusion</h2>\n'
     b += ('<p>How fast a substance diffuses depends on:</p>\n'
@@ -245,7 +245,7 @@ def lesson2():
                "The Visking tubing holds a sucrose solution. Choose what the tubing stands in, then press <strong>Start</strong>.",
                '<i style="background:#f97316"></i>sucrose molecule <i style="background:#60a5fa"></i>water molecule',
                presets=["Outside: distilled water", "Outside: concentrated sucrose solution"],
-               only="Only water molecules can pass through the tubing. Sucrose molecules are too large to pass through.")
+               only="Only water molecules can pass through the tubing. Sucrose molecules are too large to pass through.", height=380)
 
     b += '<h2>What is water potential?</h2>\n'
     b += ('<p>When we talk about osmosis we use the term <strong>water potential</strong>. Water potential is a measure of how likely water molecules are to move from one place to another.</p>\n'
