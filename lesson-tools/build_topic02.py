@@ -6,6 +6,7 @@ Once a lesson has been edited by hand, do not run this script over it again (com
 import lesson_kit as L
 import topic02_figs as F
 import topic02_sim as S
+import topic02_trigger as T
 
 TOPIC = "Movement of Substances"
 REFS = "Syllabus refs (G2 &amp; G3): "
@@ -52,8 +53,10 @@ LO22 = '''<div class="practical"><h3>Learning outcomes</h3><ul>
 def lesson1():
     b = LO21
     b += '<h2>Trigger activity</h2>\n'
-    b += ('<p>Someone sprays perfume at one end of a room. A few moments later, a person at the other end can smell it. '
-          '<strong>How did the perfume get there, when nobody carried it?</strong></p>\n')
+    b += ('<p>Watch the animation. Someone comes out of the toilet at one end of a corridor. A little later, a person waiting at the other end can smell it. '
+          '<strong>How did the smell get there, when nobody carried it?</strong></p>\n')
+    b += T.HTML
+    b += ('<p>The same thing happens with perfume. Someone sprays perfume at one end of a room, and a few moments later a person at the other end can smell it.</p>\n')
     b += L.fig(F.perfume(), "Perfume particles spread out from where they are crowded to where there are fewer of them.", "2.1")
     b += ('<p>The perfume particles are always moving about at random, bumping into air particles. Near the bottle there are many perfume particles; '
           'far away there are few. So, overall, more particles move <em>away</em> from the bottle than towards it. The perfume spreads until it is evenly mixed in the air.</p>\n')
@@ -214,7 +217,7 @@ def lesson1():
         "A long, narrow protrusion gives a large surface area for diffusion.")
     b += L.mcq(7, "Which substance cannot pass through a cell membrane?", ["Oxygen", "Carbon dioxide", "Glucose", "Protein"], 3,
                "The cell membrane is partially permeable. Proteins are large molecules and cannot pass through.")
-    L.page("movement-2-1-diffusion", "2.1 What Is Diffusion?", REFS + "2a", CSS + L.LABEL_CSS + b, JS, topic=TOPIC)
+    L.page("movement-2-1-diffusion", "2.1 What Is Diffusion?", REFS + "2a", CSS + L.LABEL_CSS + b, JS + T.JS, topic=TOPIC)
 
 
 # ================================================================== Lesson 2.2 What Is Osmosis? (2b)
