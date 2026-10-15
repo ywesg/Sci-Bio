@@ -318,6 +318,7 @@ LABEL_CSS = """<style>
   .lab-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
   .lab-ctl button[data-act=check] { background: #0f766e; border-color: #0f766e; color: #fff; }
   .lab-score { font-weight: 700; color: #134e4a; }
+  .two-col figure.pic img { height: 340px; object-fit: contain; background: #f1f5f9; }
   ul.spot { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.7rem 1rem 0.7rem 2rem; }
   .scopes img { height: 300px; object-fit: contain; background: #fff; }
   .credit { font-size: 0.8rem; color: #64748b; text-align: center; margin: 0.2rem 0 0; }
