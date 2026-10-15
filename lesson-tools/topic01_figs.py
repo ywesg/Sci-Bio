@@ -46,20 +46,20 @@ def animal_cell(labels=True, w=560):
     for cx, cy, r in ((168, 118, 11), (362, 130, 8), (300, 252, 9)):
         s.append('<g class="part" data-part="vacuole-a"><circle cx="%d" cy="%d" r="%d" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/></g>' % (cx, cy, r))
     s.append('<g class="part" data-part="ribosomes">%s</g>' % ribos([(290, 88), (299, 94), (200, 92), (190, 86), (150, 175), (158, 186), (280, 238), (270, 248),
-                                                                       (349, 160), (343, 168), (215, 252), (226, 258), (346, 238), (354, 244), (290, 150)]))
+                                                                       (349, 160), (343, 168), (215, 252), (226, 258), (322, 244), (330, 250), (290, 150)]))
     if labels:
         s.append(lbl("cell-membrane", "cell membrane", 100, 104, 131, 109))
         s.append(lbl("vacuole-a", "small vacuole", 100, 146, 158, 123))
         s.append(lbl("cytoplasm", "cytoplasm", 100, 205, 165, 196))
         s.append(lbl("mitochondrion", "mitochondrion", 412, 96, 340, 104, "start"))
         s.append(lbl("nucleus", "nucleus", 412, 172, 282, 167, "start"))
-        s.append(lbl("ribosomes", "ribosomes", 412, 244, 352, 241, "start"))
+        s.append(lbl("ribosomes", "ribosomes", 412, 244, 326, 247, "start"))
     s.append("</svg>")
     return "".join(s)
 
 
 # ------------------------------------------------------------------ typical plant cell
-def plant_cell(labels=True, w=560):
+def plant_cell(labels=True, w=560, sap_text=True):
     s = ['<svg viewBox="0 0 560 320" width="%d" role="img" aria-label="Diagram of a typical plant cell">' % w]
     s.append('<g class="part" data-part="cell-wall"><path fill-rule="evenodd" d="M144 30 h252 a14 14 0 0 1 14 14 v232 a14 14 0 0 1 -14 14 h-252 a14 14 0 0 1 -14 -14 v-232 a14 14 0 0 1 14 -14 Z '
              'M150 42 h240 a8 8 0 0 1 8 8 v220 a8 8 0 0 1 -8 8 h-240 a8 8 0 0 1 -8 -8 v-220 a8 8 0 0 1 8 -8 Z" fill="#d9f99d" stroke="#3f6212" stroke-width="2"/></g>')
@@ -67,7 +67,7 @@ def plant_cell(labels=True, w=560):
     s.append('<g class="part" data-part="cell-membrane"><rect x="143.5" y="43.5" width="253" height="233" rx="7" fill="none" stroke="#be185d" stroke-width="2.6"/>'
              '<rect x="143.5" y="43.5" width="253" height="233" rx="7" fill="none" stroke="transparent" stroke-width="9"/></g>')
     s.append('<g class="part" data-part="vacuole-p"><rect x="186" y="86" width="174" height="158" rx="30" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>'
-             '<text x="273" y="170" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-style="italic" fill="#1e40af">cell sap</text></g>')
+             + ('<text x="273" y="170" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-style="italic" fill="#1e40af">cell sap</text>' if sap_text else '') + '</g>')
     s.append('<g class="part" data-part="nucleus"><ellipse cx="164" cy="165" rx="16" ry="30" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.6"/><circle cx="166" cy="160" r="6" fill="#8b5cf6"/></g>')
     for x, y, r in ((210, 63, 0), (268, 61, 0), (326, 63, 0), (379, 120, 90), (379, 215, 90), (232, 262, 0), (300, 262, 0), (164, 98, 90), (164, 232, 90)):
         s.append('<g class="part" data-part="chloroplast">%s</g>' % chloro(x, y, r))
@@ -185,5 +185,71 @@ def root_hair_cell():
     s.append('<line x1="300" y1="82" x2="300" y2="168" stroke="#334155" stroke-width="1.4"/><text x="300" y="184" text-anchor="middle" %s>nucleus</text>' % FONT)
     s.append('<line x1="470" y1="90" x2="470" y2="236" stroke="#334155" stroke-width="1.4"/><text x="575" y="252" text-anchor="end" %s>long, narrow extension (root hair)</text>' % FONT)
     s.append('<text x="16" y="30" %s font-weight="700">inside the root</text><text x="252" y="272" %s font-weight="700">soil</text>' % (FONT, FONT))
+    s.append("</svg>")
+    return "".join(s)
+
+
+# ------------------------------------------------------------------ drag-and-drop labelling targets for the two diagrams
+def inner(svg):
+    """The inside of an <svg>...</svg> string (for L.labeller)."""
+    return svg[svg.index(">") + 1:svg.rindex("</svg>")]
+
+
+ANIMAL_TARGETS = [
+    dict(key="cell-membrane", label="cell membrane", pt=(131, 109), box=(100, 96), side="l"),
+    dict(key="vacuole", label="vacuole", pt=(158, 123), box=(100, 150), side="l"),
+    dict(key="cytoplasm", label="cytoplasm", pt=(165, 196), box=(100, 205), side="l"),
+    dict(key="mitochondrion", label="mitochondrion", pt=(340, 104), box=(412, 96), side="r"),
+    dict(key="nucleus", label="nucleus", pt=(282, 167), box=(412, 168), side="r"),
+    dict(key="ribosomes", label="ribosomes", pt=(326, 247), box=(412, 244), side="r"),
+]
+PLANT_TARGETS = [
+    dict(key="cell-wall", label="cell wall", pt=(136, 70), box=(108, 62), side="l"),
+    dict(key="nucleus", label="nucleus", pt=(148, 165), box=(108, 165), side="l"),
+    dict(key="cell-membrane", label="cell membrane", pt=(143, 262), box=(108, 268), side="l"),
+    dict(key="cytoplasm", label="cytoplasm", pt=(352, 74), box=(428, 62), side="r"),
+    dict(key="chloroplast", label="chloroplast", pt=(387, 120), box=(428, 112), side="r"),
+    dict(key="vacuole", label="vacuole", pt=(345, 165), box=(428, 165), side="r"),
+    dict(key="ribosomes", label="ribosomes", pt=(375, 240), box=(428, 222), side="r"),
+    dict(key="mitochondrion", label="mitochondrion", pt=(386, 263), box=(428, 280), side="r"),
+]
+
+
+def photo(img, iw, ih, targets, width=500, margin=180):
+    """An image placed between two label margins, for L.labeller. targets use points in the image's own pixels;
+    boxes are placed beside the image on the side given, spread out so they do not overlap.
+    Returns (svg_inner, vw, vh, targets in viewBox units)."""
+    s = width / float(iw)
+    vw, vh = width + 2 * margin, ih * s + 20
+    out = []
+    for side in ("l", "r"):
+        ts = sorted([t for t in targets if t["side"] == side], key=lambda t: t["pt"][1])
+        last = -99
+        for t in ts:
+            px, py = margin + t["pt"][0] * s, 10 + t["pt"][1] * s
+            by = max(py, last + 44, 22)
+            last = by
+            out.append(dict(t, pt=(round(px), round(py)), box=(margin - 10 if side == "l" else margin + width + 10, round(by))))
+    svg = '<image href="img/%s" x="%d" y="10" width="%d" height="%d"/>' % (img, margin, width, round(ih * s))
+    return svg, vw, round(vh), out
+
+
+def liver_and_root_hair():
+    """Fig. for the structured question: A = liver cell, B = root hair cell (not to scale)."""
+    s = ['<svg viewBox="0 0 640 250" width="640" role="img" aria-label="A: a liver cell, roughly six-sided, with a central nucleus, many mitochondria and small vacuoles. '
+         'B: a root hair cell with a cell wall, a large vacuole and a long, narrow extension.">']
+    s.append('<path d="M60 70 L150 40 L240 70 L250 165 L160 205 L70 175 Z" fill="#fde7ef" stroke="#be185d" stroke-width="3"/>')
+    s.append('<circle cx="155" cy="122" r="27" fill="#ede9fe" stroke="#6d28d9" stroke-width="2.5"/><circle cx="160" cy="116" r="7" fill="#8b5cf6"/>')
+    for x, y, r in ((100, 85, 20), (200, 80, -25), (215, 150, 30), (100, 160, -15), (130, 70, 5), (190, 180, 10), (85, 125, 80), (232, 115, 85)):
+        s.append(mito(x, y, r, 12, 5.5))
+    for x, y in ((120, 100), (195, 125)):
+        s.append('<circle cx="%d" cy="%d" r="5" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.5"/>' % (x, y))
+    s.append('<text x="155" y="238" text-anchor="middle" %s font-weight="700">A</text>' % FONT)
+    s.append('<g transform="translate(300 40)">'
+             '<path d="M10 60 H130 Q140 30 180 28 H320 a12 12 0 0 1 0 24 H184 Q160 54 160 80 V140 a10 10 0 0 1 -10 10 H10 a10 10 0 0 1 -10 -10 V70 a10 10 0 0 1 10 -10 Z" fill="#fef3c7" stroke="#a16207" stroke-width="5"/>'
+             '<path d="M10 60 H130 Q140 30 180 28 H320 a12 12 0 0 1 0 24 H184 Q160 54 160 80 V140 a10 10 0 0 1 -10 10 H10 a10 10 0 0 1 -10 -10 V70 a10 10 0 0 1 10 -10 Z" fill="none" stroke="#fde68a" stroke-width="1.5"/>'
+             '<rect x="18" y="74" width="126" height="62" rx="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>'
+             '<ellipse cx="200" cy="40" rx="12" ry="7" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/></g>')
+    s.append('<text x="460" y="238" text-anchor="middle" %s font-weight="700">B</text>' % FONT)
     s.append("</svg>")
     return "".join(s)

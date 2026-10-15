@@ -6,7 +6,8 @@ Interactive lesson notes for G2 and G3 SEC Science (Biology), built with the les
 - `lesson-tools/build_index.py` writes the home page (`lessons/index.html`): the pixel-art banner, the G2/G3 switch and one card per lesson.
   **A topic only appears on the site once it is listed in `TOPICS` there.** Mark G3-only topics or lessons with `g3=True`; students who pick "G2" do not see them.
 - `lesson-tools/build_topic01.py` (+ `topic01_figs.py` for the drawings) builds Topic 1 lessons 1.1 and 1.2. Lesson numbers follow the textbook.
-- `lesson-tools/rev_data_01_cells.py` holds the Topic 1 revision questions (`python3 build_revision.py`).
+- `lesson-tools/rev_data_01_cells.py` holds the Topic 1 revision questions (`python3 build_revision.py`). A structured question uses `stem` (text + figure) on its first part and `part="(a)"`, `"(b)"`... on each part.
+- Drag-and-drop labelling: `L.labeller(...)` in `lesson_kit.py` (diagrams), and `topic01_figs.photo(...)` to place labels on a photo. Micrographs in `lessons/img/` come from Wikimedia Commons; each has a credit line under it (keep these).
 - After any change: `cd lesson-tools && python3 build_index.py && python3 add_navigation.py`, then remake the PDFs
   (`./make_pdfs.sh` on a Mac with Chrome, or `node lesson-tools/make_pdfs_playwright.js` where Playwright is installed).
 - Publishing: Netlify is linked to this GitHub repo and publishes the `lessons/` folder (see `netlify.toml`). Every push to `main` is a new deploy, which uses Netlify credits, so batch changes.

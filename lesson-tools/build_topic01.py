@@ -7,7 +7,7 @@ import topic01_figs as F
 
 TOPIC = "Cell Structure and Organisation"
 REFS = "Syllabus refs (G2 &amp; G3): "
-JS = L.EXPLORER_JS + L.SORT_JS
+JS = L.EXPLORER_JS + L.SORT_JS + L.LABEL_JS
 
 
 LO11 = '''<div class="practical"><h3>Learning outcomes</h3><ul>
@@ -18,6 +18,53 @@ LO11 = '''<div class="practical"><h3>Learning outcomes</h3><ul>
 LO12 = '''<div class="practical"><h3>Learning outcome</h3><ul>
 <li>Explain how the structures of specialised cells are adapted to their functions (e.g. muscle cell: many mitochondria to supply more energy; root hair cell: large surface area of cell membrane for greater absorption; red blood cell: lack of nucleus allowing it to transport more oxygen).</li></ul></div>
 '''
+
+
+C = "https://commons.wikimedia.org/wiki/File:"
+
+
+def MICROGRAPHS():
+    """Drag-and-drop labelling of real light and electron micrographs (Wikimedia Commons, credited)."""
+    def one(lid, img, iw, ih, targets, title, caption, credit):
+        svg, vw, vh, ts = F.photo(img, iw, ih, targets)
+        return L.labeller(lid, svg, vw, vh, ts, caption, title=title, width=760) + '<p class="credit">%s</p>\n' % credit
+    b = '<h2>Label real cells: light micrographs</h2>\n'
+    b += ('<p>These are real photos taken through a light microscope. Real cells look less tidy than diagrams. '
+          'Use what you know: a <strong>cell wall</strong> gives plant cells a fixed, box-like shape; a stained <strong>nucleus</strong> shows up as a dark spot; <strong>chloroplasts</strong> are green.</p>\n')
+    b += one("lab-cheek", "cheek-cells-lm.jpg", 800, 828, [
+        dict(key="nucleus", label="nucleus", pt=(257, 377), side="r"),
+        dict(key="membrane", label="cell membrane", pt=(164, 392), side="l"),
+        dict(key="cytoplasm", label="cytoplasm", pt=(192, 142), side="l")],
+        "Human cheek cells (animal cells)", "Human cheek cells stained with methylene blue, light microscope.",
+        'Photo: <a href="%sHuman_Cheek_Cells_(Methylene_Blue_Stain).jpg">Fritzmann2002</a>, CC BY-SA 4.0, via Wikimedia Commons.' % C)
+    b += one("lab-onion", "onion-cells-lm.jpg", 650, 700, [
+        dict(key="nucleus", label="nucleus", pt=(206, 411), side="l"),
+        dict(key="wall", label="cell wall", pt=(210, 457), side="l"),
+        dict(key="vacuole", label="vacuole", pt=(330, 445), side="r")],
+        "Onion epidermis cells (plant cells)", "Onion epidermal cells, stained, light microscope. Notice: no chloroplasts.",
+        'Photo: <a href="%sOnion_skin_cells_under_a_microscope.jpg">Katekor1</a>, CC BY 4.0, via Wikimedia Commons.' % C)
+    b += one("lab-moss", "moss-leaf-cells-lm.jpg", 800, 510, [
+        dict(key="chloroplast", label="chloroplast", pt=(192, 117), side="l"),
+        dict(key="wall", label="cell wall", pt=(333, 238), side="r")],
+        "Moss leaf cells (plant cells)", "Leaf cells of a moss, light microscope (no stain needed).",
+        'Photo: <a href="%sBryum_capillare_leaf_cells_showing_chloroplasts.jpg">Des_Callaghan</a>, CC BY-SA 4.0, via Wikimedia Commons.' % C)
+    b += '<h2>Label real cells: electron micrographs</h2>\n'
+    b += ('<p>An electron microscope shows much more detail, so you can see the small organelles. Electron micrographs are black and white; '
+          'colour is sometimes added afterwards to make parts easier to see.</p>\n')
+    b += one("lab-liver", "liver-cell-em.jpg", 800, 712, [
+        dict(key="nucleus", label="nucleus", pt=(38, 267), side="l"),
+        dict(key="ribosomes", label="ribosomes", pt=(275, 525), side="l"),
+        dict(key="cytoplasm", label="cytoplasm", pt=(500, 117), side="r"),
+        dict(key="mitochondrion", label="mitochondrion", pt=(583, 254), side="r")],
+        "Part of a liver cell (animal cell)", "Part of a liver cell, electron micrograph. The nucleus (purple) and mitochondria (green) have been coloured. The tiny dark dots are ribosomes.",
+        'Image (cropped): <a href="%sHepatocito_TEM.png">Bochimoto H, Matsuno N, Ishihara Y et al.</a>, CC BY 4.0, via Wikimedia Commons.' % C)
+    b += one("lab-leaf", "leaf-cell-em.jpg", 800, 607, [
+        dict(key="wall", label="cell wall", pt=(208, 250), side="l"),
+        dict(key="chloroplast", label="chloroplast", pt=(458, 275), side="r"),
+        dict(key="vacuole", label="vacuole", pt=(583, 500), side="r")],
+        "Part of a leaf cell (plant cell)", "Part of a leaf cell, electron micrograph (about 12 000 times bigger than life). The lines inside the chloroplast are where light is absorbed.",
+        'Image: <a href="%sChloroplast_in_leaf_of_Anemone_sp_TEM_12000x.png">and3k and caper437</a>, CC BY-SA 3.0, via Wikimedia Commons.' % C)
+    return b
 
 
 # ================================================================== Lesson 1.1 What Are Cells? (1a, 1b, 1c)
@@ -35,6 +82,13 @@ def lesson1():
 
     b += '<h2>Seeing cells: light and electron microscopes</h2>\n'
     b += ('<p>Cells are too small to see with the naked eye, so we use microscopes. A photo taken through a microscope is called a <strong>micrograph</strong>.</p>\n'
+          '<div class="two-col scopes">'
+          '<figure class="pic"><img src="img/light-microscope.jpg" alt="A light microscope on a lab bench, with eyepieces, objective lenses, a stage and a lamp" loading="lazy">'
+          '<figcaption><strong>Light microscope</strong>: the kind in your school lab. Light passes through a thin specimen.</figcaption></figure>'
+          '<figure class="pic"><img src="img/electron-microscope.jpg" alt="A transmission electron microscope: a tall grey column about two metres high, with controls and a computer screen" loading="lazy">'
+          '<figcaption><strong>Electron microscope</strong>: a large machine in a research lab. A beam of electrons passes through the specimen.</figcaption></figure></div>\n'
+          '<p class="credit">Photos: <a href="https://commons.wikimedia.org/wiki/File:Optical_microscope_nikon_alphaphot.jpg">GcG (public domain, numbers removed)</a>; '
+          '<a href="https://commons.wikimedia.org/wiki/File:Transmission_electron_microscope_(1).jpg">Gannu03, CC BY-SA 4.0</a>, via Wikimedia Commons.</p>\n'
           '<table><tr><th></th><th>Light microscope</th><th>Electron microscope</th></tr>'
           '<tr><td>Uses</td><td>light</td><td>a beam of electrons</td></tr>'
           '<tr><td>Picture</td><td>light micrograph</td><td>electron micrograph</td></tr>'
@@ -49,11 +103,12 @@ def lesson1():
           '<li>Soak up extra liquid at the edge with filter paper. Look at the slide under <strong>low power</strong> first, then high power.</li></ol>'
           '<p>Animal cells (for example cheek cells) are stained with <strong>methylene blue</strong>. Follow your school&rsquo;s safety rules for this practical.</p></div>\n')
 
-    b += '<h2>Explore the cells</h2>\n<h3>A typical animal cell</h3>\n'
-    b += L.explorer("ex-animal", F.animal_cell(), F.INFO_ANIMAL, "A typical animal cell (not to scale). Click a part or a label.")
-    b += '<h3>A typical plant cell</h3>\n'
-    b += L.explorer("ex-plant", F.plant_cell(), F.INFO_PLANT, "A typical plant cell, e.g. a leaf cell (not to scale). Click a part or a label.")
-    b += '<p class="print-hide">Try <strong>Quiz me</strong> on each diagram: the labels disappear and you find the part that is named.</p>\n'
+    b += '<h2>Label the cells</h2>\n'
+    b += '<p>Drag each label to the right box. Then press <strong>Check my labels</strong>. Wrong labels turn red: move them and check again.</p>\n'
+    b += L.labeller("lab-animal", F.inner(F.animal_cell(labels=False)), 560, 320, F.ANIMAL_TARGETS, "A typical animal cell (not to scale).",
+                    extra=["cell wall", "chloroplast"], title="Label a typical animal cell.")
+    b += L.labeller("lab-plant", F.inner(F.plant_cell(labels=False, sap_text=False)), 560, 320, F.PLANT_TARGETS, "A typical plant cell, e.g. a leaf cell (not to scale).",
+                    title="Label a typical plant cell.")
 
     b += '<h2>Cell structures and their functions</h2>\n'
     b += ('<table><tr><th>Structure</th><th>Function</th><th>Found in</th></tr>'
@@ -98,13 +153,6 @@ def lesson1():
         ("Cytoplasm", 2, "Both have cytoplasm."),
     ])
 
-    b += '<h2>What you see under a light microscope</h2>\n'
-    b += ('<div class="three-col">'
-          '<div class="illus">%s<p class="fig-caption"><strong>Onion epidermis</strong> (iodine stain): cell walls and one nucleus per cell. No chloroplasts.</p></div>'
-          '<div class="illus">%s<p class="fig-caption"><strong>Cheek cells</strong> (methylene blue stain): thin, irregular cells, each with a nucleus. No cell wall.</p></div>'
-          '<div class="illus">%s<p class="fig-caption"><strong>Pondweed leaf</strong> (no stain needed): box-shaped cells full of green chloroplasts.</p></div></div>\n'
-          % (F.field("onion"), F.field("cheek"), F.field("leaf")))
-    b += '<p class="photo-note">Drawings of what you see, not to scale.</p>\n'
 
     b += '<h3>How to answer a &ldquo;compare&rdquo; question</h3>\n'
     b += ('<p>In an exam, <strong>compare</strong> means give <strong>similarities and differences</strong>. Write each difference as a matched pair, so both cells are mentioned.</p>\n'
@@ -113,6 +161,7 @@ def lesson1():
           '<div class="eg-box"><p class="q" style="color:#166534">Strong answer</p><p>&ldquo;Both cells have a nucleus, cytoplasm and a cell membrane. '
           'A plant cell has a cellulose cell wall, <em>but</em> an animal cell does not. A plant cell has one large central vacuole, <em>whereas</em> an animal cell has many small vacuoles.&rdquo;</p></div></div>\n')
 
+    b += MICROGRAPHS()
     b += '<h2>Check your understanding</h2>\n'
     b += L.mcq(1, "Which structure controls the movement of substances into and out of a cell?", ["Cell wall", "Cell membrane", "Cytoplasm", "Nucleus"], 1,
                "The cell membrane is partially permeable and controls what enters and leaves. The cell wall is fully permeable, so it does not control this.")
@@ -134,7 +183,9 @@ def lesson1():
     b += L.mcq(9, "Why do both plant and animal cells have mitochondria?", [
         "Both need to photosynthesise.", "Both need to release energy by aerobic respiration.", "Both need a fixed shape.", "Both store cell sap."], 1,
         "All living cells need energy, which is released by aerobic respiration in mitochondria.")
-    L.page("cells-1-1-what-are-cells", "1.1 What Are Cells?", REFS + "1a, 1b, 1c", b, JS, topic=TOPIC)
+    b += ('<p class="more-links"><strong>Exam practice:</strong> try the structured question comparing a <strong>liver cell</strong> and a <strong>root hair cell</strong> '
+          '(Section B, question 6) on the <a href="revision-01-cells.html#q6">Revision Questions</a> page.</p>\n')
+    L.page("cells-1-1-what-are-cells", "1.1 What Are Cells?", REFS + "1a, 1b, 1c", L.LABEL_CSS + b, JS, topic=TOPIC)
 
 
 # ================================================================== Lesson 1.2 How Are Cells Adapted to Their Functions? (1d)

@@ -28,9 +28,10 @@ def pt(text, *groups):
 
 
 def sb_block(i, qid, q, marks, g3=False):
-    tag = ' <span class="g3-badge small">Extended</span>' if g3 else ""
-    return ('<div class="sb" data-id="%s" data-marks="%d">\n  <p class="q">%d. %s%s <span class="marks">[%d mark%s]</span></p>\n'
-            '  <textarea rows="%d" aria-label="Your answer to question %d" placeholder="Write your answer here. Do not type your name or any personal details."></textarea>\n'
+    """i: the question number shown (a number, or text such as '6(a)')."""
+    tag = ' <span class="g3-badge small">G3 only</span>' if g3 else ""
+    return ('<div class="sb" data-id="%s" data-marks="%d">\n  <p class="q">%s. %s%s <span class="marks">[%d mark%s]</span></p>\n'
+            '  <textarea rows="%d" aria-label="Your answer to question %s" placeholder="Write your answer here. Do not type your name or any personal details."></textarea>\n'
             '  <div class="row print-hide"><button type="button" class="sb-check">Check against the mark scheme</button>'
             '<button type="button" class="sb-ai" hidden>Ask the AI tutor for feedback</button></div>\n'
             '  <div class="sb-out print-hide" hidden></div>\n</div>\n') % (qid, marks, i, q, tag, marks, "" if marks == 1 else "s", 3 + marks, i)
@@ -39,6 +40,8 @@ def sb_block(i, qid, q, marks, g3=False):
 CSS = """<style>
   .sb { border: 1px solid #cbd5e1; border-radius: 10px; padding: 1rem 1.1rem; margin: 1.2rem 0; background: #f8fafc; }
   .sb .q { font-weight: 600; margin-top: 0; }
+  .sb-stem { margin: 1.8rem 0 0.4rem; padding: 0.8rem 1.1rem; border-left: 5px solid #db2777; background: #fff7fb; border-radius: 6px; scroll-margin-top: 1rem; }
+  .sb-stem .q { margin: 0; } .sb-stem svg { margin: 0.6rem auto 0.2rem; }
   .sb .marks { color: #475569; font-weight: 500; white-space: nowrap; }
   .sb textarea { width: 100%; box-sizing: border-box; min-height: 7rem; padding: 0.6rem; border: 1px solid #94a3b8; border-radius: 8px; font: inherit; resize: vertical; background: #fff; }
   .sb .row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
@@ -104,10 +107,20 @@ def build(t):
     b += '<h2 id="section-a">Section A: Multiple choice (%d questions)</h2>\n<p>Choose the best answer. You can check each answer and try again.</p>\n<div class="sa-score print-hide" id="sa-score" aria-live="polite"></div>\n' % len(t["mcq"])
     for i, (q, opts, ans, expl) in enumerate(t["mcq"], 1):
         b += mcq_cycle(i, q, opts, ans, expl)
-    b += '<h2 id="section-b">Section B: Short answer and free response (%d questions)</h2>\n' % len(t["sb"])
+    nq = sum(1 for q in t["sb"] if q.get("stem") or not q.get("part"))
+    b += '<h2 id="section-b">Section B: Short answer, structured and free response (%d questions)</h2>\n' % nq
     b += '<p>Write your answer in the box and check it against the mark scheme. Use full sentences and show your working in calculations, with units. The mark scheme shows which points earn marks.</p>\n'
-    for i, q in enumerate(t["sb"], 1):
-        b += sb_block(i, q["id"], q["q"], q["marks"], q.get("g3", False))
+    n = 0
+    for q in t["sb"]:
+        if q.get("stem"):   # a structured question: the stem (text and figure) comes first, then parts (a), (b)...
+            n += 1
+            b += '<div class="sb-stem" id="q%d"><p class="q"><strong>%d.</strong> %s</p></div>\n' % (n, n, q["stem"])
+        if q.get("part"):
+            label = "%d%s" % (n, q["part"])
+        else:
+            n += 1
+            label = str(n)
+        b += sb_block(label, q["id"], q["q"], q["marks"], q.get("g3", False))
     sbj = {q["id"]: {"pts": q["pts"], "model": q["model"]} for q in t["sb"]}
     for q in t["sb"]:
         assert sum(1 for _ in q["pts"]) >= q["marks"], q["id"]

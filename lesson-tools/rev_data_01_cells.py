@@ -1,6 +1,7 @@
 """Revision questions for Topic 1: Cell Structure and Organisation (G2 and G3). Format: see the notes at the top of build_revision.py.
 Run:  python3 build_revision.py"""
 from build_revision import pt
+import topic01_figs as F
 
 TOPICS = [dict(
     file="revision-01-cells", short="Cell Structure and Organisation", topic="Cell Structure and Organisation",
@@ -56,5 +57,32 @@ TOPICS = [dict(
              pts=[pt("Root hair cell: long, narrow extension / root hair.", r"long|extension|narrow|hair"),
                   pt("This gives a large surface area for faster absorption of water and mineral salts.", r"surface area"),
                   pt("Muscle cell: many mitochondria release more energy (by aerobic respiration) for contraction.", r"mitochondri")]),
+        # Q6: structured question, liver cell vs root hair cell
+        dict(id="c6a", part="(a)", marks=2,
+             stem="Fig. 6.1 shows a liver cell (A) and a root hair cell (B). They are not drawn to scale.%s<p class=\"fig-caption\"><strong>Fig. 6.1</strong></p>" % F.liver_and_root_hair(),
+             q="Which cell, A or B, is a plant cell? Give one reason from Fig. 6.1.",
+             model="B is the plant cell, because it has a cell wall (and a large central vacuole).",
+             pts=[pt("Cell B.", r"(^|[^a-z])b([^a-z]|$)"),
+                  pt("Reason: it has a cell wall / a large (central) vacuole.", r"wall|large[^.]*vacuole|central vacuole")]),
+        dict(id="c6b", part="(b)", marks=2,
+             q="State <strong>two</strong> differences in structure between the liver cell and the root hair cell.",
+             model="The root hair cell has a cellulose cell wall but the liver cell does not. The root hair cell has one large central vacuole, whereas the liver cell has small, temporary vacuoles. "
+                   "(Also accept: the root hair cell has a long, narrow extension; the liver cell has many more mitochondria.)",
+             pts=[pt("Root hair cell has a cell wall; liver cell does not.", r"wall"),
+                  pt("Root hair cell has a large central vacuole; liver cell has small (temporary) vacuoles.", r"vacuole"),
+                  pt("Root hair cell has a long, narrow extension (root hair); liver cell does not.", r"extension|long|narrow|hair"),
+                  pt("Liver cell has many more mitochondria.", r"mitochondri")]),
+        dict(id="c6c", part="(c)", marks=2,
+             q="Liver cells contain many mitochondria. Suggest why.",
+             model="Mitochondria are the site of aerobic respiration. Liver cells are very active, so they need a lot of energy; many mitochondria release more energy for the cell's activities.",
+             pts=[pt("Mitochondria carry out (aerobic) respiration.", r"respir"),
+                  pt("To release (more) energy for the cell's many activities.", r"energy")]),
+        dict(id="c6d", part="(d)", marks=2,
+             q="Explain how the root hair cell in Fig. 6.1 is adapted to absorb water from the soil.",
+             model="It has a long, narrow extension, which increases its surface area to volume ratio, so water is absorbed faster. "
+                   "Its cell sap has a lower water potential than the soil water, so water enters by osmosis.",
+             pts=[pt("Long, narrow extension (root hair).", r"long|narrow|extension"),
+                  pt("Increases the surface area (to volume ratio) for faster absorption.", r"surface area"),
+                  pt("Cell sap has a lower water potential, so water enters by osmosis.", r"osmosis|water potential")]),
     ],
 )]

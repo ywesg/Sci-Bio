@@ -263,3 +263,126 @@ document.querySelectorAll('.sorter').forEach(function (s) {
   tally();
 });
 """
+
+
+# ------------------------------------------------------------------ drag-and-drop labelling
+def labeller(lid, svg_inner, vw, vh, targets, caption, extra=(), title="Label the diagram", width=560):
+    """Drag-and-drop labelling. svg_inner: the drawing or <image> (no text labels) in a viewBox of vw x vh.
+    targets: list of dict(key, label, pt=(x, y) the part, box=(x, y) where the label box goes, side='l'|'r'|'c').
+    Leader lines run from the box to the part. extra: distractor labels for the word bank.
+    Students drag a label onto a box (or tap a label, then tap a box). Works with mouse, touch and keyboard.
+    In print the boxes are blank and the word bank is listed, so the PDF is a labelling worksheet. Needs LABEL_JS."""
+    import random
+    lines = ""
+    boxes = ""
+    for i, t in enumerate(targets):
+        (px, py), (bx, by), side = t["pt"], t["box"], t.get("side", "l")
+        lines += ('<line x1="%s" y1="%s" x2="%s" y2="%s" stroke="#334155" stroke-width="1.5"/><circle cx="%s" cy="%s" r="3" fill="#0f172a" stroke="#fff" stroke-width="1"/>'
+                  % (bx, by, px, py, px, py))
+        pos = "left:%.2f%%;top:%.2f%%" % (100.0 * bx / vw, 100.0 * by / vh)
+        boxes += ('<button type="button" class="drop %s" data-ans="%s" style="%s" aria-label="Empty label box %d"><span class="n">%d</span><span class="v"></span></button>'
+                  % (side, t["key"], pos, i + 1, i + 1))
+    words = [(t["key"], t["label"]) for t in targets] + [("x%d" % i, w) for i, w in enumerate(extra)]
+    random.Random(lid).shuffle(words)
+    bank = "".join('<button type="button" class="chip" data-key="%s">%s</button>' % (k, w) for k, w in words)
+    return ('<div class="labeller" id="%s">\n  <p class="lab-title"><strong>%s</strong> <span class="print-hide">Drag each label into a box (or tap a label, then tap a box).</span></p>\n'
+            '  <div class="bank" aria-label="Labels">%s</div>\n'
+            '  <div class="lab-stage" style="max-width:%dpx"><svg viewBox="0 0 %d %d" role="img" aria-label="%s">%s%s</svg>%s</div>\n'
+            '  <div class="lab-ctl print-hide"><button type="button" data-act="check">Check my labels</button><button type="button" data-act="show">Show answers</button>'
+            '<button type="button" data-act="reset">Start again</button><span class="lab-score" aria-live="polite"></span></div>\n'
+            '  <p class="fig-caption">%s</p>\n</div>\n'
+            % (lid, title, bank, width, vw, vh, html.escape(caption, quote=True), svg_inner, lines, boxes, caption))
+
+
+LABEL_CSS = """<style>
+  .labeller { margin: 1.25rem 0; border: 1px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 0.9rem; background: #fff; }
+  .lab-title { margin: 0 0 0.5rem; }
+  .bank { display: flex; flex-wrap: wrap; gap: 0.45rem; padding: 0.6rem; background: #f0fdfa; border: 1px dashed #5eead4; border-radius: 10px; min-height: 2.9rem; }
+  .chip { touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; min-height: 2.4rem; padding: 0 0.85rem; border: 1px solid #0f766e; border-radius: 999px; background: #fff; color: #134e4a; font: 700 0.95rem "Source Sans 3", system-ui, sans-serif; }
+  .chip.sel { background: #134e4a; color: #fff; }
+  .chip.dragging { position: fixed; z-index: 50; pointer-events: none; box-shadow: 0 6px 18px rgba(0,0,0,0.25); cursor: grabbing; }
+  .lab-stage { position: relative; margin: 0.8rem auto 0.3rem; }
+  .lab-stage svg { display: block; width: 100%; height: auto; margin: 0; }
+  .drop { position: absolute; transform: translate(-100%, -50%); min-width: 7.4em; max-width: 12em; min-height: 2em; padding: 0.15rem 0.45rem; border: 2px dashed #64748b; border-radius: 8px; background: rgba(255,255,255,0.94);
+    font: 700 clamp(0.6rem, 1.7vw, 0.92rem)/1.15 "Source Sans 3", system-ui, sans-serif; color: #134e4a; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 0.3rem; }
+  .drop.r { transform: translate(0, -50%); } .drop.c { transform: translate(-50%, -50%); }
+  .drop .n { flex: 0 0 auto; width: 1.3em; height: 1.3em; border-radius: 50%; background: #e2e8f0; color: #334155; font-size: 0.8em; display: inline-flex; align-items: center; justify-content: center; }
+  .drop.filled { border-style: solid; border-color: #0f766e; }
+  .drop .v { flex: 1 1 auto; min-width: 0; }
+  .drop .chip { min-height: 0; padding: 0; border: 0; border-radius: 0; background: none; font: inherit; color: inherit; text-align: left; white-space: nowrap; }
+  .drop .chip.sel { background: #134e4a; color: #fff; border-radius: 4px; padding: 0 0.2rem; }
+  .drop.over, .drop.armed:hover { background: #ccfbf1; border-color: #0f766e; }
+  .drop.ok { border-color: #16a34a; background: #dcfce7; } .drop.no { border-color: #dc2626; background: #fee2e2; }
+  .lab-ctl { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.4rem; }
+  .lab-ctl button { min-height: 2.6rem; padding: 0 1rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font-weight: 700; font-family: inherit; font-size: 0.95rem; cursor: pointer; }
+  .lab-ctl button[data-act=check] { background: #0f766e; border-color: #0f766e; color: #fff; }
+  .lab-score { font-weight: 700; color: #134e4a; }
+  .scopes img { height: 300px; object-fit: contain; background: #fff; }
+  .credit { font-size: 0.8rem; color: #64748b; text-align: center; margin: 0.2rem 0 0; }
+  .credit a { color: #64748b; }
+  @media (max-width: 560px) { .labeller { padding: 0.7rem 0.4rem; } .lab-stage { width: 74%; } .drop { min-width: 0; width: max-content; max-width: none; padding: 0.1rem 0.25rem; font-size: 0.62rem; } .drop .n { display: none; } .drop:empty, .drop:not(.filled) { min-width: 4.6em; } }
+  @media print { .labeller { border: none; padding: 0; break-inside: avoid; } .labeller .bank .chip { display: inline-block !important; min-height: 0; padding: 0.1rem 0.6rem; } .labeller .drop { display: flex !important; } .chip { cursor: default; } .drop .v { visibility: hidden; } .drop { border: 1.5px solid #000; background: #fff; } }
+</style>
+"""
+
+LABEL_JS = r"""
+document.querySelectorAll('.labeller').forEach(function (lab) {
+  var bank = lab.querySelector('.bank'), drops = lab.querySelectorAll('.drop'), score = lab.querySelector('.lab-score'), sel = null;
+  function clearMarks() { drops.forEach(function (d) { d.classList.remove('ok', 'no'); }); score.textContent = ''; }
+  function chipIn(d) { return d.querySelector('.chip'); }
+  function place(chip, d) {
+    clearMarks();
+    if (!d) { bank.appendChild(chip); }
+    else { var old = chipIn(d); if (old && old !== chip) bank.appendChild(old); d.querySelector('.v').appendChild(chip); }
+    drops.forEach(function (x) { x.classList.toggle('filled', !!chipIn(x)); x.setAttribute('aria-label', chipIn(x) ? 'Label box: ' + chipIn(x).textContent : 'Empty label box'); });
+    select(null);
+  }
+  function select(c) { if (sel) sel.classList.remove('sel'); sel = c; if (c) c.classList.add('sel'); drops.forEach(function (d) { d.classList.toggle('armed', !!c); }); }
+  lab.addEventListener('click', function (e) {
+    var chip = e.target.closest('.chip'), d = e.target.closest('.drop');
+    if (chip && !lab.dataset.dragged) {
+      if (chip.parentNode.classList.contains('v') && !sel) { place(chip, null); return; }   // tap a placed label to send it back
+      if (sel === chip) { select(null); return; }
+      if (sel && d) { place(sel, d); return; }
+      select(chip); e.stopPropagation(); return;
+    }
+    if (d && sel) place(sel, d);
+    else if (e.target.closest('.bank') && sel && sel.parentNode.classList.contains('v')) place(sel, null);
+  });
+  // drag with mouse or finger
+  lab.querySelectorAll('.chip').forEach(function (chip) {
+    chip.addEventListener('pointerdown', function (e) {
+      if (e.button) return;
+      var sx = e.clientX, sy = e.clientY, moving = false, ghost = null, over = null;
+      function move(ev) {
+        if (!moving && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 6) return;
+        if (!moving) { moving = true; ghost = chip.cloneNode(true); ghost.classList.add('dragging'); document.body.appendChild(ghost); chip.style.opacity = '0.35'; }
+        ghost.style.left = (ev.clientX - ghost.offsetWidth / 2) + 'px'; ghost.style.top = (ev.clientY - ghost.offsetHeight / 2) + 'px';
+        var el = document.elementFromPoint(ev.clientX, ev.clientY), d = el && el.closest('.drop');
+        if (d && !lab.contains(d)) d = null;
+        if (over !== d) { if (over) over.classList.remove('over'); over = d; if (d) d.classList.add('over'); }
+        ev.preventDefault();
+      }
+      function up(ev) {
+        document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up);
+        if (!moving) return;
+        ghost.remove(); chip.style.opacity = ''; if (over) over.classList.remove('over');
+        var el = document.elementFromPoint(ev.clientX, ev.clientY), inBank = el && el.closest('.bank') === bank;
+        if (over) place(chip, over); else if (inBank) place(chip, null);
+        lab.dataset.dragged = '1'; setTimeout(function () { delete lab.dataset.dragged; }, 50);
+      }
+      document.addEventListener('pointermove', move, { passive: false }); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+    });
+  });
+  lab.querySelector('[data-act=check]').addEventListener('click', function () {
+    var ok = 0, filled = 0;
+    drops.forEach(function (d) { var c = chipIn(d); d.classList.remove('ok', 'no'); if (!c) return; filled++; var good = c.dataset.key === d.dataset.ans; if (good) ok++; d.classList.add(good ? 'ok' : 'no'); });
+    score.textContent = ok + ' of ' + drops.length + ' correct' + (filled < drops.length ? ' (' + (drops.length - filled) + ' box' + (drops.length - filled === 1 ? '' : 'es') + ' still empty)' : '') + (ok === drops.length ? '. Excellent!' : ok < filled ? '. Move the red ones and check again.' : '. Fill the empty boxes.');
+  });
+  lab.querySelector('[data-act=show]').addEventListener('click', function () {
+    drops.forEach(function (d) { var c = lab.querySelector('.chip[data-key="' + d.dataset.ans + '"]'); if (c) place(c, d); });
+    lab.querySelector('[data-act=check]').click();
+  });
+  lab.querySelector('[data-act=reset]').addEventListener('click', function () { lab.querySelectorAll('.drop .chip').forEach(function (c) { bank.appendChild(c); }); place(bank.firstChild, null); bank.insertBefore(bank.lastChild, bank.firstChild); clearMarks(); });
+});
+"""
