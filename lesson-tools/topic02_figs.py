@@ -398,3 +398,73 @@ def wilting():
             b += '<path d="M%d 110 C%d 128 %d 140 %d 146 C%d 136 %d 122 %d 110 Z" fill="#b5a642" stroke="#713f12" stroke-width="2"/>' % (cx + 38, cx + 52, cx + 62, cx + 66, cx + 70, cx + 58, cx + 38)
         b += text(x + 70, 285, "(a) Turgid: firm and upright" if not wilt else "(b) Lost turgor: wilting", attrs=SMALL, weight=1)
     return svg(420, 295, b, "Two seedlings in jars of soil. (a) Its cells are turgid, so the stem and leaves are firm and upright. (b) Its cells have lost turgor, so the stem bends over and the leaves droop", 480)
+
+
+def intestine():
+    """Absorption in the small intestine: digested food diffuses through the one-cell-thick lining into a blood capillary."""
+    rng = random.Random(41)
+    b = ARROW_DEFS % ("ag2", "#15803d") + ARROW_DEFS % ("aa2", "#7c3aed")
+    b += '<rect x="20" y="20" width="250" height="300" fill="#fef9c3"/>'                                        # inside the small intestine
+    b += '<rect x="270" y="20" width="62" height="300" fill="#fde7e1" stroke="#9a3412" stroke-width="1.5"/>'   # lining cells
+    for y in range(20, 320, 60):
+        b += '<line x1="270" y1="%d" x2="332" y2="%d" stroke="#9a3412" stroke-width="1.5"/>' % (y, y)
+        b += '<ellipse cx="305" cy="%d" rx="9" ry="7" fill="#ebe3f6" stroke="%s" stroke-width="1.2"/>' % (y + 30, LINE)
+        for k in range(6):   # microvilli: tiny folds facing the food
+            b += '<rect x="262" y="%d" width="8" height="5" rx="2.5" fill="#fde7e1" stroke="#9a3412" stroke-width="1"/>' % (y + 4 + k * 9)
+    b += '<rect x="346" y="20" width="12" height="300" fill="#fda4af"/><rect x="358" y="20" width="162" height="300" fill="#fee2e2"/>'   # capillary
+    for (x, y) in ((430, 80), (470, 200), (420, 280)):
+        b += '<ellipse cx="%d" cy="%d" rx="36" ry="21" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/><ellipse cx="%d" cy="%d" rx="15" ry="8" fill="#ef4444"/>' % (x, y, x, y)
+    for _ in range(18):
+        x, y = rng.uniform(35, 250), rng.uniform(35, 305)
+        b += '<polygon points="%s" fill="#16a34a"/>' % " ".join("%.1f,%.1f" % (x + 5 * __import__("math").cos(a * 1.0472), y + 5 * __import__("math").sin(a * 1.0472)) for a in range(6))
+    b += dots(rng, 14, 35, 250, 35, 305, 4.5, "#7c3aed")
+    b += dots(rng, 4, 370, 515, 30, 310, 4.5, "#7c3aed")
+    for _ in range(4):
+        x, y = rng.uniform(370, 515), rng.uniform(30, 310)
+        b += '<polygon points="%s" fill="#16a34a"/>' % " ".join("%.1f,%.1f" % (x + 5 * __import__("math").cos(a * 1.0472), y + 5 * __import__("math").sin(a * 1.0472)) for a in range(6))
+    b += arrow(150, 120, 420, 140, "ag2", "#15803d", 4) + arrow(150, 240, 420, 236, "aa2", "#7c3aed", 4)
+    b += '<text x="34" y="106" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#15803d" %s>glucose diffuses into the blood</text>' % HALO
+    b += '<text x="34" y="226" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#6d28d9" %s>amino acids diffuse into the blood</text>' % HALO
+    b += text(140, 345, "inside the small intestine", weight=1) + text(436, 345, "blood capillary", weight=1)
+    b += lbl("lining of the small intestine (one cell thick)", 300, 375, 300, 300, "middle")
+    b += ('<polygon points="%s" fill="#16a34a"/><text x="572" y="205" %s>glucose</text>'
+          '<circle cx="560" cy="226" r="4.5" fill="#7c3aed"/><text x="572" y="231" %s>amino acid</text>'
+          % (" ".join("%.1f,%.1f" % (560 + 5 * __import__("math").cos(a * 1.0472), 200 + 5 * __import__("math").sin(a * 1.0472)) for a in range(6)), SMALL, SMALL))
+    b += '<line x1="458" y1="200" x2="545" y2="150" stroke="#334155" stroke-width="1.3"/><text x="550" y="150" %s>red blood cell</text>' % FONT
+    return svg(680, 390, b, "Close-up of the wall of the small intestine. Digested food, glucose and amino acids, diffuses from inside the small intestine through a lining one cell thick into a blood capillary", 680)
+
+
+def leaf_stomata():
+    """Section through a leaf: carbon dioxide diffuses in through a stoma for photosynthesis; oxygen diffuses out."""
+    rng = random.Random(43)
+    b = ARROW_DEFS % ("lc", "#111827") + ARROW_DEFS % ("lo", "#dc2626")
+    b += '<rect x="0" y="0" width="520" height="380" fill="#f8fafc"/>'
+    b += '<rect x="20" y="20" width="480" height="290" fill="#ecfccb"/>'
+    for x in range(20, 500, 48):   # upper epidermis
+        b += '<rect x="%d" y="20" width="48" height="26" fill="#f7fee7" stroke="#3f6212" stroke-width="1.5"/>' % x
+    for x in range(20, 500, 30):   # palisade cells with chloroplasts
+        b += '<rect x="%d" y="48" width="28" height="92" rx="8" fill="#d9f99d" stroke="#3f6212" stroke-width="1.5"/>' % (x + 1)
+        for k in range(4):
+            b += '<ellipse cx="%d" cy="%d" rx="4" ry="6" fill="#4d7c0f"/>' % (x + 8 + (k % 2) * 12, 62 + k * 20)
+    for (x, y, rx, ry) in ((60, 175, 32, 22), (135, 200, 30, 24), (220, 172, 34, 22), (300, 205, 30, 22), (380, 172, 32, 24), (455, 200, 30, 22),
+                           (50, 250, 28, 20), (125, 262, 26, 18), (205, 245, 30, 20), (450, 255, 28, 20), (395, 262, 22, 16)):
+        b += '<ellipse cx="%d" cy="%d" rx="%d" ry="%d" fill="#d9f99d" stroke="#3f6212" stroke-width="1.5"/>' % (x, y, rx, ry)
+        b += '<ellipse cx="%d" cy="%d" rx="3.5" ry="5" fill="#4d7c0f"/><ellipse cx="%d" cy="%d" rx="3.5" ry="5" fill="#4d7c0f"/>' % (x - 10, y - 4, x + 10, y + 4)
+    for x in range(20, 500, 48):   # lower epidermis with a gap for the stoma
+        if not 260 <= x <= 308:
+            b += '<rect x="%d" y="284" width="48" height="26" fill="#f7fee7" stroke="#3f6212" stroke-width="1.5"/>' % x
+    b += '<path d="M260 284 q24 -6 30 13 q-6 19 -30 13 z" fill="#bef264" stroke="#3f6212" stroke-width="2"/>'   # guard cells
+    b += '<path d="M356 284 q-24 -6 -30 13 q6 19 30 13 z" fill="#bef264" stroke="#3f6212" stroke-width="2"/>'
+    b += dots(rng, 7, 120, 420, 325, 370, 4.5, "#111827") + dots(rng, 3, 120, 420, 325, 370, 4.5, "#dc2626")
+    b += '<path d="M300 365 C300 330 306 300 300 270 C292 240 250 220 180 150" fill="none" stroke="#111827" stroke-width="4" marker-end="url(#lc)"/>'
+    b += '<path d="M330 150 C370 200 330 250 318 280 C312 300 318 330 340 362" fill="none" stroke="#dc2626" stroke-width="4" marker-end="url(#lo)"/>'
+    b += '<text x="40" y="352" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#111827" %s>carbon dioxide diffuses in</text>' % HALO
+    b += '<text x="350" y="352" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#b91c1c" %s>oxygen diffuses out</text>' % HALO
+    b += '<g %s>' % SMALL
+    b += lbl("upper epidermis", 530, 36, 496, 33, "start") + lbl("palisade cell (photosynthesis)", 530, 96, 496, 96, "start")
+    b += lbl("air space", 530, 232, 340, 232, "start") + lbl("spongy cell", 530, 182, 482, 200, "start")
+    b += lbl("guard cell", 530, 290, 352, 297, "start") + lbl("stoma (pore)", 530, 322, 312, 300, "start")
+    b += '</g>'
+    b += ('<circle cx="560" cy="350" r="4.5" fill="#111827"/><text x="572" y="355" %s>carbon dioxide</text>'
+          '<circle cx="560" cy="372" r="4.5" fill="#dc2626"/><text x="572" y="377" %s>oxygen</text>' % (SMALL, SMALL))
+    return svg(750, 385, b, "Section through a leaf. In the light, carbon dioxide from the air diffuses in through a stoma on the underside of the leaf, through the air spaces to the palisade cells, which use it in photosynthesis. Oxygen made in photosynthesis diffuses out through the stoma", 700)

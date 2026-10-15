@@ -111,89 +111,109 @@ def lesson1():
                '<i style="background:#e5e7eb;border:1px solid #64748b"></i>starch molecule (large) <i style="background:#92400e"></i>iodine molecule (small)',
                only="Only the small iodine molecules can pass through the tubing. Starch molecules are too large to pass through.", extra_class=" g3-only", height=380)
 
-    b += '<h2>Factors that affect the rate of diffusion</h2>\n'
-    b += ('<p>How fast a substance diffuses depends on:</p>\n'
-          '<div class="flow"><span>concentration gradient</span><span>diffusion distance</span><span>surface area to volume ratio</span></div>\n')
-    b += ('<h3>1. Concentration gradient</h3>\n<p>The steeper the concentration gradient, the faster the rate of diffusion (see above). '
-          'When there is no concentration gradient, there is no net diffusion.</p>\n')
-    b += ('<h3>2. Diffusion distance</h3>\n<p>The distance a substance has to travel is the <strong>diffusion distance</strong>. '
-          'The <strong>shorter</strong> the diffusion distance, the less time the substance needs to get there, so the <strong>faster</strong> the rate of diffusion.</p>\n')
-    b += ('<p>A cell membrane is not like the membrane in Fig. 2.3: it is <strong>partially permeable</strong>. It lets some substances through but not others. '
-          'Small molecules such as <strong>oxygen</strong> and <strong>carbon dioxide</strong> pass through easily; large molecules such as <strong>proteins</strong> cannot. '
-          'Diffusion is an important way for oxygen and carbon dioxide to move into and out of cells.</p>\n')
-
-    b += '<h3>Diffusion in humans and plants</h3>\n'
-    b += ('<p><strong>Gas exchange in the lungs.</strong> Oxygen and carbon dioxide are exchanged in the lungs by diffusion. '
-          'The air in the lungs has a high concentration of oxygen, and the blood arriving there has a low concentration. '
-          'Oxygen diffuses from the air space, through a very thin wall, into the red blood cells. Carbon dioxide diffuses the other way, from the blood into the air space, and is breathed out.</p>\n')
-    b += L.fig(F.alveolus(), "Gas exchange between an air space in the lung and the blood.", "2.4(a)")
-    b += ('<p><strong>Gas exchange in plant cells.</strong> Plant cells such as root hair cells also take in oxygen and get rid of carbon dioxide by diffusion. '
-          'Oxygen diffuses in from the air spaces in the soil, and carbon dioxide diffuses out.</p>\n')
-    b += L.fig(F.root_hair_gas(), "Gas exchange between a root hair cell and the air in the soil.", "2.4(b)")
-    b += ('<p>In both cases the diffusion distance is <strong>short</strong>, so diffusion happens quickly.</p>\n')
-    b += ('<p><strong>Taking in nutrients.</strong> Dissolved substances (solutes) can diffuse too. In the <strong>small intestine</strong>, digested food such as '
-          '<strong>glucose</strong> and <strong>amino acids</strong> diffuses into the blood capillaries in the wall of the intestine, and the blood carries it around the body. '
-          'Root hair cells take in some mineral salts from the soil in the same way.</p>\n'
-          '<p class="keyidea">A <strong>solute</strong> is a substance that is dissolved in another substance (the <strong>solvent</strong>). Together they make a <strong>solution</strong>.</p>\n')
-    b += ('<div class="sidebox"><h4>Big idea: systems</h4><p>Living things depend on diffusion to exchange gases with their surroundings. '
-          'Without it, cells would not get the oxygen they need to stay alive. You will meet gas exchange again in the topics on respiration in humans and on plants.</p></div>\n')
-    b += L.labeller("lab-alv", F.alveolus(labels=False), F.ALV_VB[0], F.ALV_VB[1], F.ALV_TARGETS, "Gas exchange in the lungs.",
-                    extra=["cell wall", "chloroplast"], title="Label gas exchange in the lungs.", width=680)
-
-    b += '<h3>3. Surface area to volume ratio</h3>\n'
-    b += ('<p><em>Why are cells usually so small? Why are large organisms made of many small cells instead of one giant cell?</em></p>\n'
-          '<p>The answer is about how fast materials can cross the cell membrane. A cell must take in oxygen and nutrients, and get rid of waste, fast enough to stay alive.</p>\n'
-          '<p>Substances enter and leave a cell through its surface, so the rate depends on how big the cell membrane is: the cell&rsquo;s <strong>surface area</strong>. '
-          'For two cells with the same volume, the one with the larger surface area takes substances in faster. '
-          'Comparing a cell&rsquo;s surface area with its volume gives its <strong>surface area to volume ratio</strong> (SA&nbsp;:&nbsp;V).</p>\n'
-          '<p class="keyidea"><strong>Key idea:</strong> the <strong>greater</strong> the surface area to volume ratio of a cell, the <strong>faster</strong> substances move into and out of it.</p>\n'
-          '<p>As a cell gets bigger, its volume grows faster than its surface area, so its SA&nbsp;:&nbsp;V gets smaller. A very large cell could not take in oxygen fast enough for all of its volume. '
-          'That is why cells stay small, and why specialised cells such as root hair cells and red blood cells have shapes that give them a large SA&nbsp;:&nbsp;V.</p>\n'
-          '<p class="more-links"><strong>Try it again:</strong> the shape builder and the agar-cube experiment on SA&nbsp;:&nbsp;V are in '
-          '<a href="cells-1-2-cell-adaptations.html#surface-area-to-volume-ratio">Lesson 1.2</a>.</p>\n')
-    b += L.calc("A", "Cube X has sides of 1 cm: surface area 6 cm&sup2;, volume 1 cm&sup3;. Cube Y has sides of 3 cm: surface area 54 cm&sup2;, volume 27 cm&sup3;. "
-                "Work out the SA : V of cube Y (as a number : 1).", 2, 0.01, ": 1",
-                "54 : 27 = 2 : 1. Cube X has 6 : 1, so the smaller cube has the greater SA : V, and substances diffuse into it relatively faster.")
-
-    b += L.sorter("sort-rate", "Try it: faster or slower diffusion?", "Choose a button for each change.", ["Faster", "Slower"], [
-        ("The concentration gradient becomes steeper", 0, "A bigger difference in concentration means a faster rate."),
-        ("The diffusion distance is longer", 1, "Particles take longer to travel further."),
-        ("The cell has a larger surface area to volume ratio", 0, "More surface for each unit of volume, so substances move in and out faster."),
-        ("The concentrations on both sides become equal", 1, "No concentration gradient: no net diffusion."),
-        ("The wall between the air space and the blood is thinner", 0, "A thinner wall means a shorter diffusion distance."),
-        ("The cell grows much bigger", 1, "Its SA : V becomes smaller."),
-    ])
-
-    b += '<h2>Check your understanding</h2>\n'
-    b += L.mcq(1, "Which statement describes diffusion?", [
+    b += '<h2>Quick check</h2>\n'
+    b += L.mcq("Q1", "Which statement describes diffusion?", [
         "Net movement of particles from a region of lower concentration to a region of higher concentration",
         "Net movement of particles from a region of higher concentration to a region of lower concentration",
         "Movement of water only, through a partially permeable membrane",
         "Movement of particles only through a membrane"], 1,
         "Diffusion is net movement down a concentration gradient: from higher to lower concentration. It can happen with or without a membrane.")
-    b += L.mcq(2, "A crystal of copper(II) sulfate is left in a gas jar of water. After many days the water is evenly blue. Which is correct?", [
+    b += L.mcq("Q2", "Region X has a high concentration of a substance and region Y has a low concentration. In which direction is the net movement of the substance?", [
+        "From Y to X", "From X to Y", "There is no movement", "Equally in both directions"], 1,
+        "Net movement is down the concentration gradient: from the higher concentration (X) to the lower concentration (Y).")
+    b += L.mcq("Q3", "A crystal of copper(II) sulfate is left in a gas jar of water. After many days the water is evenly blue. Which is correct?", [
         "The copper(II) sulfate particles have stopped moving.", "There is no net movement, but the particles are still moving.",
         "The particles are now moving towards the bottom of the jar.", "The water has turned into copper(II) sulfate."], 1,
         "Once the concentration is the same everywhere there is no net movement, but the particles keep moving at random.")
-    b += L.mcq(3, "Which change makes diffusion faster?", [
-        "A shallower concentration gradient", "A longer diffusion distance", "A smaller surface area to volume ratio", "A steeper concentration gradient"], 3,
-        "The steeper the concentration gradient, the faster the rate of diffusion.")
-    b += L.mcq(4, "In the lungs, in which direction does oxygen diffuse?", [
-        "From the blood into the air space", "From the air space into the blood", "It does not move", "From the red blood cells into the air space"], 1,
-        "Oxygen is at a higher concentration in the air space than in the blood, so it diffuses into the blood.")
-    b += L.mcq(5, "Which substance cannot pass through a cell membrane?", ["Oxygen", "Carbon dioxide", "Water", "Protein"], 3,
-               "The cell membrane is partially permeable. Proteins are large molecules and cannot pass through.")
-    b += L.mcq(6, "How do glucose and amino acids get from the small intestine into the blood?", [
-        "By diffusion into the blood capillaries", "By photosynthesis", "By breathing", "They stay in the small intestine"], 0,
-        "Digested food such as glucose and amino acids diffuses into the blood capillaries in the wall of the small intestine.")
-    b += L.mcq(7, "Why are most cells very small?", [
-        "Small cells have a smaller surface area to volume ratio.", "Small cells have a larger surface area to volume ratio, so substances can move in and out fast enough.",
-        "Small cells do not need oxygen.", "Small cells have no cell membrane."], 1,
-        "A small cell has a large SA : V, so substances can enter and leave it quickly enough to keep it alive.")
-    b += L.mcq(8, "A beaker is divided by a permeable membrane. The left side has more potassium nitrate; the right side has more copper(II) sulfate. What happens?", [
+    b += L.mcq("Q4", "A beaker is divided by a permeable membrane. The left side has more potassium nitrate; the right side has more copper(II) sulfate. What happens?", [
         "Only potassium nitrate moves.", "Potassium nitrate moves to the right and copper(II) sulfate moves to the left.",
         "Both substances move to the left.", "Nothing moves, because they block each other."], 1,
         "Each substance diffuses down its own concentration gradient, independently of the other.")
+
+    b += '<h2>Factors that affect the rate of diffusion</h2>\n'
+    b += ('<p>How fast a substance diffuses depends on three factors:</p>\n'
+          '<div class="flow"><span>1. concentration gradient</span><span>2. diffusion distance</span><span>3. surface area to volume ratio</span></div>\n')
+    b += ('<h3>1. Concentration gradient</h3>\n<p>The <strong>steeper</strong> the concentration gradient (the bigger the difference in concentration between the two regions), '
+          'the <strong>faster</strong> the rate of diffusion. When there is no concentration gradient, there is no net diffusion.</p>\n')
+    b += ('<h3>2. Diffusion distance</h3>\n<p>The distance a substance has to travel is the <strong>diffusion distance</strong>. '
+          'The <strong>shorter</strong> the diffusion distance, the less time the substance needs to get there, so the <strong>faster</strong> the rate of diffusion.</p>\n')
+    b += '<h3>3. Surface area to volume ratio</h3>\n'
+    b += ('<p>Substances enter and leave a cell through its surface (the cell membrane), so the rate of diffusion depends on the cell&rsquo;s <strong>surface area</strong>. '
+          'For two cells with the same volume, the one with the larger surface area takes substances in faster. '
+          'Comparing a cell&rsquo;s surface area with its volume gives its <strong>surface area to volume ratio</strong> (SA&nbsp;:&nbsp;V).</p>\n'
+          '<p class="keyidea">The <strong>greater</strong> the surface area to volume ratio, the <strong>faster</strong> the rate of diffusion into and out of the cell.</p>\n'
+          '<p>As a cell gets bigger, its volume grows faster than its surface area, so its SA&nbsp;:&nbsp;V gets smaller. This is why cells are usually small, '
+          'and why a large organism is made of many small cells rather than one giant cell.</p>\n'
+          '<p class="more-links"><strong>Try it again:</strong> the shape builder and the agar-cube experiment on SA&nbsp;:&nbsp;V are in '
+          '<a href="cells-1-2-cell-adaptations.html#surface-area-to-volume-ratio">Lesson 1.2</a>.</p>\n')
+    b += L.calc("A", "Cube X has sides of 1 cm: surface area 6 cm&sup2;, volume 1 cm&sup3;. Cube Y has sides of 3 cm: surface area 54 cm&sup2;, volume 27 cm&sup3;. "
+                "Work out the SA : V of cube Y (as a number : 1).", 2, 0.01, ": 1",
+                "54 : 27 = 2 : 1. Cube X has 6 : 1, so the smaller cube has the greater SA : V, and substances diffuse into it relatively faster.")
+    b += L.sorter("sort-rate", "Try it: faster or slower diffusion?", "Choose a button for each change.", ["Faster", "Slower"], [
+        ("The concentration gradient becomes steeper", 0, "A bigger difference in concentration means a faster rate."),
+        ("The diffusion distance is longer", 1, "Particles take longer to travel further."),
+        ("The cell has a larger surface area to volume ratio", 0, "More surface for each unit of volume, so substances move in and out faster."),
+        ("The concentrations on both sides become equal", 1, "No concentration gradient: no net diffusion."),
+        ("The diffusion distance becomes shorter", 0, "Particles have less distance to travel."),
+        ("The cell grows much bigger", 1, "Its SA : V becomes smaller."),
+    ])
+
+    b += '<h2>Diffusion in living things</h2>\n'
+    b += ('<p>The cell membrane is <strong>partially permeable</strong>: it lets some substances through but not others. '
+          'Small molecules such as <strong>oxygen</strong>, <strong>carbon dioxide</strong>, <strong>glucose</strong> and <strong>amino acids</strong> can pass through; large molecules such as proteins cannot. '
+          'Living things use diffusion to take in what they need and get rid of what they do not. Notice how each example has a <strong>short diffusion distance</strong> or a <strong>large surface area</strong>.</p>\n')
+    b += '<h3>In humans</h3>\n'
+    b += ('<p><strong>1. Gas exchange in the lungs.</strong> The air in the lungs has a high concentration of oxygen, and the blood arriving there has a low concentration. '
+          'Oxygen diffuses from the air space, through a very thin wall, into the red blood cells. Carbon dioxide diffuses the other way, from the blood into the air space, and is breathed out. '
+          'The wall is only <strong>one cell thick</strong>, so the diffusion distance is short and diffusion is fast.</p>\n')
+    b += L.fig(F.alveolus(), "Gas exchange between an air space in the lung and the blood.", "2.4")
+    b += L.labeller("lab-alv", F.alveolus(labels=False), F.ALV_VB[0], F.ALV_VB[1], F.ALV_TARGETS, "Gas exchange in the lungs.",
+                    extra=["cell wall", "chloroplast"], title="Label gas exchange in the lungs.", width=680)
+    b += ('<p><strong>2. Absorption of digested food in the small intestine.</strong> After digestion, there is a high concentration of small food molecules, such as '
+          '<strong>glucose</strong> and <strong>amino acids</strong>, inside the small intestine, and a lower concentration in the blood. '
+          'They diffuse through the lining of the small intestine into the blood capillaries, and the blood carries them around the body. '
+          'The lining is one cell thick (short diffusion distance) and has many tiny folds (large surface area).</p>\n'
+          '<p class="keyidea">Glucose and amino acids are <strong>solutes</strong>: substances dissolved in another substance (the <strong>solvent</strong>). Together they make a <strong>solution</strong>.</p>\n')
+    b += L.fig(F.intestine(), "Absorption of digested food by diffusion in the small intestine.", "2.5")
+    b += '<h3>In plants</h3>\n'
+    b += ('<p><strong>1. Gas exchange through the stomata.</strong> Leaves have tiny pores called <strong>stomata</strong> (one is a <strong>stoma</strong>), mostly on the underside. '
+          'In the light, leaf cells use carbon dioxide for <strong>photosynthesis</strong>, so the concentration of carbon dioxide inside the leaf is low. '
+          '<strong>Carbon dioxide</strong> diffuses from the air <strong>into</strong> the leaf through the stomata. Photosynthesis makes <strong>oxygen</strong>, so its concentration inside the leaf is high, '
+          'and oxygen diffuses <strong>out</strong> of the leaf through the stomata.</p>\n')
+    b += L.fig(F.leaf_stomata(), "Carbon dioxide diffuses into a leaf and oxygen diffuses out through a stoma.", "2.6")
+    b += ('<figure class="pic cellphoto"><img src="img/stoma-sem.jpg" alt="Electron micrograph of a leaf surface showing one stoma: an oval pore between two curved guard cells" loading="lazy">'
+          '<figcaption>A real stoma on a tomato leaf (scanning electron micrograph, colour added). The pore is between two guard cells.</figcaption></figure>\n'
+          '<p class="credit">Image: <a href="%sTomato_leaf_stomate_1-color.jpg">Photohound</a>, public domain, via Wikimedia Commons.</p>\n' % C)
+    b += ('<p><strong>2. Root hair cell.</strong> A root hair cell has a <strong>long, narrow protrusion</strong> (the root hair) that grows out between the soil particles. '
+          'This gives the cell a <strong>large surface area to volume ratio</strong>, so substances diffuse into it faster. '
+          'Oxygen diffuses in from the air spaces in the soil (and carbon dioxide diffuses out). '
+          'Mineral salts dissolved in the soil water can also diffuse in when their concentration in the soil is higher than in the cell. (Water enters by osmosis: see Lesson 2.2.)</p>\n')
+    b += L.fig(F.root_hair_gas(), "A root hair cell: its long, narrow protrusion gives a large surface area for diffusion.", "2.7")
+    b += ('<div class="sidebox"><h4>Big idea: systems</h4><p>Living things depend on diffusion to exchange gases and take in nutrients. '
+          'You will meet these examples again in the topics on nutrition, transport and respiration.</p></div>\n')
+
+    b += '<h2>Check your understanding</h2>\n'
+    b += L.mcq(1, "Which change makes diffusion faster?", [
+        "A shallower concentration gradient", "A longer diffusion distance", "A smaller surface area to volume ratio", "A steeper concentration gradient"], 3,
+        "The steeper the concentration gradient, the faster the rate of diffusion.")
+    b += L.mcq(2, "Why are most cells very small?", [
+        "Small cells have a smaller surface area to volume ratio.", "Small cells have a larger surface area to volume ratio, so substances can move in and out fast enough.",
+        "Small cells do not need oxygen.", "Small cells have no cell membrane."], 1,
+        "A small cell has a large SA : V, so substances can enter and leave it quickly enough to keep it alive.")
+    b += L.mcq(3, "In the lungs, in which direction does oxygen diffuse?", [
+        "From the blood into the air space", "From the air space into the blood", "It does not move", "From the red blood cells into the air space"], 1,
+        "Oxygen is at a higher concentration in the air space than in the blood, so it diffuses into the blood.")
+    b += L.mcq(4, "How do glucose and amino acids get from the small intestine into the blood?", [
+        "By diffusion into the blood capillaries", "By photosynthesis", "By breathing", "They stay in the small intestine"], 0,
+        "Digested food such as glucose and amino acids diffuses through the lining of the small intestine into the blood capillaries.")
+    b += L.mcq(5, "In the light, which gases diffuse into and out of a leaf through the stomata?", [
+        "Oxygen in, carbon dioxide out", "Carbon dioxide in, oxygen out", "Nitrogen in, oxygen out", "Water in, glucose out"], 1,
+        "Photosynthesis uses carbon dioxide (low concentration inside the leaf) and makes oxygen (high concentration inside), so carbon dioxide diffuses in and oxygen diffuses out.")
+    b += L.mcq(6, "How does the long, narrow protrusion of a root hair cell help it?", [
+        "It gives the cell a fixed shape.", "It gives a large surface area to volume ratio, so substances diffuse in faster.", "It makes food by photosynthesis.", "It stops water entering the cell."], 1,
+        "A long, narrow protrusion gives a large surface area for diffusion.")
+    b += L.mcq(7, "Which substance cannot pass through a cell membrane?", ["Oxygen", "Carbon dioxide", "Glucose", "Protein"], 3,
+               "The cell membrane is partially permeable. Proteins are large molecules and cannot pass through.")
     L.page("movement-2-1-diffusion", "2.1 What Is Diffusion?", REFS + "2a", CSS + L.LABEL_CSS + b, JS, topic=TOPIC)
 
 
@@ -202,9 +222,9 @@ def lesson2():
     b = LO22
     b += '<h2>Osmosis</h2>\n'
     b += ('<p>The cell membrane is a <strong>partially permeable membrane</strong>: it lets some substances through but not others. '
-          'In Fig. 2.5, a partially permeable membrane separates the two arms of a U-tube. The membrane lets <strong>water</strong> molecules through, '
+          'In Fig. 2.8, a partially permeable membrane separates the two arms of a U-tube. The membrane lets <strong>water</strong> molecules through, '
           'but <strong>not sucrose</strong> molecules. (Sucrose is cane sugar, the sugar you use at home.)</p>\n')
-    b += ('<div class="figrow"><div class="illus">%s</div><div class="illus">%s</div></div>\n<p class="fig-caption"><strong>Fig. 2.5</strong> &mdash; Experiment to show osmosis.</p>\n'
+    b += ('<div class="figrow"><div class="illus">%s</div><div class="illus">%s</div></div>\n<p class="fig-caption"><strong>Fig. 2.8</strong> &mdash; Experiment to show osmosis.</p>\n'
           % (F.utube(), F.utube(after=True)))
     b += ('<p>Compared with arm B, arm A has:</p><ul><li><strong>more</strong> sucrose molecules per unit volume;</li><li><strong>fewer</strong> water molecules per unit volume.</li></ul>\n'
           '<p>After some time, the level in arm A <strong>rises</strong> and the level in arm B <strong>falls</strong>. Why?</p>\n'
@@ -227,11 +247,11 @@ def lesson2():
           '<li>Tie a knot in one end of a piece of dialysis tubing.</li>'
           '<li>Fill a boiling tube halfway with distilled water.</li>'
           '<li>Use a pipette to fill the dialysis tubing halfway with sucrose solution. If any spills, rinse the outside of the tubing with distilled water.</li>'
-          '<li>Set up the apparatus as in Fig. 2.6. The liquid levels inside and outside the tubing must be the same. Hold the tubing in place with a paper clip and mark the level on the outside of the boiling tube.</li>'
+          '<li>Set up the apparatus as in Fig. 2.9. The liquid levels inside and outside the tubing must be the same. Hold the tubing in place with a paper clip and mark the level on the outside of the boiling tube.</li>'
           '<li>Set up a second boiling tube in the same way, but with distilled water both inside the tubing and in the boiling tube.</li>'
           '<li>After 20 minutes, observe the liquid levels inside and outside the tubing in each set-up.</li></ol>')
     b += ('<div class="figrow"><div class="illus">%s<p class="fig-caption">At the start</p></div><div class="illus">%s<p class="fig-caption">After 20 minutes</p></div></div>\n'
-          '<p class="fig-caption"><strong>Fig. 2.6</strong> &mdash; Set-up to demonstrate osmosis.</p>\n' % (F.dialysis(), F.dialysis(after=True)))
+          '<p class="fig-caption"><strong>Fig. 2.9</strong> &mdash; Set-up to demonstrate osmosis.</p>\n' % (F.dialysis(), F.dialysis(after=True)))
     b += '<p><strong>Observation and discussion</strong></p>'
     b += answers(
         ("What do you notice about the dialysis tubing after 20 minutes? Explain your observation.",
@@ -253,8 +273,8 @@ def lesson2():
           '<li>So a <strong>dilute</strong> solution has a <strong>higher</strong> water potential than a concentrated solution. Pure (distilled) water has the highest water potential of all.</li>'
           '<li>When a partially permeable membrane separates two solutions with different water potentials, a <strong>water potential gradient</strong> is set up. '
           'Water molecules move from the region of higher water potential to the region of lower water potential: <strong>down</strong> the water potential gradient.</li></ul>\n')
-    b += L.fig(F.wp_container(), "A water potential gradient across a partially permeable membrane.", "2.7")
-    b += L.fig(F.wp_graph(), "Water moves from a dilute solution (higher water potential) to a concentrated solution (lower water potential).", "2.8")
+    b += L.fig(F.wp_container(), "A water potential gradient across a partially permeable membrane.", "2.10")
+    b += L.fig(F.wp_graph(), "Water moves from a dilute solution (higher water potential) to a concentrated solution (lower water potential).", "2.11")
     b += ('<p class="defn"><strong>Osmosis</strong> is the net movement of water molecules from a region of higher water potential to a region of lower water potential, '
           'through a partially permeable membrane.</p>\n')
     b += ('<p class="common"><strong>Common mistakes:</strong> in osmosis it is the <em>water</em> that moves, not the solute. '
@@ -316,7 +336,7 @@ def lesson2():
     b += '<h2>Why is turgor important to plants?</h2>\n'
     b += ('<p><strong>Support.</strong> Turgor keeps soft plant parts firm. Young stems and the leaves of non-woody plants stay firm and upright because of the turgor pressure in their cells. '
           'If the cells lose too much water, they lose turgor, become flaccid, and the plant <strong>wilts</strong>.</p>\n')
-    b += L.fig(F.wilting(), "Turgor pressure keeps a young plant upright; losing turgor makes it wilt.", "2.9")
+    b += L.fig(F.wilting(), "Turgor pressure keeps a young plant upright; losing turgor makes it wilt.", "2.12")
     b += ('<p><strong>Movement.</strong> Changes in turgor make some plant parts move. For example, a stoma (a tiny pore in a leaf) opens and closes '
           'when its two <strong>guard cells</strong> gain or lose turgor.</p>\n')
     b += ('<figure class="pic cellphoto"><img src="img/stoma-sem.jpg" alt="Electron micrograph of a leaf surface showing one stoma: an oval pore between two curved guard cells" loading="lazy">'
@@ -353,7 +373,7 @@ def lesson2():
         "Osmosis: water molecules, from higher to lower water potential, through a partially permeable membrane.")
     b += L.mcq(2, "Which solution has the highest water potential?", ["Distilled water", "5% sucrose solution", "10% sucrose solution", "20% sucrose solution"], 0,
                "Pure water has the highest water potential. The more solute, the lower the water potential.")
-    b += L.mcq(3, "In the U-tube experiment (Fig. 2.5), why does the level in arm A rise?", [
+    b += L.mcq(3, "In the U-tube experiment (Fig. 2.8), why does the level in arm A rise?", [
         "Sucrose moves from B to A.", "Water moves from A to B.", "Water moves from B to A by osmosis.", "Sucrose molecules grow bigger."], 2,
         "B has the higher water potential. Water moves from B to A through the partially permeable membrane; sucrose is too big to cross.")
     b += L.mcq(4, "A plant cell is placed in distilled water. Why does it not burst?", [
