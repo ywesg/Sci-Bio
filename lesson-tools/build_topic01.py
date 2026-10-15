@@ -227,36 +227,7 @@ def lesson1():
 
 
 # ================================================================== Lesson 1.2 How Are Cells Adapted to Their Functions? (1d)
-SAV_TOOL = """<div class="tool" id="sav">
-  <h3>Try it: shape and surface area to volume ratio</h3>
-  <p>Each shape is built from the same 64 small cubes (volume = 64 units&sup3;). Choose a shape to see its surface area.</p>
-  <div class="row" role="group" aria-label="Choose a shape">
-    <button type="button" class="pdf-btn" data-d="4,4,4">Cube 4 &times; 4 &times; 4</button>
-    <button type="button" class="pdf-btn" data-d="8,8,1">Flat sheet 8 &times; 8 &times; 1</button>
-    <button type="button" class="pdf-btn" data-d="16,2,2">Rod 16 &times; 2 &times; 2</button>
-    <button type="button" class="pdf-btn" data-d="64,1,1">Long thin strand 64 &times; 1 &times; 1</button>
-  </div>
-  <p class="result" id="sav-res" aria-live="polite"></p>
-  <p class="working" id="sav-work"></p>
-  <div class="bar-wrap" aria-hidden="true"><div class="bar" id="sav-bar"></div></div>
-  <p class="working">Same volume, but the flatter or longer and thinner the shape, the larger the surface area. That is why a red blood cell is a flattened disc and a root hair cell has a long, narrow extension.</p>
-</div>
-"""
-SAV_JS = """
-(function () {
-  var res = document.getElementById('sav-res'), work = document.getElementById('sav-work'), bar = document.getElementById('sav-bar');
-  document.querySelectorAll('#sav button').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var d = b.dataset.d.split(',').map(Number), l = d[0], w = d[1], h = d[2], A = 2 * (l * w + l * h + w * h), V = l * w * h;
-      document.querySelectorAll('#sav button').forEach(function (x) { x.style.background = x === b ? '#ccfbf1' : ''; });
-      res.textContent = 'Surface area = ' + A + ' units\\u00b2;  SA : V = ' + A + ' : ' + V + ' = ' + (A / V).toFixed(2) + ' : 1';
-      work.textContent = 'Surface area = 2 \\u00d7 (' + l + '\\u00d7' + w + ' + ' + l + '\\u00d7' + h + ' + ' + w + '\\u00d7' + h + ') = ' + A + '.  Volume = ' + l + ' \\u00d7 ' + w + ' \\u00d7 ' + h + ' = ' + V + '.';
-      bar.style.width = Math.min(100, (A / V) / 4.1 * 100) + '%';
-    });
-  });
-  document.querySelector('#sav button').click();
-})();
-"""
+import topic01_sav as SAV
 
 
 def lesson3():
@@ -269,10 +240,12 @@ def lesson3():
     b += '<h2>Surface area to volume ratio</h2>\n'
     b += ('<p>Substances such as oxygen, water and mineral salts enter a cell through its <strong>surface</strong> (the cell membrane). '
           'The more surface a cell has for its size, the faster it can take substances in. We compare cells using the <strong>surface area to volume ratio</strong> (SA&nbsp;:&nbsp;V).</p>\n')
-    b += SAV_TOOL
+    b += SAV.CSS + SAV.SHAPES + SAV.CUT + SAV.AGAR
 
     b += '<h2>Red blood cell</h2>\n'
     b += L.fig(F.red_blood_cell(), "A red blood cell. Function: <strong>transports oxygen</strong> around the body.")
+    b += ('<figure class="pic cellphoto"><img src="img/red-blood-cells-sem.jpg" alt="Many red blood cells: round discs, each dipped in the middle on both sides" loading="lazy"><figcaption><strong>Real red blood cells</strong> (scanning electron micrograph). Look for the biconcave discs: each one is dipped in the middle. Cells seen side-on look like thin bars.</figcaption></figure>'
+          '<p class="credit">Image: <a href="https://wellcomecollection.org/works/sfnd37qs">David Gregory &amp; Debbie Marshall</a>, CC BY 4.0, Wellcome Collection.</p>\n')
     b += ('<table><tr><th>Adaptation</th><th>How it helps</th></tr>'
           '<tr><td>Contains <strong>haemoglobin</strong></td><td>Haemoglobin binds to oxygen, so the cell can carry oxygen around the body.</td></tr>'
           '<tr><td><strong>Circular, biconcave</strong> shape</td><td>Increases the surface area to volume ratio, so oxygen is taken in and released faster.</td></tr>'
@@ -281,6 +254,8 @@ def lesson3():
 
     b += '<h2>Muscle cell</h2>\n'
     b += L.fig(F.muscle_cell(), "A muscle cell. Function: <strong>contracts and relaxes</strong> to bring about movement.")
+    b += ('<figure class="pic cellphoto"><img src="img/muscle-lm.jpg" alt="Long pink muscle cells lying side by side, with fine stripes across them" loading="lazy"><figcaption><strong>Real muscle cells</strong> (light micrograph, stained pink). Each muscle cell is very long. The fine stripes across it come from the contractile protein fibres.</figcaption></figure>'
+          '<p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Skeletal_muscle_-_longitudinal_section.jpg">Department of Histology, Jagiellonian University Medical College</a>, CC BY-SA 3.0, via Wikimedia Commons.</p>\n')
     b += ('<table><tr><th>Adaptation</th><th>How it helps</th></tr>'
           '<tr><td>Contains <strong>many mitochondria</strong></td><td>More aerobic respiration, so more energy is released for contraction.</td></tr>'
           '<tr><td>Has <strong>contractile protein fibres</strong></td><td>The fibres contract and relax to bring about movement.</td></tr>'
@@ -288,6 +263,8 @@ def lesson3():
 
     b += '<h2>Root hair cell</h2>\n'
     b += L.fig(F.root_hair_cell(), "A root hair cell. Function: <strong>absorbs water and mineral salts</strong> from the soil.")
+    b += ('<figure class="pic cellphoto"><img src="img/root-hair-lm.jpg" alt="Edge of a root seen under a microscope: one long, thin root hair grows out from a single cell on the surface" loading="lazy"><figcaption><strong>A real root hair</strong> (light micrograph of a lily root). The long, thin extension on the left grows out of <em>one</em> cell on the surface of the root.</figcaption></figure>'
+          '<p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Monocot_Root_Epidermal_Root_Hair_in_Lilium_(36045152715).jpg">Berkshire Community College Bioscience Image Library</a>, CC0, via Wikimedia Commons.</p>\n')
     b += ('<table><tr><th>Adaptation</th><th>How it helps</th></tr>'
           '<tr><td><strong>Long and narrow extension</strong> (the root hair)</td><td>Increases the surface area to volume ratio, so water and mineral salts are absorbed faster.</td></tr>'
           '<tr><td>Cell sap in the vacuole has a <strong>lower water potential</strong> than the soil water</td><td>Water enters the root hair cell by <strong>osmosis</strong>. (You will learn about osmosis in Topic 2.)</td></tr>'
@@ -323,7 +300,7 @@ def lesson3():
     b += L.mcq(5, "The biconcave shape of a red blood cell&hellip;", [
         "lets it squeeze through capillaries.", "increases its surface area to volume ratio for faster uptake of oxygen.", "gives it room for a nucleus.", "makes it contract."], 1,
         "The biconcave shape gives a larger surface area to volume ratio. (Being flexible is what lets it squeeze through capillaries.)")
-    L.page("cells-1-2-cell-adaptations", "1.2 How Are Cells Adapted to Their Functions?", REFS + "1d", b, JS + SAV_JS, topic=TOPIC)
+    L.page("cells-1-2-cell-adaptations", "1.2 How Are Cells Adapted to Their Functions?", REFS + "1d", b, JS + SAV.JS, topic=TOPIC)
 
 
 if __name__ == "__main__":

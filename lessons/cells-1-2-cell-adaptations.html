@@ -209,28 +209,112 @@
 <p class="keyidea"><strong>Key idea:</strong> for every adaptation, say <strong>what the feature is</strong> and <strong>how it helps the cell do its job</strong>.</p>
 <h2 id="surface-area-to-volume-ratio">Surface area to volume ratio</h2>
 <p>Substances such as oxygen, water and mineral salts enter a cell through its <strong>surface</strong> (the cell membrane). The more surface a cell has for its size, the faster it can take substances in. We compare cells using the <strong>surface area to volume ratio</strong> (SA&nbsp;:&nbsp;V).</p>
-<div class="tool" id="sav">
-  <h3>Try it: shape and surface area to volume ratio</h3>
-  <p>Each shape is built from the same 64 small cubes (volume = 64 units&sup3;). Choose a shape to see its surface area.</p>
-  <div class="row" role="group" aria-label="Choose a shape">
-    <button type="button" class="pdf-btn" data-d="4,4,4">Cube 4 &times; 4 &times; 4</button>
-    <button type="button" class="pdf-btn" data-d="8,8,1">Flat sheet 8 &times; 8 &times; 1</button>
-    <button type="button" class="pdf-btn" data-d="16,2,2">Rod 16 &times; 2 &times; 2</button>
-    <button type="button" class="pdf-btn" data-d="64,1,1">Long thin strand 64 &times; 1 &times; 1</button>
+<style>
+  .viz { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.1rem 1.25rem; margin: 1.25rem 0; }
+  .viz h3 { margin-top: 0; color: #134e4a; font-size: 1.08rem; }
+  .viz .btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0; }
+  .viz .btns button { min-height: 2.6rem; padding: 0 0.9rem; border: 1px solid #94a3b8; border-radius: 999px; background: #fff; color: #134e4a; font: 700 0.95rem "Source Sans 3", system-ui, sans-serif; cursor: pointer; }
+  .viz .btns button[aria-pressed="true"] { background: #134e4a; border-color: #134e4a; color: #fff; }
+  .viz .stage { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.4rem; }
+  .viz .stage svg { display: block; width: 100%; height: 230px; margin: 0; }
+  .viz .nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin: 0.7rem 0 0.3rem; }
+  .viz .nums div { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.45rem 0.7rem; }
+  .viz .nums b { display: block; font-size: 1.25rem; color: #134e4a; }
+  .viz .nums span { font-size: 0.85rem; color: #475569; }
+  .viz .nums .big b { color: #be185d; }
+  .agar-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; align-items: end; text-align: center; }
+  .agar-row svg { width: 100%; height: auto; max-height: 190px; margin: 0; }
+  .agar-row .pc { font-weight: 700; color: #134e4a; }
+  .agar-row .meter { height: 0.6rem; background: #fce7f3; border-radius: 999px; overflow: hidden; margin: 0.25rem 0.4rem 0; }
+  .agar-row .meter i { display: block; height: 100%; width: 0; background: #0f766e; }
+  .viz input[type=range] { width: 100%; accent-color: #0f766e; }
+  .viz .timer { font-weight: 800; color: #134e4a; font-size: 1.1rem; }
+  .cellphoto img { max-height: 380px; object-fit: contain; background: #0f172a0d; }
+  .setup svg { width: 100%; max-width: 520px; height: auto; display: block; margin: 0.4rem auto; }
+  @media print { .viz { background: #fff; break-inside: avoid; } .viz .btns, .viz input[type=range], .viz .play { display: none !important; } }
+</style>
+<div class="viz" id="sav">
+  <h3>Try it: same volume, different shapes</h3>
+  <p>Each shape is built from the same <strong>64 small cubes</strong> (volume = 64 units&sup3;). Pick a shape and look at how much surface it has.</p>
+  <div class="btns print-hide" role="group" aria-label="Choose a shape">
+    <button type="button" data-d="4,4,4" aria-pressed="true">Cube 4 &times; 4 &times; 4</button>
+    <button type="button" data-d="8,8,1" aria-pressed="false">Flat sheet 8 &times; 8 &times; 1</button>
+    <button type="button" data-d="16,2,2" aria-pressed="false">Rod 16 &times; 2 &times; 2</button>
+    <button type="button" data-d="64,1,1" aria-pressed="false">Long thin strand 64 &times; 1 &times; 1</button>
   </div>
-  <p class="result" id="sav-res" aria-live="polite"></p>
+  <div class="stage"><svg id="sav-svg" role="img" aria-label="A 3-D drawing of the chosen shape made of small cubes"></svg></div>
+  <div class="nums" aria-live="polite">
+    <div><b id="sav-v">64</b><span>volume (units&sup3;)</span></div>
+    <div><b id="sav-a">96</b><span>surface area (units&sup2;)</span></div>
+    <div class="big"><b id="sav-r">1.5 : 1</b><span>SA : V ratio</span></div>
+  </div>
   <p class="working" id="sav-work"></p>
-  <div class="bar-wrap" aria-hidden="true"><div class="bar" id="sav-bar"></div></div>
-  <p class="working">Same volume, but the flatter or longer and thinner the shape, the larger the surface area. That is why a red blood cell is a flattened disc and a root hair cell has a long, narrow extension.</p>
+  <p class="working">Same volume, but the <strong>flatter</strong> or <strong>longer and thinner</strong> the shape, the larger the surface area. That is why a red blood cell is a flattened disc and a root hair cell has a long, narrow extension.</p>
+</div>
+<div class="viz" id="cut">
+  <h3>Try it: cut a big cube into small cubes</h3>
+  <p>Start with one 3 cm cube. Cut it into 1 cm cubes. The total <strong>volume stays the same</strong>, but look what happens to the surface.</p>
+  <div class="btns print-hide" role="group" aria-label="Whole or cut">
+    <button type="button" data-cut="0" aria-pressed="true">One 3 cm cube</button>
+    <button type="button" data-cut="1" aria-pressed="false">Cut into 27 &times; 1 cm cubes</button>
+  </div>
+  <div class="stage"><svg id="cut-svg" role="img" aria-label="A 3 cm cube, which can be split into 27 small 1 cm cubes"></svg></div>
+  <div class="nums" aria-live="polite">
+    <div><b id="cut-v">27 cm&sup3;</b><span>total volume</span></div>
+    <div><b id="cut-a">54 cm&sup2;</b><span>total surface area</span></div>
+    <div class="big"><b id="cut-r">2 : 1</b><span>SA : V ratio</span></div>
+  </div>
+  <p class="working" id="cut-work"></p>
+  <p class="working"><strong>Link to cells:</strong> a large organism is made of many small cells rather than one huge cell. Each small cell has a large SA : V ratio, so substances can enter and leave it quickly enough.</p>
+</div>
+<div class="viz" id="agar">
+  <h3>Experiment: diffusion into agar cubes of different sizes</h3>
+  <div class="setup">
+    <svg viewBox="0 0 580 200" role="img" aria-label="Three pink agar cubes of 1, 2 and 3 cm placed in a beaker of dilute hydrochloric acid">
+      <path d="M90 30 V170 a12 12 0 0 0 12 12 H418 a12 12 0 0 0 12 -12 V30" fill="none" stroke="#334155" stroke-width="4"/>
+      <rect x="94" y="70" width="332" height="108" fill="#e0f2fe" opacity="0.8"/>
+      <path d="M94 70 H426" stroke="#38bdf8" stroke-width="2"/>
+      <g fill="#ec4899" stroke="#9d174d" stroke-width="2">
+        <rect x="150" y="152" width="20" height="20"/><rect x="225" y="132" width="40" height="40"/><rect x="320" y="112" width="60" height="60"/>
+      </g>
+      <g font-family="Source Sans 3, system-ui, sans-serif" font-size="14" fill="#1f2937" text-anchor="middle">
+        <text x="160" y="146">1 cm</text><text x="245" y="126">2 cm</text><text x="350" y="106">3 cm</text>
+        <text x="260" y="22" font-weight="700">dilute hydrochloric acid</text>
+      </g>
+      <g font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#9d174d"><text x="440" y="140">agar with</text><text x="440" y="156">phenolphthalein</text><text x="440" y="172">(pink: alkaline)</text></g>
+    </svg>
+  </div>
+  <ol>
+    <li>Make agar containing an alkali and <strong>phenolphthalein</strong> indicator. It is <strong>pink</strong> because it is alkaline.</li>
+    <li>Cut cubes of side <strong>1 cm, 2 cm and 3 cm</strong>.</li>
+    <li>Place them in <strong>dilute hydrochloric acid</strong>. As the acid <strong>diffuses</strong> into the agar, the indicator turns <strong>colourless</strong>.</li>
+    <li>Every few minutes, take the cubes out and <strong>cut them in half</strong> to see how far the acid has reached.</li>
+  </ol>
+  <p><strong>Run the experiment:</strong> press Play, or drag the time slider. You are looking at each cube cut in half: <span style="display:inline-block;width:0.9em;height:0.9em;background:#ec4899;vertical-align:middle;border-radius:2px"></span> still pink (no acid yet), <span style="display:inline-block;width:0.9em;height:0.9em;background:#fdfcf5;border:1px solid #94a3b8;vertical-align:middle;border-radius:2px"></span> colourless (acid has diffused in).</p>
+  <div class="btns print-hide"><button type="button" class="play" id="agar-play">&#9654; Play</button><button type="button" id="agar-reset">Reset</button></div>
+  <label class="print-hide" for="agar-t">Time in acid: <span class="timer" id="agar-time">0 min</span></label>
+  <input class="print-hide" type="range" id="agar-t" min="0" max="15" step="0.1" value="0">
+  <div class="stage"><div class="agar-row" id="agar-row"></div></div>
+  <table>
+    <tr><th>Cube side</th><th>Surface area</th><th>Volume</th><th>SA : V</th><th>Time to turn fully colourless*</th></tr>
+    <tr><td>1 cm</td><td>6 cm&sup2;</td><td>1 cm&sup3;</td><td><strong>6 : 1</strong></td><td>5 min</td></tr>
+    <tr><td>2 cm</td><td>24 cm&sup2;</td><td>8 cm&sup3;</td><td><strong>3 : 1</strong></td><td>10 min</td></tr>
+    <tr><td>3 cm</td><td>54 cm&sup2;</td><td>27 cm&sup3;</td><td><strong>2 : 1</strong></td><td>15 min</td></tr>
+  </table>
+  <p class="working">*In this simple model the acid moves 1 mm into the agar every minute from every face. Real times depend on the acid and the agar, and diffusion slows down as it goes deeper, but the pattern is the same.</p>
+  <p class="keyidea"><strong>Conclusion:</strong> the <strong>smallest</strong> cube has the <strong>largest SA : V ratio</strong>, so the whole of its volume is reached by diffusion first. The bigger the cube, the longer the acid takes to reach its centre.</p>
 </div>
 <h2 id="red-blood-cell">Red blood cell</h2>
 <div class="illus"><svg viewBox="0 0 560 250" width="560" role="img" aria-label="Red blood cell: surface view showing a disc with a paler centre, and side view showing a biconcave shape that is thinner in the middle"><defs><radialGradient id="rbc" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fca5a5"/><stop offset="0.45" stop-color="#f87171"/><stop offset="1" stop-color="#b91c1c"/></radialGradient></defs><circle cx="130" cy="125" r="72" fill="url(#rbc)" stroke="#991b1b" stroke-width="2.5"/><line x1="130" y1="38" x2="130" y2="105" stroke="#334155" stroke-width="1.4"/><text x="130" y="30" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">no nucleus; full of haemoglobin</text><text x="130" y="232" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">surface view</text><g transform="translate(400 125)"><path d="M-95 0 C-95 -38 -58 -34 -32 -16 C-14 -5 14 -5 32 -16 C58 -34 95 -38 95 0 C95 38 58 34 32 16 C14 5 -14 5 -32 16 C-58 34 -95 38 -95 0 Z" fill="#ef4444" stroke="#991b1b" stroke-width="2.5"/></g><line x1="400" y1="62" x2="400" y2="118" stroke="#334155" stroke-width="1.4"/><text x="400" y="54" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">thin centre</text><line x1="318" y1="178" x2="330" y2="150" stroke="#334155" stroke-width="1.4"/><text x="318" y="194" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">thicker edge</text><text x="400" y="232" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">side view (cut through): biconcave disc</text></svg><p class="fig-caption">A red blood cell. Function: <strong>transports oxygen</strong> around the body.</p></div>
+<figure class="pic cellphoto"><img src="img/red-blood-cells-sem.jpg" alt="Many red blood cells: round discs, each dipped in the middle on both sides" loading="lazy"><figcaption><strong>Real red blood cells</strong> (scanning electron micrograph). Look for the biconcave discs: each one is dipped in the middle. Cells seen side-on look like thin bars.</figcaption></figure><p class="credit">Image: <a href="https://wellcomecollection.org/works/sfnd37qs">David Gregory &amp; Debbie Marshall</a>, CC BY 4.0, Wellcome Collection.</p>
 <table><tr><th>Adaptation</th><th>How it helps</th></tr><tr><td>Contains <strong>haemoglobin</strong></td><td>Haemoglobin binds to oxygen, so the cell can carry oxygen around the body.</td></tr><tr><td><strong>Circular, biconcave</strong> shape</td><td>Increases the surface area to volume ratio, so oxygen is taken in and released faster.</td></tr><tr><td><strong>No nucleus</strong></td><td>More space to pack in haemoglobin, so it can transport more oxygen.</td></tr><tr><td><strong>Flexible</strong></td><td>It can squeeze through narrow blood capillaries.</td></tr></table>
 <h2 id="muscle-cell">Muscle cell</h2>
 <div class="illus"><svg viewBox="0 0 580 210" width="580" role="img" aria-label="Muscle cell: a long cell with many nuclei, many mitochondria and long protein fibres"><rect x="30" y="60" width="520" height="90" rx="40" fill="#fecdd3" stroke="#be123c" stroke-width="2.5"/><line x1="62" y1="72" x2="518" y2="72" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="81" x2="518" y2="81" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="90" x2="518" y2="90" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="99" x2="518" y2="99" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="108" x2="518" y2="108" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="117" x2="518" y2="117" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="126" x2="518" y2="126" stroke="#fb7185" stroke-width="2"/><line x1="62" y1="135" x2="518" y2="135" stroke="#fb7185" stroke-width="2"/><ellipse cx="110" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><ellipse cx="250" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><ellipse cx="390" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><ellipse cx="500" cy="70" rx="20" ry="7" fill="#7c3aed" stroke="#4c1d95" stroke-width="1.5"/><g transform="translate(80 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(122 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(164 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(206 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(248 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(290 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(332 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(374 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(416 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(458 128) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><g transform="translate(500 100) rotate(0)"><ellipse rx="12" ry="5.5" fill="#fed7aa" stroke="#c2410c" stroke-width="2.4"/><path d="M-7.5 0 l2.5 -3.0250000000000004 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 6.050000000000001 l2.5 -6.050000000000001 l2.5 3.0250000000000004" fill="none" stroke="#c2410c" stroke-width="1.5" stroke-linejoin="round"/></g><line x1="250" y1="30" x2="250" y2="63" stroke="#334155" stroke-width="1.4"/><text x="250" y="24" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">many nuclei</text><line x1="420" y1="185" x2="416" y2="132" stroke="#334155" stroke-width="1.4"/><text x="420" y="202" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">many mitochondria</text><line x1="150" y1="185" x2="160" y2="117" stroke="#334155" stroke-width="1.4"/><text x="150" y="202" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">protein fibres (contract)</text></svg><p class="fig-caption">A muscle cell. Function: <strong>contracts and relaxes</strong> to bring about movement.</p></div>
+<figure class="pic cellphoto"><img src="img/muscle-lm.jpg" alt="Long pink muscle cells lying side by side, with fine stripes across them" loading="lazy"><figcaption><strong>Real muscle cells</strong> (light micrograph, stained pink). Each muscle cell is very long. The fine stripes across it come from the contractile protein fibres.</figcaption></figure><p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Skeletal_muscle_-_longitudinal_section.jpg">Department of Histology, Jagiellonian University Medical College</a>, CC BY-SA 3.0, via Wikimedia Commons.</p>
 <table><tr><th>Adaptation</th><th>How it helps</th></tr><tr><td>Contains <strong>many mitochondria</strong></td><td>More aerobic respiration, so more energy is released for contraction.</td></tr><tr><td>Has <strong>contractile protein fibres</strong></td><td>The fibres contract and relax to bring about movement.</td></tr><tr><td>Has <strong>many nuclei</strong></td><td>Allows for cell division, growth and repair of the long cell.</td></tr></table>
 <h2 id="root-hair-cell">Root hair cell</h2>
 <div class="illus"><svg viewBox="0 -6 580 286" width="580" role="img" aria-label="Root hair cell: a cell with a long, narrow extension growing out between soil particles; water and mineral salts enter the root hair"><defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#0284c7"/></marker></defs><rect x="0" y="-6" width="242" height="286" fill="#f1f5f9"/><rect x="242" y="-6" width="338" height="286" fill="#fefce8"/><circle cx="300" cy="34" r="16" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="380" cy="34" r="18" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="470" cy="32" r="18" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="560" cy="74" r="17" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="330" cy="125" r="22" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="430" cy="130" r="24" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="520" cy="130" r="20" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="270" cy="235" r="18" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="380" cy="200" r="22" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><circle cx="560" cy="205" r="16" fill="#d6b88b" stroke="#a16207" stroke-width="1.5"/><path d="M50 105 H195 Q205 62 262 58 H520 a16 16 0 0 1 0 32 H268 Q236 92 236 125 V178 a12 12 0 0 1 -12 12 H50 a12 12 0 0 1 -12 -12 V117 a12 12 0 0 1 12 -12 Z" fill="#fef3c7" stroke="#a16207" stroke-width="2.5"/><rect x="58" y="120" width="160" height="56" rx="16" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><ellipse cx="300" cy="74" rx="15" ry="8" fill="#ede9fe" stroke="#6d28d9" stroke-width="2"/><path d="M340 22 V48" stroke="#0284c7" stroke-width="3" marker-end="url(#ar)"/><path d="M425 22 V48" stroke="#0284c7" stroke-width="3" marker-end="url(#ar)"/><path d="M515 22 V48" stroke="#0284c7" stroke-width="3" marker-end="url(#ar)"/><text x="425" y="8" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="14" font-weight="700" fill="#0369a1">water and mineral salts</text><line x1="138" y1="160" x2="138" y2="226" stroke="#334155" stroke-width="1.4"/><text x="138" y="242" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">vacuole (cell sap)</text><line x1="300" y1="82" x2="300" y2="168" stroke="#334155" stroke-width="1.4"/><text x="300" y="184" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">nucleus</text><line x1="470" y1="90" x2="470" y2="236" stroke="#334155" stroke-width="1.4"/><text x="575" y="252" text-anchor="end" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937">long, narrow extension (root hair)</text><text x="16" y="30" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">inside the root</text><text x="252" y="272" font-family="Source Sans 3, system-ui, sans-serif" font-size="16" fill="#1f2937" font-weight="700">soil</text></svg><p class="fig-caption">A root hair cell. Function: <strong>absorbs water and mineral salts</strong> from the soil.</p></div>
+<figure class="pic cellphoto"><img src="img/root-hair-lm.jpg" alt="Edge of a root seen under a microscope: one long, thin root hair grows out from a single cell on the surface" loading="lazy"><figcaption><strong>A real root hair</strong> (light micrograph of a lily root). The long, thin extension on the left grows out of <em>one</em> cell on the surface of the root.</figcaption></figure><p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Monocot_Root_Epidermal_Root_Hair_in_Lilium_(36045152715).jpg">Berkshire Community College Bioscience Image Library</a>, CC0, via Wikimedia Commons.</p>
 <table><tr><th>Adaptation</th><th>How it helps</th></tr><tr><td><strong>Long and narrow extension</strong> (the root hair)</td><td>Increases the surface area to volume ratio, so water and mineral salts are absorbed faster.</td></tr><tr><td>Cell sap in the vacuole has a <strong>lower water potential</strong> than the soil water</td><td>Water enters the root hair cell by <strong>osmosis</strong>. (You will learn about osmosis in Topic 2.)</td></tr><tr><td><strong>No chloroplasts</strong></td><td>It grows underground with no light, so chloroplasts would have no use.</td></tr></table>
 <h2 id="writing-about-adaptations">Writing about adaptations</h2>
 <p>Link the <strong>feature</strong> to its <strong>effect</strong> and the <strong>function</strong>:</p>
@@ -428,17 +512,109 @@ document.querySelectorAll('.labeller').forEach(function (lab) {
 });
 
 (function () {
-  var res = document.getElementById('sav-res'), work = document.getElementById('sav-work'), bar = document.getElementById('sav-bar');
-  document.querySelectorAll('#sav button').forEach(function (b) {
-    b.addEventListener('click', function () {
+  var C = 0.866, S = 0.5;
+  function P(x, y, z, u) { return [((x - y) * C * u).toFixed(1), (((x + y) * S - z) * u).toFixed(1)]; }
+  function poly(pts, fill) { return '<polygon points="' + pts.map(function (p) { return p.join(','); }).join(' ') + '" fill="' + fill + '" stroke="#0f766e" stroke-width="1.6" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'; }
+  function line(a, b) { return '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" stroke="#0f766e" stroke-opacity="0.55" stroke-width="1" vector-effect="non-scaling-stroke"/>'; }
+  // a box of l x w x h unit cubes at (ox, oy, oz), with grid lines on the three faces you can see
+  function box(ox, oy, oz, l, w, h, u, grid, col) {
+    col = col || ['#99f6e4', '#5eead4', '#2dd4bf'];
+    var X = ox + l, Y = oy + w, Z = oz + h, s = '', i;
+    s += poly([P(ox, oy, Z, u), P(X, oy, Z, u), P(X, Y, Z, u), P(ox, Y, Z, u)], col[0]);       // top
+    s += poly([P(X, oy, oz, u), P(X, Y, oz, u), P(X, Y, Z, u), P(X, oy, Z, u)], col[2]);       // right face (x = X)
+    s += poly([P(ox, Y, oz, u), P(X, Y, oz, u), P(X, Y, Z, u), P(ox, Y, Z, u)], col[1]);       // left face (y = Y)
+    if (grid) {
+      for (i = 1; i < l; i++) { s += line(P(ox + i, oy, Z, u), P(ox + i, Y, Z, u)) + line(P(ox + i, Y, oz, u), P(ox + i, Y, Z, u)); }
+      for (i = 1; i < w; i++) { s += line(P(ox, oy + i, Z, u), P(X, oy + i, Z, u)) + line(P(X, oy + i, oz, u), P(X, oy + i, Z, u)); }
+      for (i = 1; i < h; i++) { s += line(P(X, oy, oz + i, u), P(X, Y, oz + i, u)) + line(P(ox, Y, oz + i, u), P(X, Y, oz + i, u)); }
+    }
+    return s;
+  }
+  function fit(svg, inner, pts) {          // set the viewBox around the drawing
+    var xs = pts.map(function (p) { return +p[0]; }), ys = pts.map(function (p) { return +p[1]; });
+    var x0 = Math.min.apply(0, xs), x1 = Math.max.apply(0, xs), y0 = Math.min.apply(0, ys), y1 = Math.max.apply(0, ys), pad = 14;
+    svg.setAttribute('viewBox', (x0 - pad) + ' ' + (y0 - pad) + ' ' + (x1 - x0 + 2 * pad) + ' ' + (y1 - y0 + 2 * pad));
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.innerHTML = inner;
+  }
+  function corners(ox, oy, oz, l, w, h, u) { var r = []; [0, l].forEach(function (a) { [0, w].forEach(function (b) { [0, h].forEach(function (c) { r.push(P(ox + a, oy + b, oz + c, u)); }); }); }); return r; }
+
+  // ---------- 1. same volume, different shapes
+  var sv = document.getElementById('sav-svg');
+  if (sv) {
+    var bs = document.querySelectorAll('#sav button');
+    function shape(b) {
       var d = b.dataset.d.split(',').map(Number), l = d[0], w = d[1], h = d[2], A = 2 * (l * w + l * h + w * h), V = l * w * h;
-      document.querySelectorAll('#sav button').forEach(function (x) { x.style.background = x === b ? '#ccfbf1' : ''; });
-      res.textContent = 'Surface area = ' + A + ' units\u00b2;  SA : V = ' + A + ' : ' + V + ' = ' + (A / V).toFixed(2) + ' : 1';
-      work.textContent = 'Surface area = 2 \u00d7 (' + l + '\u00d7' + w + ' + ' + l + '\u00d7' + h + ' + ' + w + '\u00d7' + h + ') = ' + A + '.  Volume = ' + l + ' \u00d7 ' + w + ' \u00d7 ' + h + ' = ' + V + '.';
-      bar.style.width = Math.min(100, (A / V) / 4.1 * 100) + '%';
+      bs.forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      fit(sv, box(0, 0, 0, l, w, h, 10, true), corners(0, 0, 0, l, w, h, 10));
+      document.getElementById('sav-a').textContent = A;
+      document.getElementById('sav-r').textContent = (A / V).toFixed(2).replace(/\.?0+$/, '') + ' : 1';
+      document.getElementById('sav-work').textContent = 'Surface area = 2 × (' + l + '×' + w + ' + ' + l + '×' + h + ' + ' + w + '×' + h + ') = ' + A + ' units².   SA : V = ' + A + ' : ' + V + '.';
+    }
+    bs.forEach(function (b) { b.addEventListener('click', function () { shape(b); }); });
+    shape(bs[0]);
+  }
+
+  // ---------- 2. cut a 3 cm cube into 27 small cubes
+  var cv = document.getElementById('cut-svg');
+  if (cv) {
+    var gap = 0, target = 0, anim = null, cb = document.querySelectorAll('#cut button');
+    function drawCut() {
+      var s = '', all = [], cubes = [], u = 26, i, j, k;
+      for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) for (k = 0; k < 3; k++) cubes.push([i, j, k]);
+      cubes.sort(function (a, b) { return (a[0] + a[1] + a[2]) - (b[0] + b[1] + b[2]) || a[2] - b[2]; });   // far cubes first
+      if (gap < 0.01) { s = box(0, 0, 0, 3, 3, 3, u, true); all = corners(0, 0, 0, 3, 3, 3, u); }
+      else cubes.forEach(function (c) { var o = c.map(function (n) { return n * (1 + gap); }); s += box(o[0], o[1], o[2], 1, 1, 1, u, false); all = all.concat(corners(o[0], o[1], o[2], 1, 1, 1, u)); });
+      all = all.concat(corners(0, 0, 0, 3 + 2 * 0.9, 3 + 2 * 0.9, 3 + 2 * 0.9, u));     // keep the frame fixed while it opens up
+      fit(cv, s, all);
+    }
+    function setCut(c) {
+      cb.forEach(function (x) { x.setAttribute('aria-pressed', x.dataset.cut === String(c)); });
+      document.getElementById('cut-a').textContent = c ? '162 cm²' : '54 cm²';
+      document.getElementById('cut-r').textContent = c ? '6 : 1' : '2 : 1';
+      document.getElementById('cut-work').textContent = c ? 'Each 1 cm cube: 6 faces × 1 cm² = 6 cm².  27 cubes × 6 cm² = 162 cm².  SA : V = 162 : 27 = 6 : 1 (three times bigger).'
+                                                          : 'One 3 cm cube: 6 faces × (3 × 3) cm² = 54 cm².  Volume = 3 × 3 × 3 = 27 cm³.  SA : V = 54 : 27 = 2 : 1.';
+      target = c ? 0.9 : 0; cancelAnimationFrame(anim);
+      (function step() { gap += (target - gap) * 0.18; if (Math.abs(target - gap) < 0.005) gap = target; drawCut(); if (gap !== target) anim = requestAnimationFrame(step); })();
+    }
+    cb.forEach(function (b) { b.addEventListener('click', function () { setCut(+b.dataset.cut); }); });
+    setCut(0);
+  }
+
+  // ---------- 3. agar cubes in acid (cut in half to show how far the acid has diffused)
+  var row = document.getElementById('agar-row');
+  if (row) {
+    var sizes = [1, 2, 3], rate = 0.1, t = 0, timer = null, sl = document.getElementById('agar-t'), play = document.getElementById('agar-play');
+    row.innerHTML = sizes.map(function (s) {
+      return '<div><svg viewBox="0 0 170 190" role="img" aria-label="' + s + ' cm agar cube cut in half"><g id="ag' + s + '"></g></svg>' +
+             '<div><strong>' + s + ' cm cube</strong> (SA : V = ' + (6 / s) + ' : 1)</div><div class="meter"><i id="agm' + s + '"></i></div><div class="pc" id="agp' + s + '"></div></div>';
+    }).join('');
+    function drawAgar() {
+      document.getElementById('agar-time').textContent = t.toFixed(1).replace('.0', '') + ' min';
+      sizes.forEach(function (s) {
+        var px = 48 * s, x0 = 85 - px / 2, y0 = 170 - px, d = Math.min(rate * t, s / 2), core = s - 2 * d, cp = core * 48;
+        var g = '<rect x="' + x0 + '" y="' + y0 + '" width="' + px + '" height="' + px + '" fill="#fdfcf5" stroke="#94a3b8" stroke-width="2"/>';
+        if (core > 0) g += '<rect x="' + (85 - cp / 2) + '" y="' + (y0 + (px - cp) / 2) + '" width="' + cp + '" height="' + cp + '" fill="#ec4899"/>';
+        if (d > 0 && core > 0) g += '<rect x="' + x0 + '" y="' + y0 + '" width="' + px + '" height="' + px + '" fill="none" stroke="#94a3b8" stroke-width="2"/>';
+        g += '<text x="85" y="' + (y0 - 8) + '" text-anchor="middle" font-family="Source Sans 3, system-ui, sans-serif" font-size="13" fill="#475569">cut face</text>';
+        document.getElementById('ag' + s).innerHTML = g;
+        var reached = 1 - Math.pow(Math.max(core, 0) / s, 3);
+        document.getElementById('agm' + s).style.width = (reached * 100) + '%';
+        document.getElementById('agp' + s).textContent = core <= 0 ? 'All colourless!' : Math.round(reached * 100) + '% reached by acid';
+      });
+    }
+    function set(v) { t = Math.max(0, Math.min(15, v)); sl.value = t; drawAgar(); }
+    sl.addEventListener('input', function () { stop(); set(+sl.value); });
+    function stop() { clearInterval(timer); timer = null; play.innerHTML = '&#9654; Play'; }
+    play.addEventListener('click', function () {
+      if (timer) { stop(); return; }
+      if (t >= 15) set(0);
+      play.innerHTML = '&#10074;&#10074; Pause';
+      timer = setInterval(function () { set(t + 0.1); if (t >= 15) stop(); }, 60);
     });
-  });
-  document.querySelector('#sav button').click();
+    document.getElementById('agar-reset').addEventListener('click', function () { stop(); set(0); });
+    set(0);
+  }
 })();
 </script>
 </body>
