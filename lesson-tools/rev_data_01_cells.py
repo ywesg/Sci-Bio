@@ -84,5 +84,11 @@ TOPICS = [dict(
              pts=[pt("Long, narrow extension (root hair).", r"long|narrow|extension"),
                   pt("Increases the surface area (to volume ratio) for faster absorption.", r"surface area"),
                   pt("Cell sap has a lower water potential, so water enters by osmosis.", r"osmosis|water potential")]),
+        dict(id="c7", marks=2,
+             q="A typical plant cell, such as a leaf cell, has chloroplasts. Explain why a root hair cell does <strong>not</strong> have chloroplasts.",
+             model="Chloroplasts contain chlorophyll, which absorbs light for photosynthesis. A root hair cell is underground in the soil, where there is no light, "
+                   "so it cannot photosynthesise and chloroplasts would have no use. (Its job is to absorb water and mineral salts, not to make food.)",
+             pts=[pt("Root hair cells are underground / in the soil, where there is no light.", r"(underground|soil|dark|below ground|under the ground|no light|without light|not exposed to light|no sunlight)"),
+                  pt("So it cannot photosynthesise / chloroplasts (chlorophyll) would have no use.", r"photosynth|absorb\w* light|no (use|need)|not need|chlorophyll")]),
     ],
 )]
