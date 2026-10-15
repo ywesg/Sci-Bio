@@ -256,6 +256,10 @@ def lesson3():
     b += L.fig(F.muscle_cell(), "A muscle cell. Function: <strong>contracts and relaxes</strong> to bring about movement.")
     b += ('<figure class="pic cellphoto"><img src="img/muscle-lm.jpg" alt="Long pink muscle cells lying side by side, with fine stripes across them" loading="lazy"><figcaption><strong>Real muscle cells</strong> (light micrograph, stained pink). Each muscle cell is very long. The fine stripes across it come from the contractile protein fibres.</figcaption></figure>'
           '<p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Skeletal_muscle_-_longitudinal_section.jpg">Department of Histology, Jagiellonian University Medical College</a>, CC BY-SA 3.0, via Wikimedia Commons.</p>\n')
+    b += ('<figure class="pic cellphoto"><img src="img/cardiac-muscle.jpg" alt="Illustration of heart muscle: the heart, then a close-up of long muscle cells, then a closer view showing green mitochondria lying between the myofibrils" loading="lazy">'
+          '<figcaption><strong>Zooming in on heart muscle</strong> (illustration). The <strong>mitochondria</strong> (green) sit right next to the <strong>myofibrils</strong>, '
+          'the contractile protein fibres, so the energy they release reaches the fibres quickly. Heart muscle never rests, so it is packed with mitochondria.</figcaption></figure>'
+          '<p class="credit">Image: <a href="https://commons.wikimedia.org/wiki/File:Cardiac_Muscle.png">BruceBlaus (Blausen Medical)</a>, CC BY-SA 4.0, via Wikimedia Commons.</p>\n')
     b += ('<table><tr><th>Adaptation</th><th>How it helps</th></tr>'
           '<tr><td>Contains <strong>many mitochondria</strong></td><td>More aerobic respiration, so more energy is released for contraction.</td></tr>'
           '<tr><td>Has <strong>contractile protein fibres</strong></td><td>The fibres contract and relax to bring about movement.</td></tr>'
