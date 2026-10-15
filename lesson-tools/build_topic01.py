@@ -146,6 +146,8 @@ def lesson1():
           '<li>Lower a cover slip <strong>slowly, at an angle</strong>, using the mounting needle. This stops air bubbles being trapped.</li>'
           '<li>Soak up extra liquid at the edge with filter paper. Look at the slide under <strong>low power</strong> first, then high power.</li></ol>'
           '<p>Animal cells (for example cheek cells) are stained with <strong>methylene blue</strong>. Follow your school&rsquo;s safety rules for this practical.</p></div>\n')
+    b += L.video("3aQYc6DeWsY", "Video: How to make a wet mount of human cheek cells (stained with methylene blue)", "YouTube: Carolina Science",
+                 "Watch how a temporary slide of cheek cells is made and stained. The steps are like the onion slide above.")
 
     b += '<h2>Label the cells</h2>\n'
     b += '<p>Drag each label to the right box. Then press <strong>Check my labels</strong>. Wrong labels turn red: move them and check again.</p>\n'
