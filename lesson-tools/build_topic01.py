@@ -108,6 +108,10 @@ def MICROGRAPHS():
 # ================================================================== Lesson 1.1 What Are Cells? (1a, 1b, 1c)
 def lesson1():
     b = LO11
+    b += '<h2>Trigger activity</h2>\n'
+    b += ('<p>Watch this real video taken through a microscope. A <em>Paramecium</em> is a living thing made of just <strong>one cell</strong>. '
+          'As you watch, think: <strong>how can one tiny cell move, feed and stay alive on its own?</strong> What parts must it have?</p>\n')
+    b += L.video("a4aZE5FQ284", "Paramecium feeding, seen under a microscope", "YouTube: Craig Smith")
     b += '<h2>What is a cell?</h2>\n'
     b += ('<p>Every living thing is made of <strong>cells</strong>, just as a building is made of bricks. Cells are the <strong>building blocks of life</strong>: the simplest structural and functional units of life. '
           'Some organisms, such as bacteria, are a single cell. You are made of about 30 trillion cells.</p>\n'
@@ -149,6 +153,8 @@ def lesson1():
                     extra=["cell wall", "chloroplast"], title="Label a typical animal cell.", width=760)
     b += L.labeller("lab-plant", F.inner(F.plant_cell(labels=False, sap_text=False)), F.PLANT_VB[0], F.PLANT_VB[1], F.PLANT_TARGETS, "A typical plant cell, e.g. a leaf cell (not to scale).",
                     title="Label a typical plant cell.", width=760)
+    b += L.video("PzxxEVdM1xI", "Video: Introduction to the animal cell", "YouTube: Inspirit",
+                 "Watch to review the parts of an animal cell and what each one does.")
 
     b += '<h2>Cell structures and their functions</h2>\n'
     b += ('<table><tr><th>Structure</th><th>Function</th><th>Found in</th></tr>'
